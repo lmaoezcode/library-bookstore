@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='register.css') }}">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <h2>Create Account</h2>
+
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST" id="registerForm">
+            <div class="field">
+                <label>Full Name</label>
+                <div class="input-wrapper">
+                    <i data-lucide="user" class="left-icon"></i>
+                    <input type="text" name="name" placeholder="Enter your name" required>
+                </div>
+            </div>
+
+            <div class="field">
+                <label>Email Address</label>
+                <div class="input-wrapper">
+                    <i data-lucide="mail" class="left-icon"></i>
+                    <input type="email" name="email" placeholder="example@mail.com" required>
+                </div>
+            </div>
+
+            <div class="field">
+                <label>Password</label>
+                <div class="input-wrapper">
+                    <i data-lucide="lock" class="left-icon"></i>
+                    <input type="password" name="password" id="password" placeholder="••••••••" required>
+                    <i data-lucide="eye" class="right-icon" onclick="togglePassword('password', this)"></i>
+                </div>
+            </div>
+
+            <div class="field">
+                <label>Confirm Password</label>
+                <div class="input-wrapper">
+                    <i data-lucide="lock" class="left-icon"></i>
+                    <input type="password" name="confirmation" id="confirm" placeholder="••••••••" required>
+                    <i data-lucide="eye" class="right-icon" onclick="togglePassword('confirm', this)"></i>
+                </div>
+            </div>
+
+            <div class="terms">
+                <input type="checkbox" id="terms" required>
+                <label for="terms">I agree to the <a href="#">Terms & Conditions</a></label>
+            </div>
+
+            <div class="error" id="jsError" style="display:none;"></div>
+            <button type="submit">Register</button>
+        </form>
+
+        <p class="login-link">
+            Already have an account? <a href="{{ url_for('admin.login') }}">Login</a>
+        </p>
+    </div>
+</div>
+
+<script>
+    lucide.createIcons();
+
+    function togglePassword(id, el) {
+        const input = document.getElementById(id);
+        if (input.type === "password") {
+            input.type = "text";
+            el.setAttribute("data-lucide", "eye-off");
+        } else {
+            input.type = "password";
+            el.setAttribute("data-lucide", "eye");
+        }
+        lucide.createIcons();
+    }
+
+    document.getElementById("registerForm").addEventListener("submit", function(e) {
+        const password = document.getElementById("password").value;
+        const confirm = document.getElementById("confirm").value;
+        const errorDiv = document.getElementById("jsError");
+
+        if (password.length < 6) {
+            e.preventDefault();
+            errorDiv.style.display = "block";
+            errorDiv.innerText = "Password must be at least 6 characters!";
+            return;
+        }
+
+        if (password !== confirm) {
+            e.preventDefault();
+            errorDiv.style.display = "block";
+            errorDiv.innerText = "Passwords do not match!";
+            return;
+        }
+        errorDiv.style.display = "none";
+    });
+</script>
+</body>
+</html>

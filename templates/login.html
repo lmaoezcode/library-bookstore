@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <h2>Login</h2>
+
+        {% if error %}
+            <div id="toast" class="error">
+                <span>{{ error }}</span>
+            </div>
+        {% endif %}
+
+        <form method="POST" action="">
+            <div class="field">
+                <label>Email</label>
+                <div class="input-wrapper">
+                    <i data-lucide="mail" class="left-icon"></i>
+                    <input type="email" name="email" placeholder="example@mail.com" required>
+                </div>
+            </div>
+
+            <div class="field">
+                <label>Password</label>
+                <div class="input-wrapper">
+                    <i data-lucide="lock" class="left-icon"></i>
+                    <input type="password" name="password" id="password" placeholder="••••••••" required>
+                    <i data-lucide="eye" class="right-icon" id="toggleEye" onclick="togglePassword()"></i>
+                </div>
+            </div>
+
+            <div class="options">
+                <label class="remember-me">
+                    <input type="checkbox" name="remember"> Remember
+                </label>
+                <a href="#" class="forgot-link">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="btn-login">Login</button>
+        </form>
+
+        <div class="extra">
+            <p>
+                Don't have an account?
+                <a href="{{ url_for('admin.register') }}">Register</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Khởi tạo icon
+    lucide.createIcons();
+
+    function togglePassword() {
+        const input = document.getElementById("password");
+        const icon = document.getElementById("toggleEye");
+
+        if (input.type === "password") {
+            input.type = "text";
+            icon.setAttribute("data-lucide", "eye-off");
+        } else {
+            input.type = "password";
+            icon.setAttribute("data-lucide", "eye");
+        }
+        lucide.createIcons(); // Cập nhật lại icon sau khi đổi attribute
+    }
+</script>
+
+</body>
+</html>
