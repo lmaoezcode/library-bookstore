@@ -6,7 +6,7 @@ Bài tập nhóm Lập Trình Web: website thư viện kiêm nhà sách trực t
 - **Hoàng Phúc Lâm - 11236139 (Trưởng nhóm)**: Frontend, Git, Tích hợp
 - **Phạm Hùng Mạnh - 11236151**: Backend – Auth, Books, Users
 - **Trần Trung Hiếu - 11236107**: Backend – Cart, Orders
-- **Phạm Hùng Dương - 11236091 **: Backend – Borrow, Admin
+- **Phạm Hùng Dương - 11236091**: Backend – Borrow, Admin
 
 ## 🛠 Công nghệ sử dụng
 
