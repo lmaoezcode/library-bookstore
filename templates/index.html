@@ -1,0 +1,444 @@
+<!-- License ID: DEVOMATE-SRC-20260401-RKJYU7TRKM | lamhoang.workspace@gmail.com | 2026-04-01 11:30:09 -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book Store</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+
+    <!-- Section 1: Top Bar -->
+    <div class="top-bar text-white py-2 px-3 d-flex justify-content-between align-items-center">
+        <div><i class="bi bi-telephone me-2"></i> +91 7397807795</div>
+        <div class="social-icons">
+            <a href="#"><i class="bi bi-facebook"></i></a>
+            <a href="#"><i class="bi bi-instagram"></i></a>
+            <a href="#"><i class="bi bi-linkedin"></i></a>
+            <a href="#"><i class="bi bi-twitter"></i></a>
+        </div>
+    </div>
+
+    <!-- Section 2: Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <!-- Row 1 -->
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="images/sample logo 1.png" class="me-2" alt="" srcset="" width="40px">
+            
+            </a>
+
+            <form class="d-none d-md-flex me-auto ms-3 search-bar">
+                <input class="form-control" type="search" placeholder="Search Books" />
+                <button class="btn" type="submit"><i class="bi bi-search"></i></button>
+            </form>
+
+            <div class="d-flex align-items-center gap-3">
+                <a href="my-account.html" class="nav-link"><i class="bi bi-person"></i> Account</a>
+                <a href="cart.html" class="nav-link"><i class="bi bi-cart"></i> Cart (05)</a>
+                <a href="wishlist.html" class="nav-link"><i class="bi bi-heart"></i> Wishlist</a>
+            </div>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navLinks">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Row 2: Nav Links -->
+    <div class="nav-links border-top">
+        <div class="container">
+            <ul class="nav justify-content-center py-2">
+                <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>
+                <li class="nav-item"><a class="nav-link" href="books.html">Books</a></li> 
+                <li class="nav-item"><a class="nav-link" href="contact.html">Contact Us</a></li>
+               
+            </ul>
+        </div>
+    </div>
+
+    <!-- Section 3: Single Image Carousel -->
+    <div id="bookCarousel" class="carousel slide" data-bs-ride="carousel">
+
+        <!-- Indicators -->
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#bookCarousel" data-bs-slide-to="0" class="active"
+                aria-current="true"></button>
+            <button type="button" data-bs-target="#bookCarousel" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#bookCarousel" data-bs-slide-to="2"></button>
+        </div>
+
+        <!-- Carousel Slides -->
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="images/banner1.png" class="d-block w-100" alt="Book Banner 1">
+            </div>
+            <div class="carousel-item">
+                <img src="images/banner1.png" class="d-block w-100" alt="Book Banner 2">
+            </div>
+            <div class="carousel-item">
+                <img src="images/banner1.png" class="d-block w-100" alt="Book Banner 3">
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#bookCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#bookCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+
+
+
+
+    <!-- Top Categories Section -->
+    <section class="categories-section py-5">
+        <div class="container">
+
+            <!-- Header Row -->
+            <div
+                class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
+                <div>
+                    <h6 class="text-uppercase text-orange fw-semibold mb-1">Categories</h6>
+                    <h2 class="fw-bold text-dark">Explore our Top Categories</h2>
+                </div>
+                <p class="text-muted mt-3 mt-md-0 ms-md-4" style="max-width: 500px;">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eu feugiat amet, libero ipsum enim
+                    pharetra hac.
+                    Urna commodo, lacus ut magna velit eleifend.
+                </p>
+            </div>
+
+            <!-- Navigation Arrows -->
+            <div class="d-flex justify-content-start gap-2 mb-4">
+                <button class="btn btn-outline-primary rounded-circle arrow-btn"><i
+                        class="bi bi-arrow-left"></i></button>
+                <button class="btn btn-primary rounded-circle arrow-btn"><i class="bi bi-arrow-right"></i></button>
+            </div>
+
+            <!-- Category Cards -->
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="category-card text-center p-3 h-100">
+                        <img src="images/cat1.png" class="img-fluid rounded mb-3" alt="Higher Education">
+                        <h5 class="fw-semibold mb-2">Higher Education</h5>
+                        <p class="text-muted small mb-0">
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eu feugiat amet, libero ipsum
+                            enim pharetra hac.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="category-card text-center p-3 h-100">
+                        <img src="images/cat2.png" class="img-fluid rounded mb-3" alt="Management Books">
+                        <h5 class="fw-semibold mb-2">Management Books</h5>
+                        <p class="text-muted small mb-0">
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eu feugiat amet, libero ipsum
+                            enim pharetra hac.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="category-card text-center p-3 h-100">
+                        <img src="images/cat3.png" class="img-fluid rounded mb-3" alt="Engineering Books">
+                        <h5 class="fw-semibold mb-2">Engineering Books</h5>
+                        <p class="text-muted small mb-0">
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eu feugiat amet, libero ipsum
+                            enim pharetra hac.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View More Button -->
+            <div class="text-center mt-5">
+                <a href="#" class="btn btn-outline-primary rounded-pill px-4 py-2">View More →</a>
+            </div>
+
+        </div>
+    </section>
+
+
+
+
+    <!-- eBook Section -->
+    <section class="ebook-section py-5">
+        <div class="container">
+            <div class="row align-items-center">
+
+                <!-- Left Content -->
+                <div class="col-md-6 mb-4 mb-md-0">
+                    <h6 class="text-uppercase text-orange fw-semibold mb-2">eBook</h6>
+                    <h2 class="fw-bold text-dark mb-3">
+                        Access, Read, Practice & Engage <br>
+                        with Digital Content (eBook)
+                    </h2>
+                    <p class="text-muted mb-4">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eu feugiat amet, libero ipsum enim
+                        pharetra hac.
+                        Urna commodo, lacus ut magna velit eleifend. Amet, quis urna, a eu.
+                    </p>
+
+                    <form class="d-flex flex-wrap gap-2">
+                        <input type="email" class="form-control rounded-pill me-2 flex-grow-1"
+                            placeholder="Enter Your Email Address" required>
+                        <button type="submit" class="btn btn-primary rounded-pill px-4">Login</button>
+                    </form>
+                </div>
+
+                <!-- Right Image -->
+                <div class="col-md-6 text-center">
+                    <img src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=800"
+                        alt="Person with Books" class="img-fluid rounded shadow">
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+
+
+    <section class="new-release-section py-5">
+        <div class="container position-relative">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fw-bold text-dark">New Release Books</h2>
+                <div>
+                    <button class="btn btn-light rounded-circle me-2" id="scrollLeft">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <button class="btn btn-light rounded-circle" id="scrollRight">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Carousel Wrapper -->
+            <div class="book-carousel-wrapper overflow-hidden position-relative">
+                <div class="book-carousel d-flex transition-all">
+                    <!-- Example Book Cards -->
+                    <div class="book-card card border-0 me-3">
+                        <img src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=400"
+                            class="card-img-top" alt="">
+                        <div class="card-body">
+                            <h6 class="fw-bold mb-1">The Future of AI</h6>
+                            <p class="text-muted mb-1">TechPress</p>
+                            <p class="fw-semibold text-orange mb-0">₹499</p>
+                        </div>
+                    </div>
+                    <div class="book-card card border-0 me-3">
+                        <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400" class="card-img-top"
+                            alt="">
+                        <div class="card-body">
+                            <h6 class="fw-bold mb-1">Code Mastery</h6>
+                            <p class="text-muted mb-1">ByteBooks</p>
+                            <p class="fw-semibold text-orange mb-0">₹399</p>
+                        </div>
+                    </div>
+                    <div class="book-card card border-0 me-3">
+                        <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400"
+                            class="card-img-top" alt="">
+                        <div class="card-body">
+                            <h6 class="fw-bold mb-1">Design Patterns</h6>
+                            <p class="text-muted mb-1">O’Reilly</p>
+                            <p class="fw-semibold text-orange mb-0">₹599</p>
+                        </div>
+                    </div>
+                    <div class="book-card card border-0 me-3">
+                        <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=400"
+                            class="card-img-top" alt="">
+                        <div class="card-body">
+                            <h6 class="fw-bold mb-1">UI/UX Fundamentals</h6>
+                            <p class="text-muted mb-1">DesignHub</p>
+                            <p class="fw-semibold text-orange mb-0">₹349</p>
+                        </div>
+                    </div>
+                    <div class="book-card card border-0 me-3">
+                        <img src="images/cat1.png" class="card-img-top" alt="">
+                        <div class="card-body">
+                            <h6 class="fw-bold mb-1">Next.js Secrets</h6>
+                            <p class="text-muted mb-1">WebCraft</p>
+                            <p class="fw-semibold text-orange mb-0">₹699</p>
+                        </div>
+                    </div>
+                    <div class="book-card card border-0 me-3">
+                        <img src="images/cat2.png" class="card-img-top" alt="">
+                        <div class="card-body">
+                            <h6 class="fw-bold mb-1">Modern JS</h6>
+                            <p class="text-muted mb-1">CodeSphere</p>
+                            <p class="fw-semibold text-orange mb-0">₹299</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Indicators -->
+            <div class="d-flex justify-content-center mt-4">
+                <span class="indicator active"></span>
+                <span class="indicator"></span>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="featured-section py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <!-- Left Image -->
+                <div class="col-md-5 text-center">
+                    <img src="images/book.png" alt="Featured Product" class="img-fluid rounded shadow-sm">
+                </div>
+
+                <!-- Right Content -->
+                <div class="col-md-7">
+                    <h5 class="text-uppercase text-muted mb-2">Featured Product</h5>
+                    <h2 class="fw-bold mb-3">Organic Grocery Combo</h2>
+                    <p class="text-secondary mb-3">
+                        A complete pack of organic and fresh grocery essentials for your healthy kitchen.
+                        100% natural and handpicked ingredients delivered fresh to your doorstep.
+                    </p>
+                    <h4 class="text-danger mb-4">$29.99</h4>
+                    <a href="#" class="btn btn-dark rounded-pill px-4 py-2">View More →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+
+    <!-- Offer Section -->
+    <section class="offer-section container">
+        <div class="row align-items-center">
+            <div class="col-md-6 offer-text">
+                <h2>All books are 50% off now! Don’t miss such a deal!</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eu feugiat amet, libero ipsum enim
+                    pharetra hac.</p>
+                <div class="timer">
+                    <div>768 <span>Days</span></div>
+                    <div>01 <span>Hour</span></div>
+                    <div>27 <span>Min</span></div>
+                    <div>55 <span>Sec</span></div>
+                </div>
+            </div>
+            <div class="col-md-6 text-center">
+                <img src="images/Unsplash.png" alt="Books" class="offer-img img-fluid">
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="newsletter-section">
+        <h3>Subscribe To Our Newsletter</h3>
+        <p>Sed eu feugiat amet, libero ipsum enim pharetra hac dolor sit amet. Elit adipiscing enim pharetra hac.</p>
+        <div class="newsletter-input">
+            <input type="email" placeholder="Enter your email address here">
+            <button>SEND</button>
+        </div>
+    </section>
+
+
+
+
+
+    <!-- ===== Footer Section Start ===== -->
+    <footer class="py-5" style="background: linear-gradient(90deg, #fffaf9, #fefbf5);">
+        <div class="container">
+            <div class="row gy-4">
+                <!-- Logo & Description -->
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="images/sample logo 1.png" alt="Logo" width="80">
+                    </div>
+                    <p class="text-muted small mb-4">
+                        Nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                    </p>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="text-danger fs-5"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="text-danger fs-5"><i class="bi bi-linkedin"></i></a>
+                        <a href="#" class="text-danger fs-5"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="text-danger fs-5"><i class="bi bi-youtube"></i></a>
+                    </div>
+                    <p class="text-muted small mt-4 mb-0">© 2025 Devomate. All Rights Reserved.</p>
+                </div>
+
+                <!-- Company Links -->
+                <div class="col-md-4">
+                    <h6 class="fw-bold text-danger mb-3">COMPANY</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-dark text-decoration-none d-block mb-2">HOME</a></li>
+                        <li><a href="#" class="text-dark text-decoration-none d-block mb-2">ABOUT US</a></li>
+                        <li><a href="#" class="text-dark text-decoration-none d-block mb-2">BOOKS</a></li>
+                        <li><a href="#" class="text-dark text-decoration-none d-block mb-2">EBOOKS</a></li>
+                        <li><a href="#" class="text-dark text-decoration-none d-block mb-2">NEW RELEASE</a></li>
+                        <li><a href="#" class="text-dark text-decoration-none d-block mb-2">CONTACT US</a></li>
+                        <li><a href="#" class="text-dark text-decoration-none d-block">BLOG</a></li>
+                    </ul>
+                </div>
+
+                <!-- Latest News -->
+                <div class="col-md-4">
+                    <h6 class="fw-bold text-danger mb-3">LATEST NEWS</h6>
+
+                    <!-- News item 1 -->
+                    <div class="d-flex mb-3">
+                        <img src="images/news1.png" alt="News 1" class="rounded me-3" width="70" height="70">
+                        <div>
+                            <h6 class="fw-semibold text-dark mb-1">Nostrud exercitation</h6>
+                            <p class="text-muted small mb-1">Nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+                                commodo consequat.</p>
+                            <small class="text-warning">9 Apr 2022</small>
+                        </div>
+                    </div>
+
+                    <!-- News item 2 -->
+                    <div class="d-flex">
+                        <img src="images/news2.png" alt="News 2" class="rounded me-3" width="70" height="70">
+                        <div>
+                            <h6 class="fw-semibold text-dark mb-1">Nostrud exercitation</h6>
+                            <p class="text-muted small mb-1">Nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+                                commodo consequat.</p>
+                            <small class="text-warning">15 Apr 2022</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- Bottom Links -->
+            <div class="text-center">
+                <a href="#" class="text-danger small text-decoration-none">Privacy</a>
+                <span class="text-muted mx-2">|</span>
+                <a href="#" class="text-dark small text-decoration-none">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+    <!-- ===== Footer Section End ===== -->
+
+    <!-- Bootstrap Icons CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+
+
+    <!-- JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/script.js"></script>
+</body>
+
+</html>

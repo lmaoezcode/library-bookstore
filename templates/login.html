@@ -1,0 +1,157 @@
+<!-- License ID: DEVOMATE-SRC-20260401-RKJYU7TRKM | lamhoang.workspace@gmail.com | 2026-04-01 11:30:09 -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Store Sections</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <!-- Modern Login & Register Section -->
+    <section class="auth-section">
+        <div class="container-fluid">
+            <div class="row g-0">
+                <!-- Left Side Image -->
+                <div class="col-lg-6 d-none d-lg-block position-relative auth-image">
+                    <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=1000" alt="Books"
+                        class="img-fluid vh-100" style="object-fit: cover;">
+                    <div
+                        class="overlay-text position-absolute top-50 start-50 translate-middle text-center text-white px-3">
+                        <h2 class="fw-bold">Welcome to <span style="color:#ED553B;">BookNest</span></h2>
+                        <p>Discover, Read & Grow with our curated collection of books</p>
+                    </div>
+                </div>
+
+                <!-- Right Side Form -->
+                <div class="col-lg-6 d-flex align-items-center justify-content-center">
+                    <div class="auth-form-wrapper w-100 p-5">
+                        <!-- Tabs -->
+                        <ul class="nav nav-tabs justify-content-center mb-4 border-0" id="authTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active fw-semibold" id="login-tab" data-bs-toggle="tab"
+                                    data-bs-target="#loginTab" type="button" role="tab">Login</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link fw-semibold" id="register-tab" data-bs-toggle="tab"
+                                    data-bs-target="#registerTab" type="button" role="tab">Register</button>
+                            </li>
+                        </ul>
+
+                        <!-- Tab Content -->
+                        <div class="tab-content" id="authTabsContent">
+                            <!-- Login Form -->
+                            <div class="tab-pane fade show active" id="loginTab" role="tabpanel">
+                                <h4 class="fw-bold mb-4 text-center" style="color:#ED553B;">Login to your account</h4>
+                                <form>
+                                    <div class="mb-3">
+                                        <label class="form-label">Email address</label>
+                                        <input type="email" class="form-control form-control-lg"
+                                            placeholder="Enter your email">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Password</label>
+                                        <input type="password" class="form-control form-control-lg"
+                                            placeholder="Enter your password">
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="rememberMe">
+                                            <label class="form-check-label small" for="rememberMe">Remember me</label>
+                                        </div>
+                                        <a href="#" class="text-decoration-none small text-orange">Forgot Password?</a>
+                                    </div>
+                                    <button class="btn w-100 py-2 text-white fw-semibold"
+                                        style="background-color:#ED553B;">Login</button>
+                                </form>
+                            </div>
+
+                            <!-- Register Form -->
+                            <div class="tab-pane fade" id="registerTab" role="tabpanel">
+                                <h4 class="fw-bold mb-4 text-center" style="color:#ED553B;">Create your account</h4>
+                                <form>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Full Name</label>
+                                            <input type="text" class="form-control form-control-lg"
+                                                placeholder="Your name">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Email</label>
+                                            <input type="email" class="form-control form-control-lg"
+                                                placeholder="Your email">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Password</label>
+                                        <input type="password" class="form-control form-control-lg"
+                                            placeholder="Create password">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Confirm Password</label>
+                                        <input type="password" class="form-control form-control-lg"
+                                            placeholder="Confirm password">
+                                    </div>
+                                    <button class="btn w-100 py-2 text-white fw-semibold"
+                                        style="background-color:#ED553B;">Register</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- CSS Styling -->
+    <style>
+        .auth-section .nav-tabs .nav-link {
+            border-radius: 50px;
+            color: #333;
+            transition: 0.3s;
+        }
+
+        .auth-section .nav-tabs .nav-link.active {
+            background-color: #ED553B;
+            color: white;
+        }
+
+        .auth-section input:focus {
+            border-color: #ED553B !important;
+            box-shadow: 0 0 0 0.2rem rgba(237, 85, 59, 0.25);
+        }
+
+        .text-orange {
+            color: #ED553B !important;
+        }
+
+        .auth-image .overlay-text {
+            max-width: 80%;
+        }
+
+        @media (max-width: 992px) {
+            .auth-image {
+                display: none !important;
+            }
+        }
+    </style>
+
+
+
+    <!-- Bootstrap Icons CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+
+
+    <!-- JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/script.js"></script>
+
+</body>
+
+</html>
