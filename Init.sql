@@ -3,7 +3,7 @@ INSERT INTO categories (name) VALUES ('Kinh tế');      -- ID sẽ là 2
 INSERT INTO categories (name) VALUES ('Công nghệ');    -- ID sẽ là 3
 INSERT INTO categories (name) VALUES ('Kỹ năng sống'); -- ID sẽ là 4
 
-
+SELECT * FROM users;
 
 
 -- SÁCH VĂN HỌC (category_id = 1)

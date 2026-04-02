@@ -11,10 +11,11 @@ def login():
         email = request.form.get('email')
         password = request.form.get('password')
         db = get_db()
-        user= db.execute('SELECT * FROM users WHERE email = ?', (email,)).fetchone()
+        user= db.execute('SELECT * FROM users WHERE email = ? AND role="admin"', (email,)).fetchone()
         if user and check_password_hash(user["password"], password):
             session['logged_in'] = True
             session['user_id']= user["id"]
+            session["role"]=user["role"]
             flash("Đăng nhập thành công!", "success")
             return "Logged in"
         else:
@@ -44,7 +45,7 @@ def register():
             error="Email already exists!"
         else:
             hashed_password = generate_password_hash(password)
-            db.execute('INSERT INTO users (email, password,name) VALUES (?, ?,?)',(email, hashed_password,name))
+            db.execute('INSERT INTO users (email, password,name, role) VALUES (?, ?,?,?)',(email, hashed_password,name,"admin"))
             db.commit()
             return redirect(url_for('admin.login'))
         return render_template('register.html', error=error)
