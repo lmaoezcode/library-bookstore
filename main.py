@@ -1,11 +1,11 @@
 from datetime import timedelta
 
-from flask import Flask,request, render_template
-import pandas as pd
+from flask import Flask
 from admin import (admin_bp)
 from auth import auth_bp
 from book import book_bp
 from route.route import login_required
+from borrow import borrow_bp
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'dev-secret-change-me'  # cần cho flash/session
@@ -15,6 +15,7 @@ def create_app():
     app.register_blueprint(admin_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(book_bp)
+    app.register_blueprint(borrow_bp)
     @app.route("/index", methods=["GET"])
     @login_required
     def index():

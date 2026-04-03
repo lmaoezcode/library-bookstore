@@ -1,4 +1,4 @@
-from flask import request, render_template, session, redirect, url_for, flash
+from flask import request, render_template, session, redirect, url_for, flash, jsonify
 import pandas as pd
 import sqlite3
 from . import admin_bp
@@ -53,3 +53,18 @@ def register():
     return render_template('register.html')
 
 
+@admin_bp.route('/user/list', methods=['POST'])
+def user_list():
+    db=get_db()
+    result=db.execute('SELECT * FROM users WHERE role="user"').fetchall()
+    user = [dict(row) for row in result]
+    if result:
+        return jsonify({
+            "status":"success",
+            "user":user
+        }),200
+    else:
+        return jsonify({
+            "status": "failed",
+            "message":"User not found!",
+        }),200
