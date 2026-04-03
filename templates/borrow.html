@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Mượn Sách - Thư Viện Sách{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-light" style="min-height: 80vh;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm p-4 p-md-5">
+                    <div class="text-center mb-4">
+                        <h3 class="fw-bold" style="color:#ED553B;">Đăng Ký Mượn Sách</h3>
+                        <p class="text-muted">Vui lòng điền thông tin dưới đây để gửi yêu cầu mượn sách tới thư viện.
+                        </p>
+                    </div>
+
+                    <form>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Họ và tên</label>
+                                <input type="text" class="form-control" placeholder="Nhập họ và tên người mượn"
+                                    required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Số điện thoại</label>
+                                <input type="tel" class="form-control" placeholder="Nhập số điện thoại" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Sách đã chọn mượn</label>
+                                <ul class="list-group mb-2">
+                                    {% for book in selected_books %}
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <img src="{{ book.image }}" alt="{{ book.title }}" width="40"
+                                            class="me-3 rounded">
+                                        <div>
+                                            <strong>{{ book.title }}</strong><br>
+                                            <small class="text-muted">{{ book.author }}</small>
+                                        </div>
+                                    </li>
+                                    {% else %}
+                                    <li class="list-group-item text-muted">Chưa có cuốn sách nào được chọn. Hãy quay lại
+                                        giỏ hàng để chọn sách.</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Ngày mượn</label>
+                                <input type="date" class="form-control" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Ngày trả dự kiến</label>
+                                <input type="date" class="form-control" required>
+                            </div>
+                            <div class="col-12 mt-4">
+                                <button type="submit" class="btn text-white w-100 py-2 fw-semibold"
+                                    style="background-color:#ED553B;">
+                                    Gửi Yêu Cầu Mượn Sách
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

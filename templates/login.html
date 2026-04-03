@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}Đăng nhập / Đăng ký - Thư Viện Sách{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-section .nav-tabs .nav-link {
+        border-radius: 50px;
+        color: #333;
+        transition: 0.3s;
+    }
+
+    .auth-section .nav-tabs .nav-link.active {
+        background-color: #ED553B;
+        color: white;
+    }
+
+    .auth-section input:focus {
+        border-color: #ED553B !important;
+        box-shadow: 0 0 0 0.2rem rgba(237, 85, 59, 0.25);
+    }
+
+    .text-orange {
+        color: #ED553B !important;
+    }
+
+    .auth-image .overlay-text {
+        max-width: 80%;
+    }
+
+    @media (max-width: 992px) {
+        .auth-image {
+            display: none !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="auth-section">
+    <div class="container-fluid">
+        <div class="row g-0">
+            <div class="col-lg-6 d-none d-lg-block position-relative auth-image">
+                <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=1000" alt="Books"
+                    class="img-fluid vh-100" style="object-fit: cover;">
+                <div class="overlay-text position-absolute top-50 start-50 translate-middle text-center text-white px-3">
+                    <h2 class="fw-bold">Chào mừng đến với <span style="color:#ED553B;">Thư Viện</span></h2>
+                    <p>Khám phá, Đọc & Phát triển cùng bộ sưu tập sách được chọn lọc kỹ càng</p>
+                </div>
+            </div>
+
+            <div class="col-lg-6 d-flex align-items-center justify-content-center">
+                <div class="auth-form-wrapper w-100 p-5">
+                    <ul class="nav nav-tabs justify-content-center mb-4 border-0" id="authTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active fw-semibold" id="login-tab" data-bs-toggle="tab"
+                                data-bs-target="#loginTab" type="button" role="tab">Đăng nhập</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link fw-semibold" id="register-tab" data-bs-toggle="tab"
+                                data-bs-target="#registerTab" type="button" role="tab">Đăng ký</button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content" id="authTabsContent">
+                        <div class="tab-pane fade show active" id="loginTab" role="tabpanel">
+                            <h4 class="fw-bold mb-4 text-center" style="color:#ED553B;">Đăng nhập vào tài khoản</h4>
+                            <form method="POST" action="{{ url_for('login') }}">
+                                <div class="mb-3">
+                                    <label class="form-label">Địa chỉ Email</label>
+                                    <input type="email" name="email" class="form-control form-control-lg"
+                                        placeholder="Nhập email của bạn" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Mật khẩu</label>
+                                    <input type="password" name="password" class="form-control form-control-lg"
+                                        placeholder="Nhập mật khẩu" required>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="rememberMe">
+                                        <label class="form-check-label small" for="rememberMe">Ghi nhớ đăng nhập</label>
+                                    </div>
+                                    <a href="#" class="text-decoration-none small text-orange">Quên mật khẩu?</a>
+                                </div>
+                                <button type="submit" class="btn w-100 py-2 text-white fw-semibold"
+                                    style="background-color:#ED553B;">Đăng nhập</button>
+                            </form>
+                        </div>
+
+                        <div class="tab-pane fade" id="registerTab" role="tabpanel">
+                            <h4 class="fw-bold mb-4 text-center" style="color:#ED553B;">Tạo tài khoản</h4>
+                            <form method="POST" action="{{ url_for('login') }}">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Họ và tên</label>
+                                        <input type="text" name="fullname" class="form-control form-control-lg"
+                                            placeholder="Tên của bạn" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" name="email" class="form-control form-control-lg"
+                                            placeholder="Email của bạn" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Mật khẩu</label>
+                                    <input type="password" name="password" class="form-control form-control-lg"
+                                        placeholder="Tạo mật khẩu" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Xác nhận mật khẩu</label>
+                                    <input type="password" class="form-control form-control-lg"
+                                        placeholder="Xác nhận mật khẩu" required>
+                                </div>
+                                <button type="submit" class="btn w-100 py-2 text-white fw-semibold"
+                                    style="background-color:#ED553B;">Đăng ký</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+{% endblock %}

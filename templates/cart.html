@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Giỏ Hàng - Thư Viện Sách{% endblock %}
+
+{% block content %}
+<section class="container py-5">
+    <h4 class="fw-bold mb-4 text-orange">Giỏ Hàng Của Tôi</h4>
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <form id="cartForm">
+                {% for item in cart_items %}
+                <div class="card border-0 shadow-sm mb-3 p-3 d-flex flex-row align-items-center">
+                    <div class="form-check me-3">
+                        <input class="form-check-input book-checkbox" type="checkbox" value="{{ item.id }}"
+                            data-can-buy="{{ 'true' if item.can_buy else 'false' }}">
+                    </div>
+                    <img src="{{ item.image }}" class="rounded me-3" width="80" alt="">
+                    <div class="flex-grow-1">
+                        <h6 class="fw-bold mb-1">{{ item.title }}</h6>
+                        <p class="text-muted small mb-1">{{ item.author }}</p>
+                        <p class="fw-semibold text-danger mb-0">{{ item.price }}</p>
+                        {% if item.can_buy %}
+                        <span class="badge bg-success mt-1">Có thể mua</span>
+                        {% else %}
+                        <span class="badge bg-secondary mt-1">Chỉ có thể mượn</span>
+                        {% endif %}
+                    </div>
+                    <div class="d-flex flex-column align-items-end">
+                        <input type="number" class="form-control form-control-sm mb-2" value="1" min="1"
+                            style="width: 70px;">
+                        <button type="button" class="btn btn-sm btn-outline-danger">Xóa</button>
+                    </div>
+                </div>
+                {% endfor %}
+            </form>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm p-4">
+                <h6 class="fw-bold mb-3">Tóm Tắt Đơn Hàng</h6>
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Tạm tính</span><span class="fw-semibold">300.000đ</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Phí vận chuyển</span><span class="fw-semibold">30.000đ</span>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between fw-bold mb-4 fs-5">
+                    <span>Tổng cộng</span><span class="text-danger">330.000đ</span>
+                </div>
+                <button class="btn text-white w-100 fw-semibold mb-2" style="background-color:#ED553B;"
+                    onclick="handleCheckout()">Tiến hành Thanh toán</button>
+                <button class="btn btn-outline-dark w-100 fw-semibold" onclick="handleBorrow()">Mượn sách</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function getSelectedBooks() {
+        return Array.from(document.querySelectorAll('.book-checkbox:checked'));
+    }
+
+    function handleCheckout() {
+        const selected = getSelectedBooks();
+        if (selected.length === 0) {
+            alert('Vui lòng chọn ít nhất một cuốn sách để thanh toán.');
+            return;
+        }
+        const cantBuy = selected.find(cb => cb.dataset.canBuy === 'false');
+        if (cantBuy) {
+            alert('Có sách trong danh sách chọn không thể thanh toán (chỉ được mượn). Vui lòng bỏ chọn sách đó.');
+            return;
+        }
+        const ids = selected.map(cb => cb.value).join(',');
+        window.location.href = "{{ url_for('payments') }}?books=" + ids;
+    }
+
+    function handleBorrow() {
+        const selected = getSelectedBooks();
+        if (selected.length === 0) {
+            alert('Vui lòng chọn ít nhất một cuốn sách để mượn.');
+            return;
+        }
+        const ids = selected.map(cb => cb.value).join(',');
+        window.location.href = "{{ url_for('borrow') }}?books=" + ids;
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Trang chủ - Thư Viện Sách{% endblock %}
+
+{% block content %}
+    <section class="hero-section text-center py-5 bg-light border-bottom">
+        <div class="container py-5">
+            <h1 class="display-4 fw-bold text-dark mb-3">Chào mừng đến với Thư Viện Sách</h1>
+            <p class="lead text-secondary mb-4">Nền tảng đọc sách, mượn sách và mua sắm tiện lợi nhất dành cho bạn.</p>
+            <a href="{{ url_for('books') }}" class="btn text-white px-4 py-2 fw-semibold" style="background-color:#ED553B;">
+                KHÁM PHÁ NGAY
+            </a>
+        </div>
+    </section>
+
+    <section class="categories-section py-5">
+        <div class="container">
+            <h3 class="fw-bold text-center mb-4 text-dark">Danh Mục Sách Nổi Bật</h3>
+            <div class="row g-4 text-center">
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm p-4 h-100">
+                        <i class="bi bi-book fs-1 mb-3" style="color:#ED553B;"></i>
+                        <h5 class="fw-semibold">Giáo dục Đại học</h5>
+                        <p class="text-muted small">Tài liệu học thuật chuyên sâu và phong phú dành cho toàn thể sinh viên.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm p-4 h-100">
+                        <i class="bi bi-briefcase fs-1 mb-3" style="color:#ED553B;"></i>
+                        <h5 class="fw-semibold">Quản trị & Lãnh đạo</h5>
+                        <p class="text-muted small">Phát triển bản thân và bổ sung nền tảng kiến thức doanh nghiệp.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm p-4 h-100">
+                        <i class="bi bi-laptop fs-1 mb-3" style="color:#ED553B;"></i>
+                        <h5 class="fw-semibold">Công nghệ Số</h5>
+                        <p class="text-muted small">Cập nhật ngay xu hướng kỹ thuật lập trình hiện đại nhất năm nay.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="featured-section bg-light py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 order-2 order-md-1">
+                    <h5 class="text-uppercase text-muted mb-2">Đặc biệt trong tháng</h5>
+                    <h2 class="fw-bold mb-3">Chương trình Giảm giá 50%</h2>
+                    <p class="text-secondary mb-4">
+                        Mang đến trải nghiệm tuyệt vời cùng những ưu đãi mới nhất dành cho kho tàng tri thức của bạn. Trở thành hội viên để nhận những tựa sách nổi bật với mức giá ưu đãi.
+                    </p>
+                    <a href="{{ url_for('books') }}" class="btn btn-outline-dark rounded-pill px-4 py-2">Đăng ký tham gia ngay</a>
+                </div>
+                <div class="col-md-6 order-1 order-md-2 mb-4 mb-md-0 text-center">
+                    <img src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=600" alt="Sản phẩm nổi bật" class="img-fluid rounded shadow">
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

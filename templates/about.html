@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Về Chúng Tôi - Thư Viện Sách{% endblock %}
+
+{% block content %}
+<section class="about-section py-5" style="min-height: 90vh; background-color: #fff;">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6 mb-4 mb-lg-0">
+        <div class="about-image-wrapper position-relative">
+          <img src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=1000" alt="Về Chúng Tôi"
+            class="img-fluid rounded-4 shadow-lg w-100">
+          <div class="about-overlay position-absolute top-0 start-0 w-100 h-100 rounded-4"
+            style="background: rgba(0,0,0,0.2);"></div>
+        </div>
+      </div>
+
+      <div class="col-lg-6 ps-lg-5">
+        <h2 class="fw-bold mb-3" style="color: #ED553B;">Về Thư Viện Sách Của Chúng Tôi</h2>
+        <p class="text-muted fs-6 mb-4">
+          Tại <strong>Thư Viện Sách</strong>, chúng tôi tin rằng sách không chỉ là những con chữ — chúng là những ô cửa
+          sổ mở ra những thế giới mới, những ý tưởng và nguồn cảm hứng bất tận. Được thành lập với tầm nhìn kết nối độc
+          giả với những cuốn sách họ yêu thích, cửa hàng trực tuyến của chúng tôi mang đến trải nghiệm duyệt và mua sắm
+          mượt mà cho mọi người yêu sách.
+        </p>
+        <p class="text-muted fs-6 mb-4">
+          Từ tiểu thuyết hiện đại đến văn học kinh điển, sách self-help (phát triển bản thân) đến tài liệu học thuật —
+          bộ sưu tập được tuyển chọn kỹ lưỡng của chúng tôi đảm bảo mỗi độc giả đều tìm thấy cuốn sách hoàn hảo cho
+          mình. Chúng tôi hướng tới việc xây dựng một cộng đồng tôn vinh tri thức, sự sáng tạo và nghệ thuật kể chuyện.
+        </p>
+        <div class="d-flex flex-wrap gap-3 mt-4">
+          <a href="{{ url_for('books') }}" class="btn text-white px-4 py-2 fw-semibold"
+            style="background-color: #ED553B;">Khám Phá Sách</a>
+          <a href="{{ url_for('contact') }}" class="btn btn-outline-secondary px-4 py-2 fw-semibold">Liên Hệ Ngay</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

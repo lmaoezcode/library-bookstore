@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Danh sách Sách - Thư Viện Sách{% endblock %}
+
+{% block content %}
+<section class="books-section py-5 bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-3 mb-4">
+        <div class="card border-0 shadow-sm p-3">
+          <h5 class="fw-bold mb-3 text-orange">Bộ Lọc</h5>
+
+          <div class="mb-4">
+            <h6 class="fw-semibold mb-2">Danh mục</h6>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="" id="cat1">
+              <label class="form-check-label" for="cat1">Tiểu thuyết</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="" id="cat2">
+              <label class="form-check-label" for="cat2">Khoa học</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="" id="cat3">
+              <label class="form-check-label" for="cat3">Tiểu sử</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="" id="cat4">
+              <label class="form-check-label" for="cat4">Công nghệ</label>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <h6 class="fw-semibold mb-2">Mức giá</h6>
+            <input type="range" class="form-range" min="30000" max="600000" step="10000" id="priceRange">
+            <div class="d-flex justify-content-between">
+              <small>30.000đ</small>
+              <small>600.000đ+</small>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <h6 class="fw-semibold mb-2">Tác giả</h6>
+            <select class="form-select">
+              <option>Tất cả tác giả</option>
+              <option>J.K. Rowling</option>
+              <option>Stephen King</option>
+              <option>Robin Sharma</option>
+              <option>Nguyễn Nhật Ánh</option>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <h6 class="fw-semibold mb-2">Đánh giá</h6>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="rating" id="rate4">
+              <label class="form-check-label" for="rate4">Từ 4★ trở lên</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="rating" id="rate3">
+              <label class="form-check-label" for="rate3">Từ 3★ trở lên</label>
+            </div>
+          </div>
+
+          <button class="btn text-white w-100 fw-semibold" style="background-color:#ED553B;">Áp dụng bộ lọc</button>
+        </div>
+      </div>
+
+      <div class="col-lg-9">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h4 class="fw-bold mb-0">Bộ sưu tập Sách</h4>
+          <select class="form-select w-auto">
+            <option>Sắp xếp theo</option>
+            <option>Giá: Thấp đến Cao</option>
+            <option>Giá: Cao đến Thấp</option>
+            <option>Mới nhất trước</option>
+          </select>
+        </div>
+
+        <div class="row gy-4">
+          <div class="row gy-4">
+
+            {% for sach in danh_sach_sach %}
+
+            <div class="col-md-4">
+              <a href="{{ url_for('books_detail', book_id=sach.id) }}" class="text-decoration-none text-dark">
+                <div class="card border-0 shadow-sm book-card h-100 position-relative">
+                  <img src="{{ sach.image }}" class="card-img-top rounded-top" alt="{{ sach.title }}">
+                  {% if sach.can_buy %}
+                  <span class="badge bg-success position-absolute top-0 start-0 m-2">Có thể mua</span>
+                  {% endif %}
+                  <div class="card-body d-flex flex-column">
+                    <h6 class="fw-bold mb-1">{{ sach.title }}</h6>
+                    <p class="text-muted small mb-1">{{ sach.author }}</p>
+                    <p class="fw-semibold text-orange mb-2">{{ sach.price }}</p>
+                    <button class="btn btn-sm text-white w-100 mt-auto" style="background-color:#ED553B;">Thêm vào
+                      giỏ</button>
+                  </div>
+                </div>
+              </a>
+            </div>
+
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
