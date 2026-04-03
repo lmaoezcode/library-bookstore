@@ -1,0 +1,46 @@
+# --------------------------
+# Byte-compiled / cache files
+# --------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+*.pyd
+
+# --------------------------
+# IDE / Editor files
+# --------------------------
+.idea/                 # PyCharm project files
+*.iml                  # Module files
+*.iws                  # Workspace files
+*.swp
+*.swo
+
+# --------------------------
+# Virtual environments
+# --------------------------
+venv/
+env/
+ENV/
+.venv/
+.env/                  # local env file with secrets
+
+# --------------------------
+# Logs
+# --------------------------
+*.log
+
+# --------------------------
+# Package / build folders
+# --------------------------
+build/
+dist/
+*.egg-info/
+.eggs/
+Pipfile.lock           # Pipenv lockfile
+
+# --------------------------
+# Secrets / local config
+# --------------------------
+*.env

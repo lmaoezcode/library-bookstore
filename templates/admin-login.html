@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-
 <body>
 
 <div class="container">
@@ -20,7 +19,7 @@
             </div>
         {% endif %}
 
-        <form method="POST" action="">
+        <form method="POST" action="{{ url_for('admin.login') }}">
             <div class="field">
                 <label>Email</label>
                 <div class="input-wrapper">
@@ -77,5 +76,4 @@
 </script>
 
 </body>
-
 </html>
