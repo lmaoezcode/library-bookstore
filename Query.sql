@@ -14,6 +14,7 @@ CREATE TABLE users (
 );
 SELECT * FROM users;
 SELECT * FROM borrow_items;
+SELECT * FROM books;
 -- 2. BẢNG DANH MỤC (CATEGORIES)
 CREATE TABLE categories (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -33,11 +34,15 @@ CREATE TABLE books (
     pdf_full TEXT, -- Đường dẫn file đọc toàn bộ (cho người đã mua)
     pdf_preview TEXT, -- Đường dẫn file đọc thử (cho mọi người)
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-
+    total_quantity INTEGER NOT NULL DEFAULT 0,  -- tổng số bản sách
+    available_quantity INTEGER NOT NULL DEFAULT 0, --
     -- Nếu xóa danh mục, các sách thuộc danh mục đó sẽ được đặt category_id về NULL thay vì bị xóa mất sách
-    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
+    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL,
+    CHECK(available_quantity >= 0 AND available_quantity <= total_quantity)
 );
 
+ALTER TABLE books ADD total_quantity INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE books ADD available_quantity INTEGER NOT NULL DEFAULT 0;
 -- 4. BẢNG KHO HÀNG (INVENTORY)
 CREATE TABLE inventory (
     book_id INTEGER PRIMARY KEY, -- Mỗi cuốn sách chỉ có 1 dòng quản lý kho
@@ -98,26 +103,35 @@ CREATE TABLE order_items (
 CREATE TABLE borrows (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
-    status TEXT CHECK(status IN ('borrowing', 'returned', 'overdue')) DEFAULT 'borrowing', -- Đang mượn | Đã trả | Quá hạn
+    status TEXT CHECK(status IN ('pending','approved','borrowing', 'returned', 'overdue','canceled')) DEFAULT 'pending', -- Đang mượn | Đã trả | Quá hạn
     total_deposit REAL DEFAULT 0, -- Tiền đặt cọc mượn sách (nếu có)
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    approved_at DATETIME,
+    pickup_deadline DATETIME,
+    borrowed_at DATETIME,
+    returned_at DATETIME,
+    confirmed_return_at DATETIME,
 
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
-
+DROP TABLE  borrows;
+DROP TABLE  borrow_items;
 -- 10. CHI TIẾT MƯỢN SÁCH (BORROW_ITEMS)
 CREATE TABLE borrow_items (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     borrow_id INTEGER NOT NULL,
     book_id INTEGER NOT NULL,
-    borrow_date DATETIME DEFAULT CURRENT_TIMESTAMP, -- Ngày mượn
-    due_date DATETIME NOT NULL, -- Ngày phải trả (hạn định)
-    return_date DATETIME, -- Ngày thực tế trả sách (NULL nếu chưa trả)
+
+    status TEXT CHECK(status IN
+        ('pending','approved','borrowing','rejected')
+    ) DEFAULT 'pending',
+
+    due_date DATETIME NOT NULL,
+    return_date DATETIME,
 
     FOREIGN KEY (borrow_id) REFERENCES borrows(id) ON DELETE CASCADE,
     FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE SET NULL
 );
-
 -- CHÈN DỮ LIỆU MẪU (Lưu ý: Mật khẩu này chỉ để test)
 INSERT INTO users (name, email, password, role) VALUES ('Admin Website', 'admin@gmail.com', '8888', 'admin');
 INSERT INTO categories (name) VALUES ('Văn học'), ('Kinh tế'), ('Công nghệ');

@@ -14,7 +14,7 @@ def create_app():
     app.register_blueprint(admin_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(book_bp)
-
+    app.register_blueprint(borrow_bp)
     @app.route("/index", methods=["GET"])
     @login_required
     def index():

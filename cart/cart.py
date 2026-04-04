@@ -39,7 +39,9 @@ def account():
 def wishlist():
     return render_template("wishlist.html")
 
-
+@app.route("/book-details")
+def book_details():
+    return render_template("book-details.html")
 # ================= CART DATA (GIẢ LẬP) =================
 cart = [
     {

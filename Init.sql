@@ -40,5 +40,7 @@ VALUES ('Đắc Nhân Tâm', 'Dale Carnegie', 'Nghệ thuật giao tiếp và ch
 INSERT INTO books (title, author, description, price, rent_price, category_id, cover_image)
 VALUES ('Atomic Habits', 'James Clear', 'Thay đổi nhỏ, kết quả lớn.', 165000, 9000, 4, 'habits.jpg');
 
+INSERT INTO books (title, author, description, price, rent_price, category_id, cover_image, total_quantity,available_quantity)
+VALUES ('Test', 'James Clear', 'Thay đổi nhỏ, kết quả lớn.', 165000, 9000, 4, 'habits.jpg',100,40);
 
 SELECT * FROM books;
