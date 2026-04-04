@@ -40,9 +40,17 @@
           <li><strong>Ngôn ngữ:</strong> Tiếng Việt</li>
         </ul>
 
-        <div class="d-flex flex-wrap gap-3">
-          <button class="btn text-white px-4 fw-semibold" style="background-color:#ED553B;">Thêm vào giỏ</button>
-        </div>
+         <form action="/add_to_cart_form" method="POST">
+          <input type="hidden" name="book_id" value="{{ book.id }}">
+
+          <button type="submit"
+                  class="btn text-white px-4 fw-semibold"
+                  style="background-color:#ED553B;"
+                  onclick="console.log('Nút đã được bấm! ID sách là: {{ book.id }}')"
+          >
+            Thêm vào giỏ
+          </button>
+        </form>
       </div>
     </div>
   </div>

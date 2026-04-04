@@ -3,6 +3,7 @@ from flask import Flask
 from admin import admin_bp
 from auth import auth_bp
 from book import book_bp
+from borrow import borrow_bp
 from route.route import login_required
 
 def create_app():
