@@ -1,144 +1,210 @@
-from flask import Blueprint, request, jsonify, session
+from flask import jsonify, request
 from datetime import datetime, timedelta
-import sqlite3
-from route.route import login_required, admin_required
+from . import borrow_bp
+from db.db import get_db
+@borrow_bp.route('/',methods=['POST'])
+def index():
+    db=get_db()
+    result=db.execute('select * from borrows')
+    if result:
+        borrow = [dict(row) for row in result]
+        return jsonify({
+            "status":"success",
+            "borrow":borrow,
+        }),200
+    return jsonify({
+        "status":"failed",
+        "message":"Borrow operation failed"
+    }),200
+@borrow_bp.route('/item',methods=['POST'])
+def get_item():
+    data=request.get_json()
+    borrow_id=data.get('borrow_id')
 
-borrow_bp = Blueprint('borrow', __name__, url_prefix='/borrow')
-
-def get_db():
-    conn = sqlite3.connect('db/library.sqlite')
-    conn.row_factory = sqlite3.Row
-    return conn
-
+    db=get_db()
+    result=db.execute('select * from borrow_items WHERE borrow_id=?',(borrow_id,))
+    if result:
+        borrow_item = [dict(row) for row in result]
+        return jsonify({
+            "status":"success",
+            "borrow_item":borrow_item,
+        }),200
+    return jsonify({
+        "status":"failed",
+        "message":"Borrow operation failed"
+    }),200
 @borrow_bp.route('/create', methods=['POST'])
-@login_required
-def create_borrow():
-    data = request.get_json()
-    book_ids = data.get('book_ids', [])
-
-    if not book_ids:
-        return jsonify({"status": "failed", "message": "Vui lòng chọn ít nhất 1 quyển sách"}), 400
-
-    user_id = session.get('user_id')
+def create():
     db = get_db()
-    
-    try:
-        db.execute("BEGIN TRANSACTION")
+    data = request.get_json()
 
+    user_id = data.get('user_id')
+    total_deposit = data.get('total_deposit', 0)
+    items = data.get('items', [])
+
+    if not user_id or not items:
+        return jsonify({
+            "status": "failed",
+            "message": "Missing user_id or items"
+        }), 400
+
+    try:
+        db.execute("BEGIN")
+
+        #11️Tạo phiếu mượn
         cursor = db.execute(
-            "INSERT INTO borrows (user_id, status) VALUES (?, ?)", 
-            (user_id, 'pending')
+            "INSERT INTO borrows (user_id, total_deposit) VALUES (?, ?)",
+            (user_id, total_deposit)
         )
         borrow_id = cursor.lastrowid
-        
-        due_date = datetime.now() + timedelta(days=14)
 
-        for book_id in book_ids:
-            book = db.execute("SELECT title, available_quantity FROM books WHERE id = ?", (book_id,)).fetchone()
-            
-            if not book:
-                raise Exception(f"Sách ID {book_id} không tồn tại.")
-            if book['available_quantity'] <= 0:
-                raise Exception(f"Sách '{book['title']}' đã hết hàng.")
+        # 2️Insert từng sách vào borrow_items
+        for item in items:
+            book_id = item.get("book_id")
+            due_date = item.get("due_date")
+
+            if not book_id or not due_date:
+                raise Exception("Invalid item data")
 
             db.execute(
-                "UPDATE books SET available_quantity = available_quantity - 1 WHERE id = ?", 
-                (book_id,)
-            )
-
-            db.execute(
-                "INSERT INTO borrow_items (borrow_id, book_id, due_date, status) VALUES (?, ?, ?, ?)",
-                (borrow_id, book_id, due_date.strftime('%Y-%m-%d %H:%M:%S'), 'pending')
+                """
+                INSERT INTO borrow_items (borrow_id, book_id, due_date)
+                VALUES (?, ?, ?)
+                """,
+                (borrow_id, book_id, due_date)
             )
 
         db.commit()
-        return jsonify({"status": "success", "message": "Tạo phiếu mượn thành công!", "borrow_id": borrow_id}), 201
+
+        return jsonify({
+            "status": "success",
+            "borrow_id": borrow_id
+        }), 201
 
     except Exception as e:
         db.rollback()
-        return jsonify({"status": "failed", "message": str(e)}), 400
+        return jsonify({
+            "status": "failed",
+            "message": str(e)
+        }), 500
 
-@borrow_bp.route('/history', methods=['GET'])
-@login_required
-def get_history():
-    user_id = session.get('user_id')
-    db = get_db()
-    
-    borrows = db.execute("SELECT * FROM borrows WHERE user_id = ? ORDER BY created_at DESC", (user_id,)).fetchall()
-    
-    result = []
-    for b in borrows:
-        items = db.execute(
-            "SELECT bi.*, bk.title FROM borrow_items bi JOIN books bk ON bi.book_id = bk.id WHERE bi.borrow_id = ?", 
-            (b['id'],)
-        ).fetchall()
-        
-        result.append({
-            "borrow_id": b['id'],
-            "status": b['status'],
-            "created_at": b['created_at'],
-            "items": [dict(item) for item in items]
-        })
-        
-    return jsonify({"status": "success", "data": result}), 200
 
-@borrow_bp.route('/admin/list', methods=['GET'])
-@admin_required
-def admin_get_all():
-    db = get_db()
-    borrows = db.execute("SELECT * FROM borrows ORDER BY created_at DESC").fetchall()
-    return jsonify({"status": "success", "data": [dict(b) for b in borrows]}), 200
-
-@borrow_bp.route('/admin/approve', methods=['POST'])
-@admin_required
-def admin_approve():
+@borrow_bp.route('/approve',methods=['POST'])
+def approve():
     data = request.get_json()
     borrow_id = data.get('borrow_id')
-    
+
     db = get_db()
+
     try:
-        db.execute("BEGIN TRANSACTION")
-        borrow = db.execute("SELECT status FROM borrows WHERE id = ?", (borrow_id,)).fetchone()
-        
-        if not borrow or borrow['status'] != 'pending':
-            raise Exception("Phiếu mượn không tồn tại hoặc đã được xử lý.")
+        result = approve_borrow(db, borrow_id)
 
-        db.execute("UPDATE borrows SET status = 'approved', approved_at = CURRENT_TIMESTAMP WHERE id = ?", (borrow_id,))
-        db.execute("UPDATE borrow_items SET status = 'approved' WHERE borrow_id = ?", (borrow_id,))
-        
-        db.commit()
-        return jsonify({"status": "success", "message": "Đã duyệt phiếu mượn."}), 200
+        return jsonify({
+            "status": "success",
+            "data": result
+        }), 200
+
     except Exception as e:
-        db.rollback()
-        return jsonify({"status": "failed", "message": str(e)}), 400
+        return jsonify({
+            "status": "failed",
+            "message": str(e)
+        }), 400
 
-@borrow_bp.route('/admin/return_item', methods=['POST'])
-@admin_required
-def admin_return_item():
-    data = request.get_json()
-    item_id = data.get('item_id')
-    
-    db = get_db()
+def approve_borrow(conn, borrow_id, pickup_hours=48):
     try:
-        db.execute("BEGIN TRANSACTION")
-        item = db.execute("SELECT book_id, status, borrow_id FROM borrow_items WHERE id = ?", (item_id,)).fetchone()
-        
-        if not item:
-            raise Exception("Không tìm thấy dữ liệu mượn sách này.")
-        if item['status'] == 'returned':
-            raise Exception("Sách này đã được trả.")
-            
-        book_id, borrow_id = item['book_id'], item['borrow_id']
+        conn.execute("BEGIN")
 
-        db.execute("UPDATE borrow_items SET status = 'returned', return_date = CURRENT_TIMESTAMP WHERE id = ?", (item_id,))
-        db.execute("UPDATE books SET available_quantity = available_quantity + 1 WHERE id = ?", (book_id,))
-        
-        remaining = db.execute("SELECT COUNT(*) FROM borrow_items WHERE borrow_id = ? AND status != 'returned'", (borrow_id,)).fetchone()[0]
-        if remaining == 0:
-            db.execute("UPDATE borrows SET status = 'returned', returned_at = CURRENT_TIMESTAMP WHERE id = ?", (borrow_id,))
+        # 1. Check borrow
+        borrow = conn.execute(
+            "SELECT status FROM borrows WHERE id=?",
+            (borrow_id,)
+        ).fetchone()
 
-        db.commit()
-        return jsonify({"status": "success", "message": "Xác nhận trả sách thành công, đã cập nhật tồn kho."}), 200
+        if not borrow:
+            raise Exception("Borrow not found")
+
+        if borrow[0] != 'pending':
+            raise Exception("Borrow is not pending")
+
+        # 2. Lấy items
+        items = conn.execute(
+            "SELECT id, book_id FROM borrow_items WHERE borrow_id=?",
+            (borrow_id,)
+        ).fetchall()
+
+        if not items:
+            raise Exception("No borrow items found")
+
+        item_results = []  # 👈 quan trọng
+
+        # 3. Xử lý từng item
+        for item_id, book_id in items:
+
+            book = conn.execute(
+                "SELECT available_quantity FROM books WHERE id=?",
+                (book_id,)
+            ).fetchone()
+
+            if book and book[0] > 0:
+                # trừ sách
+                conn.execute(
+                    "UPDATE books SET available_quantity = available_quantity - 1 WHERE id=?",
+                    (book_id,)
+                )
+
+                status = "approved"
+            else:
+                status = "rejected"
+
+            # update item
+            conn.execute(
+                "UPDATE borrow_items SET status=? WHERE id=?",
+                (status, item_id)
+            )
+
+            # 👇 lưu kết quả chi tiết
+            item_results.append({
+                "item_id": item_id,
+                "book_id": book_id,
+                "status": status
+            })
+
+        # 4. Tính trạng thái tổng
+        approved_count = sum(1 for i in item_results if i["status"] == "approved")
+        rejected_count = len(item_results) - approved_count
+
+        if approved_count == 0:
+            borrow_status = 'canceled'
+        elif rejected_count == 0:
+            borrow_status = 'approved'
+        else:
+            borrow_status = 'partial'
+
+        # 5. Update borrow
+        pickup_deadline = datetime.now() + timedelta(hours=pickup_hours)
+
+        conn.execute(
+            """
+            UPDATE borrows
+            SET status=?,
+                approved_at=CURRENT_TIMESTAMP,
+                pickup_deadline=?
+            WHERE id=?
+            """,
+            (borrow_status, pickup_deadline, borrow_id)
+        )
+
+        conn.commit()
+
+        # 👇 RETURN CHUẨN API
+        return {
+            "borrow_id": borrow_id,
+            "borrow_status": borrow_status,
+            "items": item_results
+        }
+
     except Exception as e:
-        db.rollback()
-        return jsonify({"status": "failed", "message": str(e)}), 400
+        conn.rollback()
+        raise e
+
+
