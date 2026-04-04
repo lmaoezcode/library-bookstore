@@ -179,34 +179,6 @@ def searchI():
     })
 
 
-
-# @book_bp.route('/update', methods=['POST'])
-# def update_book():
-#     data = request.get_json()
-#     db = get_db()
-#     id=data.get('id')
-#     # Kiểm tra xem sách có tồn tại không trước khi update
-#     book = db.execute('SELECT * FROM books WHERE id = ?', (id,)).fetchone()
-#     if not book:
-#         return jsonify({"status": "error", "message": "Không tìm thấy sách để cập nhật"}), 404
-#
-#     # Lấy dữ liệu mới hoặc giữ nguyên dữ liệu cũ nếu không gửi
-#     title = data.get('title', book['title'])
-#     author = data.get('author', book['author'])
-#     category_id = data.get('category_id', book['category_id'])
-#     price = data.get('price', book['price'])
-#     total_quantity=data.get('total_quantity',book['total_quantity'])
-#     available_quantity = data.get('available_quantity', book['available_quantity'])
-#     try:
-#         db.execute(
-#             'UPDATE books SET title = ?, author = ?, category_id = ?, price = ?,available_quantity=?,total_quantity=? WHERE id = ?',
-#             (title, author, category_id, price,available_quantity,total_quantity,id)
-#         )
-#         db.commit()
-#         return jsonify({"status": "success", "message": f"Đã cập nhật sách ID {id}"})
-#     except Exception as e:
-#         return jsonify({"status": "error", "message": str(e)}), 500
-
 @book_bp.route('/update', methods=['POST'])
 def update_book():
     db = get_db()
@@ -345,7 +317,7 @@ def books():
                 "price_display": "{:,.0f}đ".format(row["price"]).replace(",", "."),
                 "rent_price_display": "{:,.0f}đ".format(row["rent_price"]).replace(",", ".") if row["rent_price"] else None,
                 "description": row["description"][:150] + "..." if row["description"] else "",
-                "image_url": url_for('static', filename=f"images/{row['cover_image'] or 'default.jpg'}")
+                "image_url": row['cover_image'] or 'default.jpg'
         })
 
     return render_template('books.html', danh_sach_sach=danh_sach_sach)
@@ -374,9 +346,9 @@ def books_detail(book_id):
             "price": "{:,.0f}đ".format(book["price"]).replace(",", "."),
             "rent_price": "{:,.0f}đ".format(book["rent_price"]).replace(",", ".") if book["rent_price"] else None,
             "description": book["description"] or "",
-            "image": url_for('static', filename=f"images/{book['cover_image'] or 'default.jpg'}")
+            "image_url":  book['cover_image'] or 'default.jpg'
         }
-
+        print("DEBUG: image_url =", book_data['image_url'])
         return render_template('book-detail.html', book=book_data)
 
 

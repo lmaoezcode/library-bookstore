@@ -83,9 +83,9 @@
             {% for sach in danh_sach_sach %}
 
             <div class="col-md-4">
-              <a href="{{ url_for('books_detail', book_id=sach.id) }}" class="text-decoration-none text-dark">
+              <a href="{{ url_for('book.books_detail', book_id=sach.id) }}" class="text-decoration-none text-dark">
                 <div class="card border-0 shadow-sm book-card h-100 position-relative">
-                  <img src="{{ sach.image }}" class="card-img-top rounded-top" alt="{{ sach.title }}">
+                  <img src="{{ sach.image_url }}" class="card-img-top rounded-top" alt="{{ sach.title }}">
                   {% if sach.can_buy %}
                   <span class="badge bg-success position-absolute top-0 start-0 m-2">Có thể mua</span>
                   {% endif %}
