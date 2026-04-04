@@ -1,145 +1,89 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Store - Cart</title>
+{% block title %}Giỏ Hàng - Thư Viện Sách{% endblock %}
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/static/style.css">
-</head>
-
-<body>
-
-    <!-- Top Bar -->
-    <div class="top-bar text-white py-2 px-3 d-flex justify-content-between align-items-center">
-        <div>📞 +91 7397807795</div>
-        <div>
-            <a href="#"><i class="bi bi-facebook"></i></a>
-            <a href="#"><i class="bi bi-instagram"></i></a>
-            <a href="#"><i class="bi bi-linkedin"></i></a>
-            <a href="#"><i class="bi bi-twitter"></i></a>
-        </div>
-    </div>
-
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
-        <div class="container">
-
-            <!-- Logo -->
-            <a class="navbar-brand" href="{{ url_for('home') }}">
-                <img src="{{ url_for('static', filename='images/sample logo 1.png') }}" width="40">
-            </a>
-
-            <!-- Search -->
-            <form class="d-none d-md-flex me-auto ms-3">
-                <input class="form-control" type="search" placeholder="Search Books">
-                <button class="btn" type="submit">🔍</button>
-            </form>
-
-            <!-- Right menu -->
-            <div class="d-flex align-items-center gap-3">
-                <a href="{{ url_for('account') }}" class="nav-link">👤 Account</a>
-                <a href="{{ url_for('view_cart') }}" class="nav-link">🛒 Cart</a>
-                <a href="{{ url_for('wishlist') }}" class="nav-link">❤️ Wishlist</a>
-            </div>
-
-        </div>
-    </nav>
-
-    <!-- Menu -->
-    <div class="border-top">
-        <div class="container">
-            <ul class="nav justify-content-center py-2">
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}">About</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('books') }}">Books</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('contact') }}">Contact</a></li>
-            </ul>
-        </div>
-    </div>
-
-    <!-- CART -->
-    <section class="container py-5">
-        <h4>My Cart</h4>
-
-        <div class="row">
-
-            <!-- LEFT -->
-            <div class="col-lg-8">
-
-                {% for item in items %}
-                <div class="card mb-3 p-3 d-flex flex-row align-items-center">
-                    <img src="{{ item.image }}" width="80" class="me-3">
-
-                    <div class="flex-grow-1">
-                        <h6>{{ item.title }}</h6>
-                        <small>{{ item.publisher }}</small>
-                        <p class="text-danger">{{ item.price }}đ</p>
+{% block content %}
+<section class="container py-5">
+    <h4 class="fw-bold mb-4 text-orange">Giỏ Hàng Của Tôi</h4>
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <form id="cartForm">
+                {% for item in cart_items %}
+                <div class="card border-0 shadow-sm mb-3 p-3 d-flex flex-row align-items-center">
+                    <div class="form-check me-3">
+                        <input class="form-check-input book-checkbox" type="checkbox" value="{{ item.id }}"
+                            data-can-buy="{{ 'true' if item.can_buy else 'false' }}">
                     </div>
-
-                    <div>
-                        <form action="{{ url_for('update_cart') }}" method="post" class="mb-2">
-                            <input type="hidden" name="book_id" value="{{ item.id }}">
-                            <input type="number" name="quantity" value="{{ item.quantity }}" min="1"
-                                style="width:70px">
-                            <button class="btn btn-sm btn-primary mt-1">Update</button>
-                        </form>
-
-                        <form action="{{ url_for('remove_from_cart', book_id=item.id) }}" method="post">
-                            <button class="btn btn-sm btn-danger">Remove</button>
-                        </form>
+                    <img src="{{ item.image }}" class="rounded me-3" width="80" alt="">
+                    <div class="flex-grow-1">
+                        <h6 class="fw-bold mb-1">{{ item.title }}</h6>
+                        <p class="text-muted small mb-1">{{ item.author }}</p>
+                        <p class="fw-semibold text-danger mb-0">{{ item.price }}</p>
+                        {% if item.can_buy %}
+                        <span class="badge bg-success mt-1">Có thể mua</span>
+                        {% else %}
+                        <span class="badge bg-secondary mt-1">Chỉ có thể mượn</span>
+                        {% endif %}
+                    </div>
+                    <div class="d-flex flex-column align-items-end">
+                        <input type="number" class="form-control form-control-sm mb-2" value="1" min="1"
+                            style="width: 70px;">
+                        <button type="button" class="btn btn-sm btn-outline-danger">Xóa</button>
                     </div>
                 </div>
                 {% endfor %}
+            </form>
+        </div>
 
-            </div>
-
-            <!-- RIGHT -->
-            <div class="col-lg-4">
-                <div class="card p-3">
-                    <h6>Order Summary</h6>
-
-                    <div class="d-flex justify-content-between">
-                        <span>Subtotal</span>
-                        <span>{{ subtotal }}</span>
-                    </div>
-
-                    <div class="d-flex justify-content-between">
-                        <span>Shipping</span>
-                        <span>{{ shipping }}</span>
-                    </div>
-
-                    <hr>
-
-                    <div class="d-flex justify-content-between fw-bold">
-                        <span>Total</span>
-                        <span>{{ total }}</span>
-                    </div>
-
-                    <form action="{{ url_for('checkout') }}" method="post">
-                        <button class="btn btn-success w-100 mt-3">Checkout</button>
-                    </form>
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm p-4">
+                <h6 class="fw-bold mb-3">Tóm Tắt Đơn Hàng</h6>
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Tạm tính</span><span class="fw-semibold">300.000đ</span>
                 </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Phí vận chuyển</span><span class="fw-semibold">30.000đ</span>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between fw-bold mb-4 fs-5">
+                    <span>Tổng cộng</span><span class="text-danger">330.000đ</span>
+                </div>
+                <button class="btn text-white w-100 fw-semibold mb-2" style="background-color:#ED553B;"
+                    onclick="handleCheckout()">Tiến hành Thanh toán</button>
+                <button class="btn btn-outline-dark w-100 fw-semibold" onclick="handleBorrow()">Mượn sách</button>
             </div>
-
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- FOOTER -->
-    <footer class="py-5 bg-light">
-        <div class="container text-center">
-            <p>© 2025 Devomate</p>
-        </div>
-    </footer>
+<script>
+    function getSelectedBooks() {
+        return Array.from(document.querySelectorAll('.book-checkbox:checked'));
+    }
 
-    <!-- ICON -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    function handleCheckout() {
+        const selected = getSelectedBooks();
+        if (selected.length === 0) {
+            alert('Vui lòng chọn ít nhất một cuốn sách để thanh toán.');
+            return;
+        }
+        const cantBuy = selected.find(cb => cb.dataset.canBuy === 'false');
+        if (cantBuy) {
+            alert('Có sách trong danh sách chọn không thể thanh toán (chỉ được mượn). Vui lòng bỏ chọn sách đó.');
+            return;
+        }
+        const ids = selected.map(cb => cb.value).join(',');
+        window.location.href = "{{ url_for('payments') }}?books=" + ids;
+    }
 
-    <!-- JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-</body>
-
-</html>
+    function handleBorrow() {
+        const selected = getSelectedBooks();
+        if (selected.length === 0) {
+            alert('Vui lòng chọn ít nhất một cuốn sách để mượn.');
+            return;
+        }
+        const ids = selected.map(cb => cb.value).join(',');
+        window.location.href = "{{ url_for('borrow') }}?books=" + ids;
+    }
+</script>
+{% endblock %}

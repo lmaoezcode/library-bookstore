@@ -18,25 +18,26 @@ Bài tập nhóm Lập Trình Web: website thư viện kiêm nhà sách trực t
 ## 📁 Cấu trúc thư mục dự án
 ```text
 bookstore-library/
-├── backend/
-│ ├── app.py
-│ ├── models.py
-│ ├── auth_routes.py
-│ ├── book_routes.py
-│ ├── cart_routes.py
-│ ├── order_routes.py
-│ ├── borrow_routes.py
-│ ├── admin_routes.py
-│ ├── requirements.txt
-│ └── instance/
-│ └── database.db
-├── frontend/
-│ ├── index.html
-│ ├── style.css
-│ ├── script.js
-│ └── assets/
-├── README.md
-└── API.md
+├── app.py                   # File chính để chạy ứng dụng
+├── models.py                # Định nghĩa các bảng Database (Dùng chung)
+├── database.db              # File SQLite (Nằm ở thư mục gốc cho dễ quản lý)
+├── requirements.txt         # Danh sách thư viện
+├── blueprints/              # Chia nhỏ code logic (Cho B, C, D)
+│   ├── auth.py
+│   ├── store.py
+│   └── library.py
+├── static/                  # File tĩnh 
+│   ├── css/
+│   │   └── style.css
+│   ├── js/
+│   │   └── script.js
+│   └── uploads/             # Nơi chứa ảnh bìa sách và PDF
+└── templates/               # Giao diện HTML
+    ├── base.html            # File khung (Navbar, Footer)
+    ├── index.html           # Trang chủ
+    ├── auth/                # Folder chứa login.html, register.html
+    ├── store/               # Folder chứa cart.html, checkout.html
+    └── library/             # Folder chứa my_books.html, reader.html
 ```
 
 ## 🚀 Cách chạy dự án (sẽ cập nhật)

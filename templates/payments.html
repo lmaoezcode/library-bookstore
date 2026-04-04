@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Thanh Toán - Thư Viện Sách{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-light" style="min-height: 80vh;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm p-4 p-md-5">
+                    <div class="text-center mb-5">
+                        <h3 class="fw-bold" style="color:#ED553B;">Thanh Toán Đơn Hàng</h3>
+                        <p class="text-muted">Quét mã QR dưới đây bằng ứng dụng ngân hàng hoặc ví điện tử để hoàn tất
+                            thanh toán.</p>
+                    </div>
+
+                    <div class="row g-4 d-flex align-items-center">
+                        <div class="col-md-6 border-end">
+                            <h5 class="fw-semibold mb-4">Thông tin sách</h5>
+                            <ul class="list-group mb-4">
+                                {% for book in selected_books %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>{{ book.title }}</strong><br>
+                                        <small class="text-muted">{{ book.price }}</small>
+                                    </div>
+                                    <span class="badge bg-danger rounded-pill">1</span>
+                                </li>
+                                {% else %}
+                                <li class="list-group-item text-muted">Chưa có cuốn sách nào được chọn</li>
+                                {% endfor %}
+                            </ul>
+
+                            <div class="alert alert-info mt-3" role="alert">
+                                Vui lòng kiểm tra lại thông tin đơn hàng trước khi thực hiện thanh toán.
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 text-center">
+                            <h5 class="fw-semibold mb-3">Mã QR Thanh Toán</h5>
+                            <img src="https://dummyimage.com/250x250/000/fff&text=QR+Code+Thanh+Toan" alt="QR Code"
+                                class="img-fluid border p-2 rounded mb-3 mx-auto" style="max-width: 250px;">
+                            <p class="small text-muted mb-4">Nội dung CK: <strong>MUA SACH THU VIEN</strong></p>
+
+                            <a href="{{ url_for('index') }}" class="btn text-white w-100 fw-semibold py-2"
+                                style="background-color:#ED553B;">
+                                <i class="bi bi-check-circle me-2"></i> Tôi đã thanh toán
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
