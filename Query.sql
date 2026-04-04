@@ -1,137 +1,153 @@
+INSERT INTO users (name, email, password, role) VALUES
+('Alice', 'alice@gmail.com', 'hash1', 'user'),
+('Bob', 'bob@gmail.com', 'hash2', 'user'),
+('Charlie', 'charlie@gmail.com', 'hash3', 'admin'),
+('David', 'david@gmail.com', 'hash4', 'user'),
+('Eve', 'eve@gmail.com', 'hash5', 'user'),
+('Frank', 'frank@gmail.com', 'hash6', 'user'),
+('Grace', 'grace@gmail.com', 'hash7', 'user'),
+('Henry', 'henry@gmail.com', 'hash8', 'user'),
+('Ivy', 'ivy@gmail.com', 'hash9', 'user'),
+('Jack', 'jack@gmail.com', 'hash10', 'user');
 
--- BẬT CHẾ ĐỘ KIỂM TRA KHÓA NGOẠI (Rất quan trọng trong SQLite)
-PRAGMA foreign_keys = ON;
 
--- 1. BẢNG NGƯỜI DÙNG (USERS)
-CREATE TABLE users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    email TEXT UNIQUE NOT NULL,
-    password TEXT NOT NULL, -- Lưu ý: Password phải được lưu dưới dạng chuỗi đã Hash (Werkzeug)
-    role TEXT CHECK (role IN ('user','admin')) DEFAULT 'user', -- Quyền hạn: người dùng hoặc quản trị
-    status TEXT CHECK(status IN ('active','locked')) DEFAULT 'active', -- Trạng thái: đang hoạt động hoặc bị khóa
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP -- Thời điểm tạo tài khoản
-);
-SELECT * FROM users;
-SELECT * FROM borrow_items;
+INSERT INTO categories (name) VALUES
+('Fiction'),
+('Science'),
+('Technology'),
+('History'),
+('Math'),
+('Programming'),
+('AI'),
+('Business'),
+('Self-help'),
+('Novel');
+
+
+INSERT INTO books (title, author, description, price, promo_price, category_id, total_quantity, available_quantity)
+VALUES
+('Clean Code', 'Robert C. Martin', 'A Handbook of Agile Software Craftsmanship', 300, 250, 6, 50, 50),
+
+('The Pragmatic Programmer', 'Andrew Hunt & David Thomas', 'Journey to Mastery for developers', 320, 280, 6, 40, 40),
+
+('Introduction to Algorithms', 'Thomas H. Cormen', 'Classic algorithms book (CLRS)', 500, 450, 5, 30, 30),
+
+('Artificial Intelligence: A Modern Approach', 'Stuart Russell', 'AI foundational textbook', 550, 500, 7, 20, 20),
+
+('Deep Learning', 'Ian Goodfellow', 'Deep learning theory and practice', 600, 520, 7, 25, 25),
+
+('Atomic Habits', 'James Clear', 'Self improvement strategies', 200, 150, 9, 60, 60),
+
+('Rich Dad Poor Dad', 'Robert Kiyosaki', 'Personal finance classic', 180, 140, 8, 70, 70),
+
+('Sapiens: A Brief History of Humankind', 'Yuval Noah Harari', 'History of human evolution', 250, 200, 4, 45, 45),
+
+('The Lean Startup', 'Eric Ries', 'Startup methodology and innovation', 220, 180, 8, 35, 35),
+
+('Design Patterns: Elements of Reusable Object-Oriented Software', 'Erich Gamma', 'Classic design patterns (GoF)', 400, 350, 6, 30, 30);
+
+INSERT INTO inventory (book_id, stock_sell, stock_rent) VALUES
+(1, 50, 10),
+(2, 40, 8),
+(3, 30, 6),
+(4, 20, 5),
+(5, 10, 2),
+(6, 25, 7),
+(7, 35, 9),
+(8, 45, 11),
+(9, 60, 12),
+(10, 70, 15);
+
+
+INSERT INTO carts (user_id) VALUES
+(1),(2),(3),(4),(5),(6),(7),(8),(9),(10);
+
+
+INSERT INTO cart_items (cart_id, book_id, quantity) VALUES
+(1,1,2),
+(2,2,1),
+(3,3,3),
+(4,4,1),
+(5,5,2),
+(6,6,1),
+(7,7,2),
+(8,8,1),
+(9,9,3),
+(10,10,1);
+
+
+INSERT INTO orders (user_id, total_price, address, phone, status)
+VALUES
+(1, 780, 'Hà Nội', '090000001', 'pending'),        -- Clean Code (250x2) + Pragmatic (280)
+(2, 450, 'HCM', '090000002', 'processing'),       -- CLRS (450)
+(3, 1000, 'Đà Nẵng', '090000003', 'pending'),     -- AI Modern (500x2)
+(4, 520, 'Hải Phòng', '090000004', 'delivered'),  -- Deep Learning (520)
+(5, 300, 'Cần Thơ', '090000005', 'pending'),      -- Atomic Habits (150x2)
+(6, 140, 'Hà Nội', '090000006', 'cancelled'),     -- Rich Dad (140)
+(7, 200, 'HCM', '090000007', 'shipping'),         -- Sapiens (200)
+(8, 360, 'Đà Nẵng', '090000008', 'pending'),      -- Lean Startup (180x2)
+(9, 350, 'Hải Phòng', '090000009', 'processing'), -- Design Patterns (350)
+(10, 500, 'Cần Thơ', '090000010', 'pending');     -- Clean Code (250x2)
+
+INSERT INTO order_items (order_id, book_id, book_title, quantity, price)
+VALUES
+-- Order 1
+(1, 1, 'Clean Code', 2, 250),
+(1, 2, 'The Pragmatic Programmer', 1, 280),
+
+-- Order 2
+(2, 3, 'Introduction to Algorithms', 1, 450),
+
+-- Order 3
+(3, 4, 'Artificial Intelligence: A Modern Approach', 2, 500),
+
+-- Order 4
+(4, 5, 'Deep Learning', 1, 520),
+
+-- Order 5
+(5, 6, 'Atomic Habits', 2, 150),
+
+-- Order 6
+(6, 7, 'Rich Dad Poor Dad', 1, 140),
+
+-- Order 7
+(7, 8, 'Sapiens: A Brief History of Humankind', 1, 200),
+
+-- Order 8
+(8, 9, 'The Lean Startup', 2, 180),
+
+-- Order 9
+(9, 10, 'Design Patterns: Elements of Reusable Object-Oriented Software', 1, 350),
+
+-- Order 10
+(10, 1, 'Clean Code', 2, 250);
+
+INSERT INTO borrows (user_id, status) VALUES
+(1,'pending'),
+(2,'approved'),
+(3,'borrowing'),
+(4,'returned'),
+(5,'pending'),
+(6,'approved'),
+(7,'borrowing'),
+(8,'returned'),
+(9,'pending'),
+(10,'approved');
+
+
+INSERT INTO borrow_items (borrow_id, book_id, due_date) VALUES
+(1,1,'2026-05-01'),
+(2,2,'2026-05-02'),
+(3,3,'2026-05-03'),
+(4,4,'2026-05-04'),
+(5,5,'2026-05-05'),
+(6,6,'2026-05-06'),
+(7,7,'2026-05-07'),
+(8,8,'2026-05-08'),
+(9,9,'2026-05-09'),
+(10,10,'2026-05-10');
+
+
+
 SELECT * FROM books;
--- 2. BẢNG DANH MỤC (CATEGORIES)
-CREATE TABLE categories (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL UNIQUE -- Tên danh mục không được trùng nhau
-);
-
--- 3. BẢNG SÁCH (BOOKS)
-CREATE TABLE books (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL, -- Tên sách
-    author TEXT, -- Tác giả
-    description TEXT, -- Mô tả nội dung
-    price REAL NOT NULL CHECK(price >= 0), -- Giá bán (không được âm)
-    rent_price REAL DEFAULT 0 CHECK(rent_price >= 0), -- Giá cho thuê (nếu có)
-    category_id INTEGER, -- Liên kết với bảng danh mục
-    cover_image TEXT, -- Đường dẫn ảnh bìa
-    pdf_full TEXT, -- Đường dẫn file đọc toàn bộ (cho người đã mua)
-    pdf_preview TEXT, -- Đường dẫn file đọc thử (cho mọi người)
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    total_quantity INTEGER NOT NULL DEFAULT 0,  -- tổng số bản sách
-    available_quantity INTEGER NOT NULL DEFAULT 0, --
-    -- Nếu xóa danh mục, các sách thuộc danh mục đó sẽ được đặt category_id về NULL thay vì bị xóa mất sách
-    FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL,
-    CHECK(available_quantity >= 0 AND available_quantity <= total_quantity)
-);
-
-ALTER TABLE books ADD total_quantity INTEGER NOT NULL DEFAULT 0;
-ALTER TABLE books ADD available_quantity INTEGER NOT NULL DEFAULT 0;
--- 4. BẢNG KHO HÀNG (INVENTORY)
-CREATE TABLE inventory (
-    book_id INTEGER PRIMARY KEY, -- Mỗi cuốn sách chỉ có 1 dòng quản lý kho
-    stock_sell INTEGER DEFAULT 0 CHECK(stock_sell >= 0), -- Số lượng sách để bán còn lại
-    stock_rent INTEGER DEFAULT 0 CHECK(stock_rent >= 0), -- Số lượng sách để cho mượn còn lại
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- Thời điểm cập nhật kho gần nhất
-
-    FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE -- Nếu xóa sách, dữ liệu kho của sách đó cũng biến mất
-);
-
--- 5. BẢNG GIỎ HÀNG (CARTS)
-CREATE TABLE carts (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL, -- Mỗi giỏ hàng phải thuộc về một người dùng
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
-
--- 6. CHI TIẾT GIỎ HÀNG (CART_ITEMS)
-CREATE TABLE cart_items (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    cart_id INTEGER NOT NULL,
-    book_id INTEGER NOT NULL,
-    quantity INTEGER DEFAULT 1 CHECK(quantity > 0), -- Số lượng mua tối thiểu là 1
-
-    FOREIGN KEY (cart_id) REFERENCES carts(id) ON DELETE CASCADE,
-    FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE
-);
-
--- 7. BẢNG ĐƠN HÀNG (ORDERS)
-CREATE TABLE orders (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    total_price REAL NOT NULL CHECK(total_price >= 0), -- Tổng tiền thanh toán
-    status TEXT CHECK(status IN ('pending', 'shipping', 'delivered', 'cancelled')) DEFAULT 'pending', -- Trạng thái đơn
-    address TEXT NOT NULL, -- Địa chỉ giao hàng (bắt buộc)
-    phone TEXT NOT NULL, -- Số điện thoại nhận hàng (bắt buộc)
-    payment_method TEXT CHECK(payment_method IN ('COD', 'BANK')) DEFAULT 'COD', -- Phương thức thanh toán
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL -- Giữ lại đơn hàng ngay cả khi xóa user để thống kê kế toán
-);
-
--- 8. CHI TIẾT ĐƠN HÀNG (ORDER_ITEMS)
-CREATE TABLE order_items (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    order_id INTEGER NOT NULL,
-    book_id INTEGER NOT NULL,
-    quantity INTEGER NOT NULL CHECK(quantity > 0),
-    price REAL NOT NULL, -- Lưu giá tại thời điểm mua (để tránh lỗi khi sau này sách đổi giá)
-
-    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
-    FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE SET NULL
-);
-
--- 9. BẢNG QUẢN LÝ MƯỢN SÁCH (BORROWS)
-CREATE TABLE borrows (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    status TEXT CHECK(status IN ('pending','approved','borrowing', 'returned', 'overdue','canceled')) DEFAULT 'pending', -- Đang mượn | Đã trả | Quá hạn
-    total_deposit REAL DEFAULT 0, -- Tiền đặt cọc mượn sách (nếu có)
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    approved_at DATETIME,
-    pickup_deadline DATETIME,
-    borrowed_at DATETIME,
-    returned_at DATETIME,
-    confirmed_return_at DATETIME,
-
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
-DROP TABLE  borrows;
-DROP TABLE  borrow_items;
--- 10. CHI TIẾT MƯỢN SÁCH (BORROW_ITEMS)
-CREATE TABLE borrow_items (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    borrow_id INTEGER NOT NULL,
-    book_id INTEGER NOT NULL,
-
-    status TEXT CHECK(status IN
-        ('pending','approved','borrowing','rejected')
-    ) DEFAULT 'pending',
-
-    due_date DATETIME NOT NULL,
-    return_date DATETIME,
-
-    FOREIGN KEY (borrow_id) REFERENCES borrows(id) ON DELETE CASCADE,
-    FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE SET NULL
-);
--- CHÈN DỮ LIỆU MẪU (Lưu ý: Mật khẩu này chỉ để test)
-INSERT INTO users (name, email, password, role) VALUES ('Admin Website', 'admin@gmail.com', '8888', 'admin');
-INSERT INTO categories (name) VALUES ('Văn học'), ('Kinh tế'), ('Công nghệ');
+SELECT * FROM borrows;

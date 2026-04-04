@@ -17,7 +17,8 @@ def login():
             session['user_id']= user["id"]
             session["role"]=user["role"]
             flash("Đăng nhập thành công!", "success")
-            return "Logged in"
+            target_url = url_for('index')
+            return redirect(target_url)
         else:
             error = "Sai email hoặc mật khẩu!"
     return render_template('admin-login.html',error=error)

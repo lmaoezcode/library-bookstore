@@ -50,6 +50,7 @@ def login():
         if user and check_password_hash(user["password"], password):
             session['logged_in'] = True
             session['user_id']= user["id"]
+            session['user_name']= user["name"]
             flash("Đăng nhập thành công!", "success")
             if remember:
                 # Nếu tích vào Remember: Session tồn tại lâu (ví dụ 30 ngày)

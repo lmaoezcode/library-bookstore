@@ -20,3 +20,48 @@
     font-size: 0.9rem;
     margin-top: 5px;
 }
+
+/* ===== BUTTON M3 (KHÔNG PILL) ===== */
+.btn-m3 {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 8px; /* bỏ pill */
+    font-weight: 500;
+    font-size: 0.85rem;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+/* ===== NORMAL STATE ===== */
+.btn-processing { background: #e3f2fd; color: #1565c0; }
+.btn-ready { background: #ede7f6; color: #5e35b1; }
+.btn-shipping { background: #e0f2f1; color: #00695c; }
+.btn-done { background: #e8f5e9; color: #2e7d32; }
+.btn-cancel { background: #fdecea; color: #c62828; }
+
+/* hover */
+.btn-m3:hover { filter: brightness(0.95); }
+
+/* ===== ACTIVE (QUAN TRỌNG) ===== */
+.btn-active {
+    box-shadow: inset 0 0 0 2px currentColor;
+    font-weight: 600;
+    transform: scale(0.97);
+}
+
+/* ===== STATUS ===== */
+.badge-m3 {
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.75rem;
+}
+
+.status-pending { background: #fff4cc; color: #8a6d00; }
+.status-processing { background: #e3f2fd; color: #1565c0; }
+.status-ready { background: #ede7f6; color: #5e35b1; }
+.status-shipping { background: #e0f2f1; color: #00695c; }
+.status-done { background: #e8f5e9; color: #2e7d32; }
+.status-cancel { background: #fdecea; color: #c62828; }

@@ -47,87 +47,62 @@
                                     <th style="width: 40px;"><input type="checkbox" class="form-check-input select-all"></th>
                                     <th>ID</th>
                                     <th>Tác phẩm</th>
-                                    <th>Cập nhật tác giả</th>
+                                    <th>Tác giả</th>
                                     <th>Giá tiền</th>
                                     <th>Phân loại</th>
                                     <th>Thao tác</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for item in books %}
-                                <tr>
-                                    <td><input type="checkbox" class="form-check-input row-check"></td>
-                                    <td class="text-secondary fw-semibold row-id">#{{ item.id }}</td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <img src="{{ item.image }}" class="rounded me-3 shadow-sm" alt="Cover" style="width: 45px; height: 60px; object-fit: cover;">
-                                            <div>
-                                                <h6 class="mb-1 fw-bold text-dark row-title">{{ item.title }}</h6>
-                                                {% if item.can_buy %}
-                                                    <span class="badge bg-success fw-normal" style="font-size:0.7em;">Có thể mua</span>
-                                                {% else %}
-                                                    <span class="badge bg-secondary fw-normal" style="font-size:0.7em;">Chỉ mượn</span>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-secondary">{{ item.author }}</td>
-                                    <td class="fw-semibold text-danger">{{ item.price }}</td>
-                                    <td class="text-secondary">{{ item.category }}</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-outline-secondary me-1" onclick="openBookModal('edit', this)"><i class="bi bi-pencil"></i></button>
-                                        <button class="btn btn-sm btn-outline-danger" onclick="triggerConfirm('delete', this)"><i class="bi bi-trash"></i></button>
-                                    </td>
-                                </tr>
-                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
                   </div>
 
                   <!-- Duyệt đơn hàng -->
-                  <div class="tab-pane fade" id="list-orders" role="tabpanel" aria-labelledby="list-orders-list">
-                      <div class="d-flex justify-content-between align-items-center mb-4">
-                          <h5 class="fw-bold mb-0">Chờ Xử Lý Đơn Mua</h5>
-                          <div class="dropdown d-inline-block">
-                              <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">Thao tác khối</button>
-                              <ul class="dropdown-menu">
-                                  <li><a class="dropdown-item text-success bulk-action" href="#" data-action="approve">Duyệt hàng loạt</a></li>
-                                  <li><a class="dropdown-item text-danger bulk-action" href="#" data-action="reject">Từ chối hàng loạt</a></li>
-                              </ul>
-                          </div>
-                      </div>
-                      <div class="table-responsive">
-                          <table class="table table-hover align-middle border-top" id="ordersTable">
-                              <thead class="bg-light text-muted">
-                                  <tr>
-                                      <th style="width: 40px;"><input type="checkbox" class="form-check-input select-all"></th>
-                                      <th>Mã ĐH</th>
-                                      <th>Tài khoản</th>
-                                      <th>Sản phẩm</th>
-                                      <th>Thanh toán</th>
-                                      <th>Trạng thái</th>
-                                      <th>Hành động</th>
-                                  </tr>
-                              </thead>
-                              <tbody>
-                                  <tr>
-                                      <td><input type="checkbox" class="form-check-input row-check"></td>
-                                      <td class="fw-semibold row-id">#1003</td>
-                                      <td>Đoàn Cảnh Tùng <br><small class="text-muted">tung@mail.com</small></td>
-                                      <td class="fw-semibold">Con Đường Khoa Học</td>
-                                      <td>150.000đ <br><small class="text-warning">Chờ CK</small></td>
-                                      <td><span class="badge bg-warning text-dark fw-normal status-badge">Chờ duyệt</span></td>
-                                      <td>
-                                          <button class="btn btn-sm btn-success me-1 action-approve" title="Duyệt" onclick="triggerConfirm('approve', this)"><i class="bi bi-check-lg"></i></button>
-                                          <button class="btn btn-sm btn-danger action-reject" title="Từ chối" onclick="triggerConfirm('reject', this)"><i class="bi bi-x-lg"></i></button>
-                                      </td>
-                                  </tr>
-                              </tbody>
-                          </table>
-                      </div>
-                  </div>
 
+                        <div class="tab-pane fade" id="list-orders">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h5 class="fw-bold mb-0">Quản lý đơn hàng</h5>
+
+                                <div class="dropdown d-inline-block">
+                                    <button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                                        Thao tác khối
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item text-success" href="#" onclick="bulkUpdate('processing')">
+                                                Duyệt hàng loạt
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item text-danger" href="#" onclick="bulkUpdate('cancelled')">
+                                                Từ chối hàng loạt
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle border-top">
+                                    <thead class="bg-light text-muted">
+                                        <tr>
+                                            <th><input type="checkbox" id="select-all"></th>
+                                            <th>Mã ĐH</th>
+                                            <th>User</th>
+                                            <th>Tổng tiền</th>
+                                            <th>Thanh toán</th>
+                                            <th>Trạng thái</th>
+                                            <th>Hành động</th>
+                                        </tr>
+                                    </thead>
+
+                                    <!--  JS sẽ render vào đây -->
+                                    <tbody id="orders-body"></tbody>
+                                </table>
+                            </div>
+                        </div>
                   <!-- Duyệt mượn sách -->
                   <div class="tab-pane fade" id="list-borrows" role="tabpanel" aria-labelledby="list-borrows-list">
                       <div class="d-flex justify-content-between align-items-center mb-4">
@@ -153,20 +128,7 @@
                                       <th>Hành động</th>
                                   </tr>
                               </thead>
-                              <tbody>
-                                  <tr>
-                                      <td><input type="checkbox" class="form-check-input row-check"></td>
-                                      <td class="fw-semibold row-id">MS-508</td>
-                                      <td>Nguyễn Thị Hồng Nhung</td>
-                                      <td class="fw-semibold">Tư Duy Quyết Định</td>
-                                      <td>18 Thg 5, 2026</td>
-                                      <td><span class="badge bg-info text-dark fw-normal status-badge">Đợi cấp phát</span></td>
-                                      <td>
-                                          <button class="btn btn-sm btn-primary me-1 fw-semibold action-approve" onclick="triggerConfirm('approve', this)">Duyệt cấp</button>
-                                          <button class="btn btn-sm btn-outline-dark fw-semibold action-reject" onclick="triggerConfirm('reject', this)">Huỷ bỏ</button>
-                                      </td>
-                                  </tr>
-                              </tbody>
+                              <tbody id="borrows-body"></tbody>
                           </table>
                       </div>
                   </div>
@@ -183,33 +145,109 @@
 <div class="modal fade" id="bookModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content shadow border-0">
+
+            <!-- HEADER -->
             <div class="modal-header">
                 <h5 class="modal-title fw-bold" id="bookModalTitle">Thêm Sách Mới</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
+
+            <!-- BODY -->
             <div class="modal-body">
                 <form id="bookForm">
+
+                    <!-- TÊN -->
                     <div class="mb-3">
-                        <label class="form-label text-secondary fw-semibold">Tên sách</label>
+                        <label class="form-label fw-semibold">Tên sách</label>
                         <input type="text" class="form-control" id="bookTitleInput" required>
                     </div>
+
+                    <!-- TÁC GIẢ -->
                     <div class="mb-3">
-                        <label class="form-label text-secondary fw-semibold">Tác giả</label>
+                        <label class="form-label fw-semibold">Tác giả</label>
                         <input type="text" class="form-control" id="bookAuthorInput" required>
                     </div>
+
+                    <!-- ROW -->
                     <div class="row">
+
+                        <!-- CATEGORY -->
                         <div class="col-6 mb-3">
-                            <label class="form-label text-secondary fw-semibold">Phân loại</label>
-                            <input type="text" class="form-control" id="bookCatInput" required>
+                            <label class="form-label fw-semibold">Phân loại</label>
+                            <select id="bookCatInput" class="form-control" required>
+                                <option value="">-- Chọn --</option>
+                            </select>
                         </div>
+
+                        <!-- PRICE -->
                         <div class="col-6 mb-3">
-                            <label class="form-label text-secondary fw-semibold">Giá (VNĐ)</label>
-                            <input type="text" class="form-control" id="bookPriceInput" required>
+                            <label class="form-label fw-semibold">Giá</label>
+                            <input type="number" class="form-control" id="bookPriceInput" required>
                         </div>
+
+                        <!-- TOTAL -->
+                        <div class="col-6 mb-3">
+                            <label class="form-label">Số lượng tổng</label>
+                            <input type="number" class="form-control" id="bookTotalQty" min="0" value="1">
+                        </div>
+
+                        <!-- AVAILABLE -->
+                        <div class="col-6 mb-3">
+                            <label class="form-label">Có sẵn</label>
+                            <input type="number" class="form-control" id="bookAvailableQty" min="0" value="1">
+                        </div>
+
                     </div>
-                    <button type="button" class="btn text-white w-100 fw-semibold mt-3" style="background-color: #ED553B;" id="saveBookBtn" onclick="saveBook()">Lưu thông tin</button>
+
+                    <hr>
+
+                    <!-- FILE HIỆN TẠI -->
+                    <div class="mb-3">
+                        <label class="fw-semibold">PDF hiện tại</label><br>
+                        <a id="currentPdf" href="#" target="_blank">Chưa có</a>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="fw-semibold">PDF Review</label><br>
+                        <a id="currentPdfReview" href="#" target="_blank">Chưa có</a>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="fw-semibold">Cover</label><br>
+                        <img id="currentCover"
+                             src=""
+                             style="width:80px;height:100px;object-fit:cover;border:1px solid #ddd;">
+                    </div>
+
+                    <hr>
+
+                    <!-- UPLOAD -->
+                    <div class="mb-3">
+                        <label class="fw-semibold">Thay cover</label>
+                        <input type="file" id="bookCoverInput" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="fw-semibold">Thay PDF</label>
+                        <input type="file" id="bookPdfInput" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="fw-semibold">Thay PDF Review</label>
+                        <input type="file" id="bookPdfReviewInput" class="form-control">
+                    </div>
+
+                    <!-- BUTTON -->
+                    <button type="submit"
+                            class="btn text-white w-100 fw-semibold mt-3"
+                            style="background-color: #ED553B;"
+                            id="saveBookBtn">
+                        Lưu thông tin
+                    </button>
+
                 </form>
             </div>
+
         </div>
     </div>
 </div>
@@ -230,7 +268,22 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="borrowDetailModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content border-0 shadow">
 
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold">Danh sách sách</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <ul id="borrowBookList" class="list-group list-group-flush"></ul>
+      </div>
+
+    </div>
+  </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}
@@ -249,35 +302,192 @@
         });
     });
 
-    // Handle Open Add/Edit Book Modal
-    function openBookModal(type, btnObj = null) {
-        if (type === 'edit') {
-            document.getElementById('bookModalTitle').innerText = 'Cập nhật Sách';
-            // Mock grabbing data
-            currentRow = btnObj.closest('tr');
-            document.getElementById('bookTitleInput').value = currentRow.querySelector('.row-title').innerText;
-            var myModal = new bootstrap.Modal(document.getElementById('bookModal'));
-            myModal.show();
-        } else {
-            // Add mode (the button directly triggers data-bs-target, so it just shows up)
-            document.getElementById('bookForm').reset();
-            document.getElementById('bookModalTitle').innerText = 'Thêm Sách Mới';
-        }
-    }
+   async function saveBook() {
+    const title = document.getElementById('bookTitleInput').value;
+    const author = document.getElementById('bookAuthorInput').value;
+    const price = parseFloat(document.getElementById('bookPriceInput').value);
+    const category = document.getElementById('bookCatInput').value;
 
-    function saveBook() {
-        // Trigger modal close logic
+    const totalQty = parseInt(document.getElementById('bookTotalQty').value);
+    const availableQty = parseInt(document.getElementById('bookAvailableQty').value);
+
+    const res = await fetch('/books/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            title,
+            author,
+            price,
+            category,
+            total_quantity: totalQty,
+            available_quantity: availableQty
+        })
+    });
+
+    const data = await res.json();
+
+    if (data.status === "success") {
+        loadBooks(); // reload table
+
         let modalEl = document.getElementById('bookModal');
-        let modalInst = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
-        modalInst.hide();
-        
-        let title = document.getElementById('bookTitleInput').value;
-        if(title) {
-            // Visual fake feedback
-            alert("Đã lưu tác phẩm: " + title + " thành công trên hệ thống DOM!");
-        }
+        bootstrap.Modal.getInstance(modalEl).hide();
+    } else {
+        alert(data.message);
     }
+}
 
+let categories = []; // Lưu danh sách category {id, name}
+
+async function loadCategories() {
+    const res = await fetch('/book/categories'); // API trả về danh sách category
+    categories = await res.json(); // [{id:1,name:'Tiểu thuyết'},...]
+}
+
+function getCategoryName(id) {
+    const cat = categories.find(c => c.id === id);
+    return cat ? cat.name : '---';
+}
+
+async function loadBooks() {
+    await loadCategories(); // đảm bảo categories đã load
+    const res = await fetch('/book/admin/list');
+    const result = await res.json();
+
+    const books = result.books || [];
+    const tbody = document.querySelector('#booksTable tbody');
+    tbody.innerHTML = "";
+
+    books.forEach(book => {
+        const row = document.createElement('tr');
+
+        row.innerHTML = `
+        <td><input type="checkbox" class="form-check-input row-check"></td>
+        <td class="text-secondary fw-semibold row-id">#${book.id}</td>
+
+        <td>
+            <div class="d-flex align-items-center">
+                <img src="${book.cover_image || ''}"
+                    class="rounded me-3 shadow-sm"
+                    style="width:45px;height:60px;object-fit:cover;">
+                <div>
+                    <h6 class="mb-1 fw-bold text-dark row-title">
+                        ${book.title}
+                    </h6>
+                    <div class="mb-1">
+                        <span class="badge bg-secondary">
+                            ${book.available_quantity || 0}/${book.total_quantity || 0}
+                        </span>
+                    </div>
+                    <small class="text-muted d-block">
+                        Giá: ${formatPrice(book.price || 0)}
+                    </small>
+                </div>
+            </div>
+        </td>
+
+        <td class="text-secondary">${book.author}</td>
+        <td class="fw-semibold text-danger">${formatPrice(book.price || 0)}</td>
+        <td class="text-secondary">${getCategoryName(book.category_id)}</td>
+
+        <td>
+            <button class="btn btn-sm btn-outline-primary me-1"
+                onclick="viewPdf('${book.pdf_full || ''}')">
+                <i class="bi bi-file-earmark-pdf"></i> PDF
+            </button>
+
+            <button class="btn btn-sm btn-outline-secondary me-1"
+                onclick="openEditBook(${book.id})">
+                <i class="bi bi-pencil"></i>
+            </button>
+
+            <button class="btn btn-sm btn-outline-danger"
+                onclick="deleteBook(${book.id})">
+                <i class="bi bi-trash"></i>
+            </button>
+        </td>
+        `;
+
+        tbody.appendChild(row);
+    });
+}
+
+function viewPdf(url) {
+    if (!url) return alert("Chưa có file PDF.");
+    window.open(url, '_blank');
+}
+
+async function openEditBook(bookId) {
+    window.editingBookId = bookId;
+    const res = await fetch(`/book/${bookId}`);
+    const book = await res.json();
+
+    // Điền dữ liệu vào modal
+    document.getElementById('bookTitleInput').value = book.title;
+    document.getElementById('bookAuthorInput').value = book.author;
+    document.getElementById('bookPriceInput').value = book.price;
+    document.getElementById('bookTotalQty').value = book.total_quantity;
+    document.getElementById('bookAvailableQty').value = book.available_quantity;
+
+    // Thay category select
+    const catSelect = document.getElementById('bookCatInput');
+    catSelect.innerHTML = categories.map(c =>
+        `<option value="${c.name}" ${c.id === book.category_id ? 'selected' : ''}>${c.name}</option>`
+    ).join('');
+
+    // Xem file PDF & review hiện tại
+    document.getElementById('currentPdf').href = book.pdf_full || '#';
+    document.getElementById('currentPdfReview').href = book.pdf_review || '#';
+    document.getElementById('currentCover').src = book.cover_image || '';
+
+    // Gán nút submit gọi updateBook
+
+    // Hiển thị modal
+    new bootstrap.Modal(document.getElementById('bookModal')).show();
+}
+document.getElementById('bookForm').addEventListener('submit', async function(e) {
+    e.preventDefault(); // CHẶN RELOAD
+
+    if (window.editingBookId) {
+        await updateBook(window.editingBookId);
+    } else {
+        await saveBook();
+    }
+});
+async function updateBook(bookId) {
+    const formData = new FormData();
+
+    formData.append("id", bookId);
+    formData.append("title", bookTitleInput.value);
+    formData.append("author", bookAuthorInput.value);
+    formData.append("price", bookPriceInput.value);
+    formData.append("category_name", bookCatInput.value);
+    formData.append("total_quantity", bookTotalQty.value);
+    formData.append("available_quantity", bookAvailableQty.value);
+
+    // FILE
+    if (bookCoverInput.files[0])
+        formData.append("cover", bookCoverInput.files[0]);
+
+    if (bookPdfInput.files[0])
+        formData.append("pdf", bookPdfInput.files[0]);
+
+    if (bookPdfReviewInput.files[0])
+        formData.append("pdf_review", bookPdfReviewInput.files[0]);
+
+    const res = await fetch('/book/update', {
+        method: 'POST',
+        body: formData
+    });
+
+    const data = await res.json();
+
+    if (data.status === "success") {
+        loadBooks();
+        bootstrap.Modal.getInstance(bookModal).hide();
+    } else {
+        alert(data.message);
+    }
+}
     // Handle confirmations
     function triggerConfirm(action, btnObj) {
         currentAction = action;
@@ -364,5 +574,341 @@
         }
     }
 
+    // order fetch
+async function loadOrders() {
+    const res = await fetch('/order/', {
+        method: 'POST'
+    });
+
+    const data = await res.json();
+    const tbody = document.getElementById('orders-body');
+    tbody.innerHTML = "";
+
+    if (data.status !== "success") {
+        tbody.innerHTML = `<tr><td colspan="7">Không có đơn hàng</td></tr>`;
+        return;
+    }
+
+    data.orders.forEach(order => {
+        const row = document.createElement('tr');
+
+    row.innerHTML = `
+    <td>
+        <input type="checkbox" class="row-check" value="${order.id}">
+    </td>
+
+    <td class="fw-semibold text-primary">#${order.id}</td>
+
+    <td>
+        <div class="fw-semibold">${order.name}</div>
+        <small class="text-muted">ID: ${order.user_id}</small>
+    </td>
+
+    <td class="fw-semibold text-danger">
+        ${formatPrice(order.total_price)}
+    </td>
+
+    <td>
+        <span class="badge bg-light text-dark border">
+            ${order.payment_method}
+        </span>
+    </td>
+
+    <td>
+        <span class="badge-m3 ${getStatusClass(order.status)}">
+            ${formatStatusText(order.status)}
+        </span>
+    </td>
+
+    <td>
+        <div class="d-flex flex-wrap gap-1">
+
+            <button class="btn-m3 btn-processing ${isActive(order.status,'processing')}"
+                onclick="updateStatus(${order.id}, 'processing')">
+                <i data-lucide="loader" style="width:14px"></i>
+                Xử lý
+            </button>
+
+            <button class="btn-m3 btn-ready ${isActive(order.status,'ready_to_ship')}"
+                onclick="updateStatus(${order.id}, 'ready_to_ship')">
+                <i data-lucide="package-check" style="width:14px"></i>
+                Sẵn sàng
+            </button>
+
+            <button class="btn-m3 btn-shipping ${isActive(order.status,'shipping')}"
+                onclick="updateStatus(${order.id}, 'shipping')">
+                <i data-lucide="truck" style="width:14px"></i>
+                Giao
+            </button>
+
+            <button class="btn-m3 btn-done ${isActive(order.status,'delivered')}"
+                onclick="updateStatus(${order.id}, 'delivered')">
+                <i data-lucide="check-circle" style="width:14px"></i>
+                Xong
+            </button>
+
+            <button class="btn-m3 btn-cancel ${isActive(order.status,'cancelled')}"
+                onclick="updateStatus(${order.id}, 'cancelled')">
+                <i data-lucide="x-circle" style="width:14px"></i>
+                Huỷ
+            </button>
+
+        </div>
+    </td>
+    `;
+
+        tbody.appendChild(row);
+
+    });
+    lucide.createIcons();
+}
+
+loadOrders();
+
+async function updateStatus(orderId, newStatus) {
+    const res = await fetch('/order/update_status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            order_id: orderId,
+            new_status: newStatus
+        })
+    });
+
+    const data = await res.json();
+
+    if (data.status === "success") {
+        loadOrders(); // reload
+    } else {
+        alert(data.message);
+    }
+}
+async function bulkUpdate(status) {
+    const checked = Array.from(document.querySelectorAll('.row-check:checked'))
+        .map(cb => cb.value);
+
+    const res = await fetch('/order/bulk_update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            order_ids: checked,
+            status: status
+        })
+    });
+
+    const data = await res.json();
+    if (data.status === "success") {
+        loadOrders();
+    }
+}
+function formatPrice(price) {
+    return price.toLocaleString('vi-VN') + 'đ';
+}
+function getStatusClass(status) {
+    switch (status) {
+        case 'pending': return 'status-pending';
+        case 'processing': return 'status-processing';
+        case 'ready_to_ship': return 'status-ready';
+        case 'shipping': return 'status-shipping';
+        case 'delivered': return 'status-done';
+        case 'cancelled': return 'status-cancel';
+        default: return '';
+    }
+}
+function isActive(current, target) {
+    return current === target ? 'btn-active' : '';
+}
+function formatStatusText(status) {
+    switch (status) {
+        case 'pending': return 'Chờ duyệt';
+        case 'processing': return 'Đang xử lý';
+        case 'ready_to_ship': return 'Sẵn sàng giao';
+        case 'shipping': return 'Đang giao';
+        case 'delivered': return 'Hoàn thành';
+        case 'cancelled': return 'Đã huỷ';
+        default: return status;
+    }
+}
+
+// borrow fetch
+async function loadBorrows() {
+    const res = await fetch('/borrow/list', {
+        method: 'POST'
+    });
+
+    const data = await res.json();
+    const tbody = document.getElementById('borrows-body');
+    tbody.innerHTML = "";
+
+    if (!Array.isArray(data) || data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7">Không có yêu cầu mượn</td></tr>`;
+        return;
+    }
+
+    data.forEach(entry => {
+        const borrow = entry.borrow;
+        const items = entry.items;
+
+        const row = document.createElement('tr');
+
+        row.innerHTML = `
+        <td>
+            <input type="checkbox" class="row-check" value="${borrow.id}">
+        </td>
+
+        <td class="fw-semibold text-primary">#${borrow.id}</td>
+
+        <td>
+            <div class="fw-semibold">${borrow.user_name}</div>
+            <small class="text-muted">ID: ${borrow.user_id}</small>
+        </td>
+
+        <td class="fw-semibold">
+            ${items.length} sách
+            <button class="btn btn-sm btn-outline-secondary ms-2"
+                onclick='showBorrowDetail(${JSON.stringify(items)})'>
+                <i data-lucide="eye" style="width:14px"></i>
+            </button>
+        </td>
+
+        <td class="text-muted">
+            ${items[0]?.due_date || '---'}
+        </td>
+
+        <td>
+            <span class="badge-m3 ${getBorrowStatusClass(borrow.status)}">
+                ${formatBorrowStatus(borrow.status)}
+            </span>
+        </td>
+    <td>
+    <div class="d-flex flex-wrap gap-1">
+
+        <button class="btn-m3 btn-processing ${isActive(borrow.status,'approved')}"
+            onclick="updateBorrowStatus(${borrow.id}, 'approved')">
+            <i data-lucide="check" style="width:14px"></i>
+            Duyệt
+        </button>
+
+        <button class="btn-m3 btn-ready ${isActive(borrow.status,'ready_to_pick')}"
+            onclick="updateBorrowStatus(${borrow.id}, 'ready_to_pick')">
+            <i data-lucide="package" style="width:14px"></i>
+            Sẵn sàng
+        </button>
+
+        <button class="btn-m3 btn-done ${isActive(borrow.status,'borrowing')}"
+            onclick="updateBorrowStatus(${borrow.id}, 'borrowing')">
+            <i data-lucide="book-open" style="width:14px"></i>
+            Đang mượn
+        </button>
+
+        <button class="btn-m3 btn-done ${isActive(borrow.status,'returned')}"
+            onclick="updateBorrowStatus(${borrow.id}, 'returned')">
+            <i data-lucide="check-circle" style="width:14px"></i>
+            Đã trả
+        </button>
+
+        <button class="btn-m3 btn-cancel ${isActive(borrow.status,'canceled')}"
+            onclick="updateBorrowStatus(${borrow.id}, 'canceled')">
+            <i data-lucide="x"></i>
+            Từ chối
+        </button>
+
+    </div>
+</td>
+
+        `;
+
+        tbody.appendChild(row);
+    });
+
+    lucide.createIcons(); // giữ nguyên hệ icon
+}
+loadBorrows();
+
+async function updateBorrowStatus(borrowId, newStatus) {
+    const res = await fetch('/borrow/update_status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            borrow_id: borrowId,
+            new_status: newStatus
+        })
+    });
+
+    const data = await res.json();
+
+    if (data.status === "success") {
+        loadBorrows();
+    } else {
+        alert(data.message);
+    }
+}
+
+async function bulkBorrowUpdate(status) {
+    const checked = Array.from(document.querySelectorAll('#borrowsTable .row-check:checked'))
+        .map(cb => cb.value);
+
+    const res = await fetch('/borrow/bulk_update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            borrow_ids: checked,
+            status: status
+        })
+    });
+
+    const data = await res.json();
+    if (data.status === "success") {
+        loadBorrows();
+    }
+}
+function getBorrowStatusClass(status) {
+    switch (status) {
+        case 'pending': return 'status-pending';
+        case 'approved': return 'status-processing';
+        case 'ready_to_pick': return 'status-ready';
+        case 'borrowing': return 'status-shipping';
+        case 'returned': return 'status-done';
+        case 'rejected': return 'status-cancel';
+        default: return '';
+    }
+}
+
+function formatBorrowStatus(status) {
+    switch (status) {
+        case 'pending': return 'Chờ duyệt';
+        case 'approved': return 'Đã duyệt';
+        case 'ready_to_pick': return 'Chờ lấy sách';
+        case 'borrowing': return 'Đang mượn';
+        case 'returned': return 'Đã trả';
+        case 'canceled': return 'Đã huỷ';
+        default: return status;
+    }
+}
+function showBorrowDetail(items) {
+    const list = document.getElementById('borrowBookList');
+    list.innerHTML = "";
+
+    items.forEach(item => {
+        const li = document.createElement('li');
+        li.className = "list-group-item d-flex justify-content-between align-items-center";
+
+        li.innerHTML = `
+            <div>
+                <div class="fw-semibold">${item.title}</div>
+                <small class="text-muted">Hạn trả: ${item.due_date}</small>
+            </div>
+            <span class="badge bg-light text-dark border">
+                ${formatBorrowStatus(item.status)}
+            </span>
+        `;
+
+        list.appendChild(li);
+    });
+
+    const modal = new bootstrap.Modal(document.getElementById('borrowDetailModal'));
+    modal.show();
+}
+loadBooks()
 </script>
 {% endblock %}
