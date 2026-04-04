@@ -150,4 +150,4 @@ INSERT INTO borrow_items (borrow_id, book_id, due_date) VALUES
 
 
 SELECT * FROM books;
-SELECT * FROM borrows;
+SELECT * FROM borrows, borrow_items WHERE borrows.id=13 AND borrow_items.borrow_id=13;
