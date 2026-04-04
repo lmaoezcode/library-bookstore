@@ -3,94 +3,59 @@
 {% block title %}Trang chủ - Thư Viện Sách{% endblock %}
 
 {% block content %}
-    <div id="bookCarousel" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-indicators">
-            <button type="button" data-bs-target="#bookCarousel" data-bs-slide-to="0" class="active" aria-current="true"></button>
-            <button type="button" data-bs-target="#bookCarousel" data-bs-slide-to="1"></button>
-            <button type="button" data-bs-target="#bookCarousel" data-bs-slide-to="2"></button>
+    <section class="hero-section text-center py-5 bg-light border-bottom">
+        <div class="container py-5">
+            <h1 class="display-4 fw-bold text-dark mb-3">Chào mừng đến với Thư Viện Sách</h1>
+            <p class="lead text-secondary mb-4">Nền tảng đọc sách, mượn sách và mua sắm tiện lợi nhất dành cho bạn.</p>
+            <a href="{{ url_for('books') }}" class="btn text-white px-4 py-2 fw-semibold" style="background-color:#ED553B;">
+                KHÁM PHÁ NGAY
+            </a>
         </div>
-
-        <div class="carousel-inner">
-            <div class="carousel-item active">
-                <img src="{{ url_for('static', filename='images/banner1.png') }}" class="d-block w-100" alt="Banner Sách 1">
-            </div>
-            <div class="carousel-item">
-                <img src="{{ url_for('static', filename='images/banner1.png') }}" class="d-block w-100" alt="Banner Sách 2">
-            </div>
-            <div class="carousel-item">
-                <img src="{{ url_for('static', filename='images/banner1.png') }}" class="d-block w-100" alt="Banner Sách 3">
-            </div>
-        </div>
-
-        <button class="carousel-control-prev" type="button" data-bs-target="#bookCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon"></span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#bookCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon"></span>
-        </button>
-    </div>
+    </section>
 
     <section class="categories-section py-5">
         <div class="container">
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
-                <div>
-                    <h6 class="text-uppercase text-orange fw-semibold mb-1">Danh mục</h6>
-                    <h2 class="fw-bold text-dark">Khám phá các Danh mục Hàng đầu</h2>
-                </div>
-            </div>
-
-            <div class="row g-4">
+            <h3 class="fw-bold text-center mb-4 text-dark">Danh Mục Sách Nổi Bật</h3>
+            <div class="row g-4 text-center">
                 <div class="col-md-4">
-                    <div class="category-card text-center p-3 h-100">
-                        <img src="{{ url_for('static', filename='images/cat1.png') }}" class="img-fluid rounded mb-3" alt="Giáo dục Đại học">
-                        <h5 class="fw-semibold mb-2">Giáo dục Đại học</h5>
-                        <p class="text-muted small mb-0">Tài liệu chuyên sâu, giáo trình học thuật dành cho sinh viên và giảng viên.</p>
+                    <div class="card border-0 shadow-sm p-4 h-100">
+                        <i class="bi bi-book fs-1 mb-3" style="color:#ED553B;"></i>
+                        <h5 class="fw-semibold">Giáo dục Đại học</h5>
+                        <p class="text-muted small">Tài liệu học thuật chuyên sâu và phong phú dành cho toàn thể sinh viên.</p>
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="category-card text-center p-3 h-100">
-                        <img src="{{ url_for('static', filename='images/cat2.png') }}" class="img-fluid rounded mb-3" alt="Sách Quản trị">
-                        <h5 class="fw-semibold mb-2">Sách Quản trị</h5>
-                        <p class="text-muted small mb-0">Nâng cao kỹ năng lãnh đạo, quản trị doanh nghiệp và phát triển bản thân.</p>
+                    <div class="card border-0 shadow-sm p-4 h-100">
+                        <i class="bi bi-briefcase fs-1 mb-3" style="color:#ED553B;"></i>
+                        <h5 class="fw-semibold">Quản trị & Lãnh đạo</h5>
+                        <p class="text-muted small">Phát triển bản thân và bổ sung nền tảng kiến thức doanh nghiệp.</p>
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="category-card text-center p-3 h-100">
-                        <img src="{{ url_for('static', filename='images/cat3.png') }}" class="img-fluid rounded mb-3" alt="Sách Kỹ thuật">
-                        <h5 class="fw-semibold mb-2">Sách Kỹ thuật</h5>
-                        <p class="text-muted small mb-0">Cập nhật kiến thức công nghệ mới nhất, từ lập trình đến điện tử.</p>
+                    <div class="card border-0 shadow-sm p-4 h-100">
+                        <i class="bi bi-laptop fs-1 mb-3" style="color:#ED553B;"></i>
+                        <h5 class="fw-semibold">Công nghệ Số</h5>
+                        <p class="text-muted small">Cập nhật ngay xu hướng kỹ thuật lập trình hiện đại nhất năm nay.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="featured-section py-5">
+    <section class="featured-section bg-light py-5">
         <div class="container">
             <div class="row align-items-center">
-                <div class="col-md-5 text-center">
-                    <img src="{{ url_for('static', filename='images/book.png') }}" alt="Sản phẩm nổi bật" class="img-fluid rounded shadow-sm">
-                </div>
-                <div class="col-md-7">
-                    <h5 class="text-uppercase text-muted mb-2">Sản phẩm nổi bật</h5>
-                    <h2 class="fw-bold mb-3">Combo Cà Phê Đọc Sách</h2>
-                    <p class="text-secondary mb-3">
-                        Tận hưởng những giây phút thư giãn tuyệt vời với combo sách hay và cà phê rang xay nguyên chất.
+                <div class="col-md-6 order-2 order-md-1">
+                    <h5 class="text-uppercase text-muted mb-2">Đặc biệt trong tháng</h5>
+                    <h2 class="fw-bold mb-3">Chương trình Giảm giá 50%</h2>
+                    <p class="text-secondary mb-4">
+                        Mang đến trải nghiệm tuyệt vời cùng những ưu đãi mới nhất dành cho kho tàng tri thức của bạn. Trở thành hội viên để nhận những tựa sách nổi bật với mức giá ưu đãi.
                     </p>
-                    <h4 class="text-danger mb-4">299.000đ</h4>
-                    <a href="{{ url_for('books') }}" class="btn btn-dark rounded-pill px-4 py-2">Xem Thêm →</a>
+                    <a href="{{ url_for('books') }}" class="btn btn-outline-dark rounded-pill px-4 py-2">Đăng ký tham gia ngay</a>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="offer-section container my-5">
-        <div class="row align-items-center bg-light p-5 rounded-4 shadow-sm">
-            <div class="col-md-6 offer-text">
-                <h2 class="fw-bold mb-3">Giảm giá 50% toàn bộ sách! Đừng bỏ lỡ!</h2>
-            </div>
-            <div class="col-md-6 text-center mt-4 mt-md-0">
-                <img src="{{ url_for('static', filename='images/Unsplash.png') }}" alt="Sách Khuyến Mãi" class="offer-img img-fluid rounded">
+                <div class="col-md-6 order-1 order-md-2 mb-4 mb-md-0 text-center">
+                    <img src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=600" alt="Sản phẩm nổi bật" class="img-fluid rounded shadow">
+                </div>
             </div>
         </div>
     </section>

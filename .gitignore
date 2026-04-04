@@ -2,18 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
-*.pyc
-*.pyo
-*.pyd
 
-# --------------------------
-# IDE / Editor files
-# --------------------------
-.idea/                 # PyCharm project files
-*.iml                  # Module files
-*.iws                  # Workspace files
-*.swp
-*.swo
 # C extensions
 *.so
 
@@ -70,10 +59,6 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 
-# --------------------------
-# Virtual environments
-# --------------------------
-venv/
 # Flask
 instance/
 .webassets-cache
@@ -160,12 +145,8 @@ dist/
 *.db
 *.sqlite
 *.sqlite3
-.venv/
-.env/                  # local env file with secrets
 
-# --------------------------
 # Logs
-# --------------------------
 *.log
 
 # OS generated files
@@ -176,16 +157,3 @@ dist/
 .Trashes
 ehthumbs.db
 Thumbs.db
-# --------------------------
-# Package / build folders
-# --------------------------
-build/
-dist/
-*.egg-info/
-.eggs/
-Pipfile.lock           # Pipenv lockfile
-
-# --------------------------
-# Secrets / local config
-# --------------------------
-*.env

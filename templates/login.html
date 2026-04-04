@@ -65,16 +65,16 @@
                     <div class="tab-content" id="authTabsContent">
                         <div class="tab-pane fade show active" id="loginTab" role="tabpanel">
                             <h4 class="fw-bold mb-4 text-center" style="color:#ED553B;">Đăng nhập vào tài khoản</h4>
-                            <form>
+                            <form method="POST" action="{{ url_for('login') }}">
                                 <div class="mb-3">
                                     <label class="form-label">Địa chỉ Email</label>
-                                    <input type="email" class="form-control form-control-lg"
-                                        placeholder="Nhập email của bạn">
+                                    <input type="email" name="email" class="form-control form-control-lg"
+                                        placeholder="Nhập email của bạn" required>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Mật khẩu</label>
-                                    <input type="password" class="form-control form-control-lg"
-                                        placeholder="Nhập mật khẩu">
+                                    <input type="password" name="password" class="form-control form-control-lg"
+                                        placeholder="Nhập mật khẩu" required>
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <div class="form-check">
@@ -83,37 +83,37 @@
                                     </div>
                                     <a href="#" class="text-decoration-none small text-orange">Quên mật khẩu?</a>
                                 </div>
-                                <button class="btn w-100 py-2 text-white fw-semibold"
+                                <button type="submit" class="btn w-100 py-2 text-white fw-semibold"
                                     style="background-color:#ED553B;">Đăng nhập</button>
                             </form>
                         </div>
 
                         <div class="tab-pane fade" id="registerTab" role="tabpanel">
                             <h4 class="fw-bold mb-4 text-center" style="color:#ED553B;">Tạo tài khoản</h4>
-                            <form>
+                            <form method="POST" action="{{ url_for('login') }}">
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Họ và tên</label>
-                                        <input type="text" class="form-control form-control-lg"
-                                            placeholder="Tên của bạn">
+                                        <input type="text" name="fullname" class="form-control form-control-lg"
+                                            placeholder="Tên của bạn" required>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Email</label>
-                                        <input type="email" class="form-control form-control-lg"
-                                            placeholder="Email của bạn">
+                                        <input type="email" name="email" class="form-control form-control-lg"
+                                            placeholder="Email của bạn" required>
                                     </div>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Mật khẩu</label>
-                                    <input type="password" class="form-control form-control-lg"
-                                        placeholder="Tạo mật khẩu">
+                                    <input type="password" name="password" class="form-control form-control-lg"
+                                        placeholder="Tạo mật khẩu" required>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Xác nhận mật khẩu</label>
                                     <input type="password" class="form-control form-control-lg"
-                                        placeholder="Xác nhận mật khẩu">
+                                        placeholder="Xác nhận mật khẩu" required>
                                 </div>
-                                <button class="btn w-100 py-2 text-white fw-semibold"
+                                <button type="submit" class="btn w-100 py-2 text-white fw-semibold"
                                     style="background-color:#ED553B;">Đăng ký</button>
                             </form>
                         </div>

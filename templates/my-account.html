@@ -4,51 +4,161 @@
 
 {% block content %}
 <section class="container py-5" style="min-height: 70vh;">
-    <h4 class="fw-bold mb-4 text-orange">Tài Khoản Của Tôi</h4>
+    <h4 class="fw-bold mb-4 text-orange">Tài Khoản Cá Nhân</h4>
     <div class="row g-4">
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm p-4">
-                <h6 class="fw-bold mb-4 text-dark border-bottom pb-2">Thông Tin Cá Nhân</h6>
-                <p class="mb-2"><strong>Họ và tên:</strong> Nguyễn Văn A</p>
-                <p class="mb-2"><strong>Email:</strong> nguyenvana@example.com</p>
-                <p class="mb-4"><strong>Điện thoại:</strong> +84 987 654 321</p>
-                <button class="btn text-white w-100 fw-semibold" style="background-color:#ED553B;">Chỉnh sửa hồ
-                    sơ</button>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-4 text-center">
+                <i class="bi bi-person-circle display-1 text-secondary mb-3"></i>
+                <h5 class="fw-bold mb-1">{{ user_name }}</h5>
+                <p class="text-muted small mb-3">Thành viên</p>
+                <button class="btn btn-outline-dark w-100 fw-semibold" data-bs-toggle="modal" data-bs-target="#editProfileModal">Chỉnh sửa hồ sơ</button>
             </div>
         </div>
 
-        <div class="col-md-8">
-            <div class="card border-0 shadow-sm p-4">
-                <h6 class="fw-bold mb-4 text-dark border-bottom pb-2">Lịch Sử Đơn Hàng</h6>
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="bg-light">
-                            <tr>
-                                <th>Mã ĐH</th>
-                                <th>Tên sách</th>
-                                <th>Ngày đặt</th>
-                                <th>Trạng thái</th>
-                                <th>Tổng tiền</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>#1001</td>
-                                <td>Làm Chủ Code</td>
-                                <td>21 Thg 4, 2026</td>
-                                <td><span class="badge bg-success">Đã giao</span></td>
-                                <td>120.000đ</td>
-                            </tr>
-                            <tr>
-                                <td>#1002</td>
-                                <td>Thói Quen Nguyên Tử</td>
-                                <td>15 Thg 4, 2026</td>
-                                <td><span class="badge bg-warning text-dark">Đang xử lý</span></td>
-                                <td>165.000đ</td>
-                            </tr>
-                        </tbody>
-                    </table>
+        <!-- Edit Profile Modal -->
+        <div class="modal fade" id="editProfileModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content border-0 shadow">
+                    <div class="modal-header border-bottom-0">
+                        <h5 class="modal-title fw-bold">Cập nhật hồ sơ</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body pb-4">
+                        <form>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold text-secondary">Họ và tên</label>
+                                <input type="text" class="form-control bg-light" value="{{ user_name }}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold text-secondary">Địa chỉ Email</label>
+                                <input type="email" class="form-control bg-light" placeholder="Nhập email của bạn">
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold text-secondary">Số điện thoại</label>
+                                <input type="tel" class="form-control bg-light" placeholder="Nhập số điện thoại">
+                            </div>
+                            <button type="button" class="btn text-white w-100 fw-semibold py-2" style="background-color: #ED553B;" data-bs-dismiss="modal">Lưu thay đổi</button>
+                        </form>
+                    </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="card border-0 shadow-sm p-4">
+                <h5 class="fw-bold mb-4 text-dark border-bottom pb-3">Quản Lý Lịch Sử</h5>
+
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs mb-4" id="historyTabs" role="tablist">
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link active text-dark fw-semibold" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button" role="tab" aria-controls="all" aria-selected="true">Tất Cả</button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link text-dark fw-semibold" id="buy-tab" data-bs-toggle="tab" data-bs-target="#buy" type="button" role="tab" aria-controls="buy" aria-selected="false">Mua Sách</button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link text-dark fw-semibold" id="borrow-tab" data-bs-toggle="tab" data-bs-target="#borrow" type="button" role="tab" aria-controls="borrow" aria-selected="false">Mượn Sách</button>
+                  </li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                  <!-- TẤT CẢ -->
+                  <div class="tab-pane active" id="all" role="tabpanel" aria-labelledby="all-tab">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th>Phân loại</th>
+                                    <th>Cẩm nang / Sách</th>
+                                    <th>Thời điểm</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="badge bg-secondary fw-normal">Mượn</span></td>
+                                    <td>Con Đường Khoa Học</td>
+                                    <td>04 Thg 4, 2026</td>
+                                    <td>Đang mượn</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="badge bg-dark fw-normal">Mua</span></td>
+                                    <td>Làm Chủ Code</td>
+                                    <td>21 Thg 3, 2026</td>
+                                    <td>Hoàn tất</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="badge bg-secondary fw-normal">Mượn</span></td>
+                                    <td>Tư Duy Quyết Định</td>
+                                    <td>02 Thg 2, 2026</td>
+                                    <td>Đã trả</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                  </div>
+
+                  <!-- MUA SÁCH -->
+                  <div class="tab-pane fade" id="buy" role="tabpanel" aria-labelledby="buy-tab">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th>Mã ĐH</th>
+                                    <th>Tên sách</th>
+                                    <th>Ngày thanh toán</th>
+                                    <th>Tổng tiền</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>#1001</td>
+                                    <td>Làm Chủ Code</td>
+                                    <td>21 Thg 3, 2026</td>
+                                    <td>120.000đ</td>
+                                    <td>Hoàn tất</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                  </div>
+
+                  <!-- MƯỢN SÁCH -->
+                  <div class="tab-pane fade" id="borrow" role="tabpanel" aria-labelledby="borrow-tab">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th>Mã phiếu</th>
+                                    <th>Tên sách</th>
+                                    <th>Ngày mượn</th>
+                                    <th>Ngày trả</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>MS502</td>
+                                    <td>Con Đường Khoa Học</td>
+                                    <td>04 Thg 4, 2026</td>
+                                    <td>11 Thg 4, 2026</td>
+                                    <td>Đang mượn</td>
+                                </tr>
+                                <tr>
+                                    <td>MS495</td>
+                                    <td>Tư Duy Quyết Định</td>
+                                    <td>02 Thg 2, 2026</td>
+                                    <td>09 Thg 2, 2026</td>
+                                    <td>Đã trả</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                  </div>
+                </div>
+                
             </div>
         </div>
     </div>

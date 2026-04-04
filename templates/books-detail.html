@@ -6,43 +6,52 @@
 <section class="book-details py-5 bg-light">
   <div class="container">
     <div class="row align-items-start">
+
+      <!-- Ảnh sách -->
       <div class="col-lg-5 mb-4 mb-lg-0">
         <div class="card border-0 shadow-sm">
-          <img src="{{ book.image }}" class="img-fluid rounded-3" alt="{{ book.title }}">
+          <img src="{{ url_for('static', filename='images/' ~ (book.cover_image or 'default.jpg')) }}"
+               class="img-fluid rounded-3"
+               alt="{{ book.title }}">
         </div>
       </div>
 
+      <!-- Thông tin sách -->
       <div class="col-lg-7">
-        {% if book.can_buy %}
-        <span class="badge bg-success mb-2 fs-6">Có thể mua</span>
-        {% endif %}
         <h2 class="fw-bold mb-2" style="color:#ED553B;">{{ book.title }}</h2>
-        <p class="text-muted mb-1 fs-6">Tác giả: <strong>{{ book.author }}</strong></p>
+        <p class="text-muted mb-1">Tác giả: <strong>{{ book.author or "Chưa rõ" }}</strong></p>
 
         <div class="mb-3">
-          <span class="text-warning fs-5">★★★★☆</span>
-          <small class="text-muted ms-2">(245 Đánh giá)</small>
+          <span class="text-warning">★★★★☆</span>
+          <small class="text-muted">(245 đánh giá)</small>
         </div>
 
         <div class="mb-4">
-          <h4 class="fw-semibold mb-0 text-orange">{{ book.price }}</h4>
-          <p class="text-muted small mb-0"><del>{{ book.old_price }}</del></p>
+          <h4 class="text-danger">
+            {{ "{:,.0f}đ".format(book.price) }}
+          </h4>
         </div>
 
-        <p class="text-muted mb-4">
-          Đây là nội dung mô tả chi tiết cho cuốn <strong>{{ book.title }}</strong>.
-          Hiện tại chúng ta đang lấy dữ liệu trực tiếp từ Python sang để hiển thị chính xác từng cuốn sách.
+        <p class="text-muted">
+          {{ book.description or "Chưa có mô tả cho sách này." }}
         </p>
 
         <ul class="list-unstyled mb-4">
-          <li><strong>Danh mục:</strong> {{ book.category }}</li>
-          <li><strong>Số trang:</strong> {{ book.pages }}</li>
-          <li><strong>Ngôn ngữ:</strong> Tiếng Việt</li>
+          <li><strong>Danh mục:</strong> {{ book.category_name or "Chưa rõ" }}</li>
+          <li><strong>Số trang:</strong> {{ book.pages or "Chưa rõ" }}</li>
         </ul>
 
-        <div class="d-flex flex-wrap gap-3">
-          <button class="btn text-white px-4 fw-semibold" style="background-color:#ED553B;">Thêm vào giỏ</button>
-        </div>
+        <!-- ✅ FORM THÊM VÀO GIỎ -->
+        <form action="/add_to_cart_form" method="POST">
+          <input type="hidden" name="book_id" value="{{ book.id }}">
+
+          <button type="submit"
+                  class="btn text-white px-4 fw-semibold"
+                  style="background-color:#ED553B;">
+            Thêm vào giỏ
+          </button>
+        </form>
+
       </div>
     </div>
   </div>

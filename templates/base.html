@@ -34,8 +34,16 @@
             </form>
 
             <div class="d-flex align-items-center gap-3">
-                <a href="{{ url_for('my_account') }}" class="nav-link"><i class="bi bi-person"></i> Tài khoản</a>
-                <a href="{{ url_for('cart') }}" class="nav-link"><i class="bi bi-cart"></i> Giỏ hàng (05)</a>
+                {% if session.get('role') == 'admin' %}
+                <a href="{{ url_for('admin_dashboard') }}" class="nav-link text-primary fw-semibold"><i class="bi bi-speedometer2"></i> Bảng điều khiển</a>
+                <a href="{{ url_for('logout') }}" class="nav-link text-danger"><i class="bi bi-box-arrow-right"></i> Đăng xuất</a>
+                {% elif session.get('user_name') %}
+                <a href="{{ url_for('my_account') }}" class="nav-link"><i class="bi bi-person-check"></i> {{ session['user_name'] }}</a>
+                <a href="{{ url_for('logout') }}" class="nav-link text-danger"><i class="bi bi-box-arrow-right"></i> Đăng xuất</a>
+                {% else %}
+                <a href="{{ url_for('login') }}" class="nav-link"><i class="bi bi-person"></i> Đăng nhập/Đăng ký</a>
+                {% endif %}
+                <a href="{{ url_for('view_cart') }}" class="nav-link"><i class="bi bi-cart"></i> Giỏ hàng({{ cart_count }})</a>
                 <a href="{{ url_for('wishlist') }}" class="nav-link"><i class="bi bi-heart"></i> Yêu thích</a>
             </div>
 

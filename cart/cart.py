@@ -1,92 +1,48 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify, session
+import sqlite3
+from db.db import get_db
 
 app = Flask(__name__)
 app.secret_key = "secret123"
 
 
-# ================= HOME =================
+# ================= HELPER =================
+def get_cart_items(user_id):
+    """Lấy danh sách sản phẩm trong giỏ hàng theo user_id"""
+    db = get_db()
+    db.row_factory = sqlite3.Row
+    cursor = db.cursor()
+    cursor.execute("""
+        SELECT b.id, b.title, b.price, b.cover_image, ci.quantity
+        FROM cart_items ci
+        JOIN books b ON b.id = ci.book_id
+        WHERE ci.user_id = ?
+    """, (user_id,))
+    return cursor.fetchall()
+
+
+# ================= ROUTES =================
 @app.route("/")
 def home():
     return render_template("index.html")
 
 
-# ================= ABOUT =================
-@app.route("/about")
-def about():
-    return render_template("about.html")
-
-
-# ================= CONTACT =================
-@app.route("/contact")
-def contact():
-    return render_template("contact.html")
-
-
-# ================= BOOKS =================
 @app.route("/books")
 def books():
-    return render_template("books.html")
-
-
-# ================= ACCOUNT =================
-@app.route("/account")
-def account():
-    return render_template("my-account.html")
-
-
-# ================= WISHLIST =================
-@app.route("/wishlist")
-def wishlist():
-    return render_template("wishlist.html")
-
-@app.route("/book-details")
-def book_details():
-    return render_template("book-details.html")
-# ================= CART DATA (GIẢ LẬP) =================
-cart = [
-    {
-        "id": 1,
-        "title": "Book 1",
-        "publisher": "NXB A",
-        "price": 100000,
-        "quantity": 1,
-        "image": "images/book1.png"
-    },
-    {
-        "id": 2,
-        "title": "Book 2",
-        "publisher": "NXB B",
-        "price": 150000,
-        "quantity": 2,
-        "image": "images/book2.png"
-    }
-]
+    # Hiển thị danh sách sách từ DB
+    db = get_db()
+    db.row_factory = sqlite3.Row
+    cursor = db.cursor()
+    cursor.execute("SELECT id, title, price, cover_image FROM books")
+    books_list = cursor.fetchall()
+    return render_template("books.html", books=books_list)
 
 
 # ================= VIEW CART =================
-
-from db.db import get_db
-import sqlite3
-
 @app.route("/cart")
 def view_cart():
-    db = get_db()
-    db.row_factory = sqlite3.Row  # QUAN TRỌNG
-    cursor = db.cursor()
-
-    # 👉 JOIN cart_items với books
-    cursor.execute("""
-        SELECT 
-            b.id,
-            b.title,
-            b.price,
-            b.cover_image,
-            ci.quantity
-        FROM cart_items ci
-        JOIN books b ON b.id = ci.book_id
-    """)
-
-    rows = cursor.fetchall()
+    user_id = session.get('user_id', 1)
+    rows = get_cart_items(user_id)  # lấy từ DB
 
     items = []
     for row in rows:
@@ -98,46 +54,70 @@ def view_cart():
             "image": f"images/{row['cover_image'] or 'default.jpg'}"
         })
 
-    subtotal = sum(item["price"] * item["quantity"] for item in items)
-    shipping_fee = 20000
+    subtotal = sum(float(item["price"]) * item["quantity"] for item in items)
+    shipping_fee = 20000 if items else 0
     total = subtotal + shipping_fee
 
-    return render_template(
-        "cart.html",
-        items=items,
-        subtotal=subtotal,
-        shipping=shipping_fee,
-        total=total
-    )
+    return render_template("cart.html", items=items, subtotal=subtotal, shipping=shipping_fee, total=total)
 
-# ================= UPDATE CART =================
+
+# ================= ADD TO CART =================
+@app.route("/add_to_cart", methods=["POST"])
+def add_to_cart():
+    data = request.get_json()
+    book_id = data.get("id")
+    user_id = session.get("user_id", 1)  # demo, có thể lấy từ login
+
+    db = get_db()
+    cursor = db.cursor()
+
+    # Kiểm tra đã có trong giỏ chưa
+    cursor.execute("SELECT quantity FROM cart_items WHERE book_id = ? AND user_id = ?", (book_id, user_id))
+    item = cursor.fetchone()
+
+    if item:
+        cursor.execute("UPDATE cart_items SET quantity = quantity + 1 WHERE book_id = ? AND user_id = ?", (book_id, user_id))
+    else:
+        cursor.execute("INSERT INTO cart_items (book_id, user_id, quantity) VALUES (?, ?, ?)", (book_id, user_id, 1))
+
+    db.commit()
+    return jsonify({"status": "success", "message": "Đã thêm vào giỏ hàng"})
+
+# ================= UPDATE QUANTITY =================
 @app.route("/update_cart", methods=["POST"])
 def update_cart():
-    book_id = int(request.form.get("book_id"))
-    quantity = int(request.form.get("quantity"))
+    book_id = request.form.get("book_id")
+    quantity = int(request.form.get("quantity", 1))
+    user_id = session.get('user_id', 1)
 
-    for item in cart:
-        if item["id"] == book_id:
-            item["quantity"] = quantity
+    db = get_db()
+    cursor = db.cursor()
 
+    if quantity > 0:
+        cursor.execute(
+            "UPDATE cart_items SET quantity = ? WHERE book_id = ? AND user_id = ?",
+            (quantity, book_id, user_id)
+        )
+    else:
+        cursor.execute(
+            "DELETE FROM cart_items WHERE book_id = ? AND user_id = ?",
+            (book_id, user_id)
+        )
+
+    db.commit()
     return redirect(url_for("view_cart"))
 
 
-# ================= REMOVE =================
+# ================= REMOVE ITEM =================
 @app.route("/remove_from_cart/<int:book_id>", methods=["POST"])
 def remove_from_cart(book_id):
-    global cart
-    cart = [item for item in cart if item["id"] != book_id]
-
+    user_id = session.get('user_id', 1)
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM cart_items WHERE book_id = ? AND user_id = ?", (book_id, user_id))
+    db.commit()
     return redirect(url_for("view_cart"))
 
 
-# ================= CHECKOUT =================
-@app.route("/checkout", methods=["POST"])
-def checkout():
-    return "Checkout thành công!"
-
-
-# ================= RUN =================
 if __name__ == "__main__":
     app.run(debug=True)
