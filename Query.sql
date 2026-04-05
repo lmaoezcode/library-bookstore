@@ -133,5 +133,5 @@ CREATE TABLE borrow_items (
     FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE SET NULL
 );
 -- CHÈN DỮ LIỆU MẪU (Lưu ý: Mật khẩu này chỉ để test)
-INSERT INTO users (name, email, password, role) VALUES ('Admin Website', 'admin@gmail.com', '8888', 'admin');
-INSERT INTO categories (name) VALUES ('Văn học'), ('Kinh tế'), ('Công nghệ');
+--INSERT INTO users (name, email, password, role) VALUES ('Admin Website', 'admin@gmail.com', '8888', 'admin');
+--INSERT INTO categories (name) VALUES ('Văn học'), ('Kinh tế'), ('Công nghệ');

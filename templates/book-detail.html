@@ -1,56 +1,72 @@
 {% extends "base.html" %}
 
-{% block title %}{{ book.title }} - Thư Viện Sách{% endblock %}
+{% block title %}{{ book.title }} - Th&#432; Vi&#7879;n S&aacute;ch{% endblock %}
+
+{% block extra_css %}
+<style>
+  .book-detail-cover {
+    aspect-ratio: 3 / 4;
+    width: 100%;
+    object-fit: cover;
+    background: #f8f9fa;
+  }
+</style>
+{% endblock %}
 
 {% block content %}
 <section class="book-details py-5 bg-light">
   <div class="container">
-    <div class="row align-items-start">
-      <div class="col-lg-5 mb-4 mb-lg-0">
-        <div class="card border-0 shadow-sm">
-          <img src="{{ book.image }}" class="img-fluid rounded-3" alt="{{ book.title }}">
+    <div class="mb-4">
+      <a href="{{ back_url }}" class="btn btn-outline-dark">
+        <i class="bi bi-arrow-left me-1"></i>Quay lại trang sách
+      </a>
+    </div>
+    <div class="row align-items-start g-4">
+      <div class="col-lg-5">
+        <div class="card border-0 shadow-sm overflow-hidden">
+          <img src="{{ book.image_url }}" class="book-detail-cover" alt="{{ book.title }}">
         </div>
       </div>
 
       <div class="col-lg-7">
-        {% if book.can_buy %}
-        <span class="badge bg-success mb-2 fs-6">Có thể mua</span>
-        {% endif %}
-        <h2 class="fw-bold mb-2" style="color:#ED553B;">{{ book.title }}</h2>
-        <p class="text-muted mb-1 fs-6">Tác giả: <strong>{{ book.author }}</strong></p>
+        <div class="d-flex flex-column gap-2">
+          <div class="d-flex flex-wrap gap-2">
+            {% if book.available_for_sale > 0 %}
+            <span class="badge bg-success fs-6">C&oacute; th&#7875; mua</span>
+            {% endif %}
+            {% if book.available_for_borrow > 0 %}
+            <span class="badge bg-primary fs-6">C&oacute; th&#7875; m&#432;&#7907;n</span>
+            {% endif %}
+          </div>
 
-        <div class="mb-3">
-          <span class="text-warning fs-5">★★★★☆</span>
-          <small class="text-muted ms-2">(245 Đánh giá)</small>
-        </div>
+          <h2 class="fw-bold mb-0" style="color:#ED553B;">{{ book.title }}</h2>
+          <p class="text-muted mb-0">T&aacute;c gi&#7843;: <strong>{{ book.author or "Ch&#432;a r&otilde;" }}</strong></p>
+          <p class="text-muted mb-0">Danh m&#7909;c: <strong>{{ book.category_name }}</strong></p>
 
-        <div class="mb-4">
-          <h4 class="fw-semibold mb-0 text-orange">{{ book.price }}</h4>
-          <p class="text-muted small mb-0"><del>{{ book.old_price }}</del></p>
-        </div>
+          <div class="pt-2">
+            <h4 class="fw-semibold mb-0 text-orange">{{ book.price_display }}</h4>
+          </div>
 
-        <p class="text-muted mb-4">
-          Đây là nội dung mô tả chi tiết cho cuốn <strong>{{ book.title }}</strong>.
-          Hiện tại chúng ta đang lấy dữ liệu trực tiếp từ Python sang để hiển thị chính xác từng cuốn sách.
-        </p>
+          <p class="text-muted pt-2 mb-0">
+            {{ book.description or "Ch&#432;a c&oacute; m&ocirc; t&#7843; cho s&aacute;ch n&agrave;y." }}
+          </p>
 
-        <ul class="list-unstyled mb-4">
-          <li><strong>Danh mục:</strong> {{ book.category }}</li>
-          <li><strong>Số trang:</strong> {{ book.pages }}</li>
-          <li><strong>Ngôn ngữ:</strong> Tiếng Việt</li>
-        </ul>
+          <ul class="list-unstyled mb-0 pt-2">
+            <li><strong>B&aacute;n:</strong> {{ book.available_for_sale }} cu&#7889;n c&ograve;n l&#7841;i</li>
+            <li><strong>M&#432;&#7907;n:</strong> {{ book.available_for_borrow }} cu&#7889;n c&ograve;n l&#7841;i</li>
+          </ul>
 
-         <form action="/add_to_cart_form" method="POST">
-          <input type="hidden" name="book_id" value="{{ book.id }}">
-
-          <button type="submit"
-                  class="btn text-white px-4 fw-semibold"
-                  style="background-color:#ED553B;"
-                  onclick="console.log('Nút đã được bấm! ID sách là: {{ book.id }}')"
+          {% if book.available_for_sale > 0 %}
+          <button
+            type="button"
+            class="btn text-white px-4 fw-semibold mt-3 align-self-start"
+            style="background-color:#ED553B;"
+            onclick="openCartModal({{ book.id }}, '{{ book.title | replace('\'', '\\\'') }}', {{ book.price }}, {{ book.available_for_sale }})"
           >
-            Thêm vào giỏ
+            Th&ecirc;m v&agrave;o gi&#7887;
           </button>
-        </form>
+          {% endif %}
+        </div>
       </div>
     </div>
   </div>

@@ -1,110 +1,210 @@
 {% extends "base.html" %}
 
-{% block title %}Danh sách Sách - Thư Viện Sách{% endblock %}
+{% block title %}Danh s&aacute;ch S&aacute;ch - Th&#432; Vi&#7879;n S&aacute;ch{% endblock %}
+
+{% block extra_css %}
+<style>
+  .books-grid-card {
+    overflow: hidden;
+  }
+
+  .books-grid-cover-wrap {
+    aspect-ratio: 3 / 4;
+    width: 100%;
+    background: #f8f9fa;
+    overflow: hidden;
+  }
+
+  .books-grid-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+</style>
+{% endblock %}
 
 {% block content %}
 <section class="books-section py-5 bg-light">
   <div class="container">
     <div class="row">
       <div class="col-lg-3 mb-4">
-        <div class="card border-0 shadow-sm p-3">
-          <h5 class="fw-bold mb-3 text-orange">Bộ Lọc</h5>
+        <form class="card border-0 shadow-sm p-3" method="GET" action="{{ url_for('book.books_ui') }}">
+          <input type="hidden" name="search_text" value="{{ search_text or '' }}">
 
-          <div class="mb-4">
-            <h6 class="fw-semibold mb-2">Danh mục</h6>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" value="" id="cat1">
-              <label class="form-check-label" for="cat1">Tiểu thuyết</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" value="" id="cat2">
-              <label class="form-check-label" for="cat2">Khoa học</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" value="" id="cat3">
-              <label class="form-check-label" for="cat3">Tiểu sử</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" value="" id="cat4">
-              <label class="form-check-label" for="cat4">Công nghệ</label>
-            </div>
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold mb-0 text-orange">B&#7897; l&#7885;c</h5>
+            <a href="{{ url_for('book.books_ui', search_text=search_text) }}" class="small text-decoration-none">&#272;&#7863;t l&#7841;i</a>
           </div>
 
           <div class="mb-4">
-            <h6 class="fw-semibold mb-2">Mức giá</h6>
-            <input type="range" class="form-range" min="30000" max="600000" step="10000" id="priceRange">
+            <h6 class="fw-semibold mb-2">Danh m&#7909;c</h6>
+            {% for category in categories %}
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                name="category_id"
+                value="{{ category.id }}"
+                id="category-{{ category.id }}"
+                {% if category.id|string in selected_categories %}checked{% endif %}
+              >
+              <label class="form-check-label" for="category-{{ category.id }}">{{ category.name }}</label>
+            </div>
+            {% else %}
+            <p class="text-muted small mb-0">Ch&#432;a c&oacute; danh m&#7909;c.</p>
+            {% endfor %}
+          </div>
+
+          <div class="mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="fw-semibold mb-0">M&#7913;c gi&aacute;</h6>
+              <span class="small text-muted" id="priceRangeValue">{{ "{:,.0f}".format(max_price).replace(",", ".") }}&#273;</span>
+            </div>
+            <input
+              type="range"
+              class="form-range"
+              min="{{ min_price }}"
+              max="{{ default_max_price or 0 }}"
+              step="10000"
+              id="priceRange"
+              name="max_price"
+              value="{{ max_price }}"
+            >
             <div class="d-flex justify-content-between">
-              <small>30.000đ</small>
-              <small>600.000đ+</small>
+              <small>{{ "{:,.0f}".format(min_price).replace(",", ".") }}&#273;</small>
+              <small>{{ "{:,.0f}".format(default_max_price).replace(",", ".") }}&#273;</small>
             </div>
           </div>
 
           <div class="mb-4">
-            <h6 class="fw-semibold mb-2">Tác giả</h6>
-            <select class="form-select">
-              <option>Tất cả tác giả</option>
-              <option>J.K. Rowling</option>
-              <option>Stephen King</option>
-              <option>Robin Sharma</option>
-              <option>Nguyễn Nhật Ánh</option>
+            <h6 class="fw-semibold mb-2">T&aacute;c gi&#7843;</h6>
+            <select class="form-select" name="author">
+              <option value="">T&#7845;t c&#7843; t&aacute;c gi&#7843;</option>
+              {% for author in authors %}
+              <option value="{{ author.author }}" {% if author.author == selected_author %}selected{% endif %}>{{ author.author }}</option>
+              {% endfor %}
             </select>
           </div>
 
           <div class="mb-4">
-            <h6 class="fw-semibold mb-2">Đánh giá</h6>
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="rating" id="rate4">
-              <label class="form-check-label" for="rate4">Từ 4★ trở lên</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="rating" id="rate3">
-              <label class="form-check-label" for="rate3">Từ 3★ trở lên</label>
-            </div>
+            <h6 class="fw-semibold mb-2">S&#7855;p x&#7871;p</h6>
+            <select class="form-select" name="sort">
+              <option value="newest" {% if sort_by == 'newest' %}selected{% endif %}>M&#7899;i nh&#7845;t</option>
+              <option value="price_asc" {% if sort_by == 'price_asc' %}selected{% endif %}>Gi&aacute;: Th&#7845;p &#273;&#7871;n cao</option>
+              <option value="price_desc" {% if sort_by == 'price_desc' %}selected{% endif %}>Gi&aacute;: Cao &#273;&#7871;n th&#7845;p</option>
+              <option value="title_asc" {% if sort_by == 'title_asc' %}selected{% endif %}>T&ecirc;n s&aacute;ch A-Z</option>
+            </select>
           </div>
 
-          <button class="btn text-white w-100 fw-semibold" style="background-color:#ED553B;">Áp dụng bộ lọc</button>
-        </div>
+          <button class="btn text-white w-100 fw-semibold" style="background-color:#ED553B;">&Aacute;p d&#7909;ng b&#7897; l&#7885;c</button>
+        </form>
       </div>
 
       <div class="col-lg-9">
         <div class="d-flex justify-content-between align-items-center mb-4">
-          <h4 class="fw-bold mb-0">Bộ sưu tập Sách</h4>
-          <select class="form-select w-auto">
-            <option>Sắp xếp theo</option>
-            <option>Giá: Thấp đến Cao</option>
-            <option>Giá: Cao đến Thấp</option>
-            <option>Mới nhất trước</option>
-          </select>
+          <div>
+            <h4 class="fw-bold mb-1">
+              {% if search_text %}
+              K&#7871;t qu&#7843; t&igrave;m ki&#7871;m cho "{{ search_text }}"
+              {% else %}
+              B&#7897; s&#432;u t&#7853;p s&aacute;ch
+              {% endif %}
+            </h4>
+            <p class="text-muted mb-0">{{ danh_sach_sach|length }} s&aacute;ch ph&ugrave; h&#7907;p</p>
+          </div>
         </div>
 
         <div class="row gy-4">
-          <div class="row gy-4">
-
-            {% for sach in danh_sach_sach %}
-
-            <div class="col-md-4">
-              <a href="{{ url_for('books_detail', book_id=sach.id) }}" class="text-decoration-none text-dark">
-                <div class="card border-0 shadow-sm book-card h-100 position-relative">
-                  <img src="{{ sach.image }}" class="card-img-top rounded-top" alt="{{ sach.title }}">
-                  {% if sach.can_buy %}
-                  <span class="badge bg-success position-absolute top-0 start-0 m-2">Có thể mua</span>
+          {% for sach in danh_sach_sach %}
+          <div class="col-md-4">
+            <div class="card border-0 shadow-sm book-card books-grid-card h-100 position-relative">
+              <div class="books-grid-cover-wrap">
+                <a href="{{ url_for('book.books_detail_ui', book_id=sach.id, next=request.full_path) }}" class="text-decoration-none">
+                  <img src="{{ sach.image }}" class="card-img-top rounded-top books-grid-cover" alt="{{ sach.title }}">
+                </a>
+              </div>
+              <div class="position-absolute top-0 start-0 m-2 d-flex flex-column gap-1">
+                {% if sach.available_for_sale > 0 %}
+                <span class="badge bg-success">C&oacute; th&#7875; mua</span>
+                {% endif %}
+                {% if sach.available_for_borrow > 0 %}
+                <span class="badge bg-primary">C&oacute; th&#7875; m&#432;&#7907;n</span>
+                {% endif %}
+              </div>
+              <div class="card-body d-flex flex-column">
+                <p class="small text-muted mb-2">{{ sach.category_name }}</p>
+                <h6 class="fw-bold mb-1">
+                  <a href="{{ url_for('book.books_detail_ui', book_id=sach.id, next=request.full_path) }}" class="text-decoration-none text-dark">
+                    {{ sach.title }}
+                  </a>
+                </h6>
+                <p class="text-muted small mb-1">{{ sach.author }}</p>
+                <p class="fw-semibold text-orange mb-3">{{ sach.price_display }}</p>
+                <p class="text-muted small mb-3">{{ sach.description }}</p>
+                <div class="mt-auto d-flex flex-column gap-2">
+                  {% if sach.available_for_sale > 0 %}
+                  <button
+                    type="button"
+                    class="btn text-white fw-semibold"
+                    style="background-color:#ED553B;"
+                    onclick="openCartModal({{ sach.id }}, '{{ sach.title | replace('\'', '\\\'') }}', {{ sach.price }}, {{ sach.available_for_sale }})"
+                  >
+                    <i class="bi bi-cart-plus me-1"></i>Th&ecirc;m v&agrave;o gi&#7887;
+                  </button>
+                  {% else %}
+                  <button type="button" class="btn btn-secondary fw-semibold" disabled>H&#7871;t h&agrave;ng b&aacute;n</button>
                   {% endif %}
-                  <div class="card-body d-flex flex-column">
-                    <h6 class="fw-bold mb-1">{{ sach.title }}</h6>
-                    <p class="text-muted small mb-1">{{ sach.author }}</p>
-                    <p class="fw-semibold text-orange mb-2">{{ sach.price }}</p>
-                    <button class="btn btn-sm text-white w-100 mt-auto" style="background-color:#ED553B;">Thêm vào
-                      giỏ</button>
+
+                  <div class="d-flex gap-2">
+                    <a href="{{ url_for('book.books_detail_ui', book_id=sach.id, next=request.full_path) }}" class="btn btn-outline-dark flex-grow-1">
+                      Xem chi ti&#7871;t
+                    </a>
+                    {% if sach.id in wishlist_ids %}
+                    <form method="POST" action="{{ url_for('remove_from_wishlist', book_id=sach.id) }}">
+                      <button type="submit" class="btn btn-outline-danger" title="X&oacute;a kh&#7887;i y&ecirc;u th&iacute;ch">
+                        <i class="bi bi-heart-fill"></i>
+                      </button>
+                    </form>
+                    {% else %}
+                    <form method="POST" action="{{ url_for('add_to_wishlist', book_id=sach.id) }}">
+                      <button type="submit" class="btn btn-outline-danger" title="Th&ecirc;m v&agrave;o y&ecirc;u th&iacute;ch">
+                        <i class="bi bi-heart"></i>
+                      </button>
+                    </form>
+                    {% endif %}
                   </div>
                 </div>
-              </a>
+              </div>
             </div>
-
-            {% endfor %}
           </div>
+          {% else %}
+          <div class="col-12">
+            <div class="alert alert-light border text-center mb-0">
+              Kh&ocirc;ng t&igrave;m th&#7845;y s&aacute;ch ph&ugrave; h&#7907;p.
+            </div>
+          </div>
+          {% endfor %}
         </div>
       </div>
     </div>
   </div>
 </section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const priceRange = document.getElementById("priceRange");
+  const priceRangeValue = document.getElementById("priceRangeValue");
+
+  if (priceRange && priceRangeValue) {
+    const formatPrice = (value) => new Intl.NumberFormat("vi-VN").format(value) + "\u0111";
+    const updatePriceLabel = () => {
+      priceRangeValue.textContent = formatPrice(priceRange.value || 0);
+    };
+
+    priceRange.addEventListener("input", updatePriceLabel);
+    updatePriceLabel();
+  }
+</script>
 {% endblock %}

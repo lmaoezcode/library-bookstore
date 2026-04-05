@@ -2,6 +2,18 @@
 
 {% block title %}Mượn Sách - Thư Viện Sách{% endblock %}
 
+{% block extra_css %}
+<style>
+    .borrow-book-cover {
+        width: 56px;
+        height: 76px;
+        object-fit: cover;
+        background: #f8f9fa;
+        flex-shrink: 0;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <section class="py-5 bg-light" style="min-height: 80vh;">
     <div class="container">
@@ -10,50 +22,46 @@
                 <div class="card border-0 shadow-sm p-4 p-md-5">
                     <div class="text-center mb-4">
                         <h3 class="fw-bold" style="color:#ED553B;">Đăng Ký Mượn Sách</h3>
-                        <p class="text-muted">Vui lòng điền thông tin dưới đây để gửi yêu cầu mượn sách tới thư viện.
-                        </p>
+                        <p class="text-muted">Điền thông tin để gửi yêu cầu mượn sách. Mỗi đầu sách chỉ được tính 1 lượt mượn cho mỗi yêu cầu.</p>
                     </div>
 
-                    <form>
+                    <form id="borrowForm" action="{{ url_for('borrow.create_borrow') }}" method="POST">
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Họ và tên</label>
-                                <input type="text" class="form-control" placeholder="Nhập họ và tên người mượn"
-                                    required>
+                                <input type="text" class="form-control" value="{{ session.get('user_name', '') }}" placeholder="Nhập họ và tên người mượn" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Số điện thoại</label>
-                                <input type="tel" class="form-control" placeholder="Nhập số điện thoại" required>
+                                <input type="tel" class="form-control" name="phone" placeholder="Nhập số điện thoại" required>
                             </div>
                             <div class="col-12">
                                 <label class="form-label fw-semibold">Sách đã chọn mượn</label>
                                 <ul class="list-group mb-2">
                                     {% for book in selected_books %}
                                     <li class="list-group-item d-flex align-items-center">
-                                        <img src="{{ book.image }}" alt="{{ book.title }}" width="40"
-                                            class="me-3 rounded">
+                                        <input type="hidden" name="book_ids" value="{{ book.id }}">
+                                        <img src="{{ book.image }}" alt="{{ book.title }}" class="me-3 rounded borrow-book-cover">
                                         <div>
                                             <strong>{{ book.title }}</strong><br>
                                             <small class="text-muted">{{ book.author }}</small>
                                         </div>
                                     </li>
                                     {% else %}
-                                    <li class="list-group-item text-muted">Chưa có cuốn sách nào được chọn. Hãy quay lại
-                                        giỏ hàng để chọn sách.</li>
+                                    <li class="list-group-item text-muted">Chưa có cuốn sách nào được chọn. Hãy quay lại giỏ hàng để chọn sách.</li>
                                     {% endfor %}
                                 </ul>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Ngày mượn</label>
-                                <input type="date" class="form-control" required>
+                                <input type="date" class="form-control" name="borrow_date" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Ngày trả dự kiến</label>
-                                <input type="date" class="form-control" required>
+                                <input type="date" class="form-control" name="return_date" required>
                             </div>
                             <div class="col-12 mt-4">
-                                <button type="submit" class="btn text-white w-100 py-2 fw-semibold"
-                                    style="background-color:#ED553B;">
+                                <button type="submit" class="btn text-white w-100 py-2 fw-semibold" style="background-color:#ED553B;" {% if not selected_books %}disabled{% endif %}>
                                     Gửi Yêu Cầu Mượn Sách
                                 </button>
                             </div>
@@ -64,4 +72,58 @@
         </div>
     </div>
 </section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const borrowForm = document.getElementById("borrowForm");
+
+    function showBorrowToast(message, isError = false) {
+        const existing = document.getElementById("borrowToast");
+        if (existing) {
+            existing.remove();
+        }
+
+        const container = document.createElement("div");
+        container.className = "toast-container position-fixed bottom-0 end-0 p-3";
+        container.innerHTML = `
+            <div id="borrowToast" class="toast align-items-center ${isError ? "text-bg-danger" : "text-bg-success"} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body">${message}</div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(container);
+        const toastElement = document.getElementById("borrowToast");
+        bootstrap.Toast.getOrCreateInstance(toastElement, { delay: 2500 }).show();
+    }
+
+    if (borrowForm) {
+        borrowForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(borrowForm);
+            const response = await fetch(borrowForm.action, {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            });
+
+            const payload = await response.json();
+
+            if (!response.ok || payload.status !== "success") {
+                showBorrowToast(payload.message || "Không thể tạo phiếu mượn.", true);
+                return;
+            }
+
+            showBorrowToast(`Yêu cầu mượn đã được ghi nhận. Mã xác nhận: ${payload.borrow_code}`);
+            setTimeout(() => {
+                window.location.href = "{{ url_for('index') }}";
+            }, 1800);
+        });
+    }
+</script>
 {% endblock %}

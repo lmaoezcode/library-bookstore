@@ -16,7 +16,6 @@
 </head>
 
 <body>
-
     <div class="top-bar text-white py-2 px-3 d-flex justify-content-center align-items-center">
         <div><i class="bi bi-telephone me-2"></i> +84 7397807795</div>
     </div>
@@ -24,26 +23,25 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="{{ url_for('index') }}">
-                <img src="{{ url_for('static', filename='images/sample logo 1.png') }}" class="me-2" alt="Logo"
-                    width="40px">
+                <img src="{{ url_for('static', filename='images/sample logo 1.png') }}" class="me-2" alt="Logo" width="40">
             </a>
 
-            <form class="d-none d-md-flex me-auto ms-3 search-bar" action="{{ url_for('books') }}" method="GET">
-                <input class="form-control" type="search" placeholder="Tìm kiếm sách..." />
+            <form class="d-none d-md-flex me-auto ms-3 search-bar" action="{{ url_for('book.books_ui') }}" method="GET">
+                <input class="form-control" type="search" name="search_text" value="{{ search_text or '' }}" placeholder="Tìm kiếm sách..." />
                 <button class="btn" type="submit"><i class="bi bi-search"></i></button>
             </form>
 
             <div class="d-flex align-items-center gap-3">
                 {% if session.get('role') == 'admin' %}
-                <a href="{{ url_for('admin_dashboard') }}" class="nav-link text-primary fw-semibold"><i class="bi bi-speedometer2"></i> Bảng điều khiển</a>
-                <a href="{{ url_for('logout') }}" class="nav-link text-danger"><i class="bi bi-box-arrow-right"></i> Đăng xuất</a>
+                <a href="{{ url_for('admin.admin_dashboard') }}" class="nav-link text-primary fw-semibold"><i class="bi bi-speedometer2"></i> Bảng điều khiển</a>
+                <a href="{{ url_for('auth.logout') }}" class="nav-link text-danger"><i class="bi bi-box-arrow-right"></i> Đăng xuất</a>
                 {% elif session.get('user_name') %}
                 <a href="{{ url_for('my_account') }}" class="nav-link"><i class="bi bi-person-check"></i> {{ session['user_name'] }}</a>
-                <a href="{{ url_for('logout') }}" class="nav-link text-danger"><i class="bi bi-box-arrow-right"></i> Đăng xuất</a>
+                <a href="{{ url_for('auth.logout') }}" class="nav-link text-danger"><i class="bi bi-box-arrow-right"></i> Đăng xuất</a>
                 {% else %}
-                <a href="{{ url_for('login') }}" class="nav-link"><i class="bi bi-person"></i> Đăng nhập/Đăng ký</a>
+                <a href="{{ url_for('auth.login') }}" class="nav-link"><i class="bi bi-person"></i> Đăng nhập/Đăng ký</a>
                 {% endif %}
-                <a href="{{ url_for('view_cart') }}" class="nav-link"><i class="bi bi-cart"></i> Giỏ hàng({{ cart_count }})</a>
+                <a href="{{ url_for('cart.view_cart') }}" class="nav-link" id="headerCartLink"><i class="bi bi-cart"></i> Giỏ hàng({{ cart_count }})</a>
                 <a href="{{ url_for('wishlist') }}" class="nav-link"><i class="bi bi-heart"></i> Yêu thích</a>
             </div>
 
@@ -58,12 +56,26 @@
             <ul class="nav justify-content-center py-2">
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Trang chủ</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}">Về chúng tôi</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('books') }}">Sách</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('book.books_ui') }}">Sách</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('contact') }}">Liên hệ</a></li>
             </ul>
         </div>
     </div>
+
     <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="container pt-3">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ 'warning' if category == 'message' else category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
         {% block content %}{% endblock %}
     </main>
 
@@ -74,8 +86,7 @@
                     <div class="d-flex align-items-center mb-3">
                         <img src="{{ url_for('static', filename='images/sample logo 1.png') }}" alt="Logo" width="80">
                     </div>
-                    <p class="text-muted small mb-4">Mang tri thức đến mọi nhà. Nền tảng thư viện và nhà sách trực tuyến
-                        hàng đầu.</p>
+                    <p class="text-muted small mb-4">Mang tri thức đến mọi nhà. Nền tảng thư viện và nhà sách trực tuyến hàng đầu.</p>
                     <div class="d-flex gap-3">
                         <a href="#" class="text-danger fs-5"><i class="bi bi-facebook"></i></a>
                         <a href="#" class="text-danger fs-5"><i class="bi bi-youtube"></i></a>
@@ -86,22 +97,153 @@
                 <div class="col-md-6">
                     <h6 class="fw-bold text-danger mb-3">CÔNG TY</h6>
                     <ul class="list-unstyled">
-                        <li><a href="{{ url_for('index') }}" class="text-dark text-decoration-none d-block mb-2">TRANG
-                                CHỦ</a></li>
-                        <li><a href="{{ url_for('about') }}" class="text-dark text-decoration-none d-block mb-2">VỀ
-                                CHÚNG TÔI</a></li>
-                        <li><a href="{{ url_for('books') }}"
-                                class="text-dark text-decoration-none d-block mb-2">SÁCH</a></li>
-                        <li><a href="{{ url_for('contact') }}" class="text-dark text-decoration-none d-block mb-2">LIÊN
-                                HỆ</a></li>
+                        <li><a href="{{ url_for('index') }}" class="text-dark text-decoration-none d-block mb-2">TRANG CHỦ</a></li>
+                        <li><a href="{{ url_for('about') }}" class="text-dark text-decoration-none d-block mb-2">VỀ CHÚNG TÔI</a></li>
+                        <li><a href="{{ url_for('book.books_ui') }}" class="text-dark text-decoration-none d-block mb-2">SÁCH</a></li>
+                        <li><a href="{{ url_for('contact') }}" class="text-dark text-decoration-none d-block mb-2">LIÊN HỆ</a></li>
                     </ul>
                 </div>
             </div>
             <hr class="my-4">
         </div>
     </footer>
+
+    <div class="modal fade" id="addToCartModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header border-bottom-0 pb-0">
+                    <h5 class="modal-title fw-bold text-truncate" id="cartModalTitle" style="max-width: 90%;">Thêm vào giỏ</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex mb-3 align-items-center">
+                        <span class="fw-semibold me-2">Đơn giá:</span>
+                        <span class="fs-5 text-danger fw-bold" id="cartModalPrice"></span>
+                    </div>
+                    <form id="addToCartForm" method="POST" action="{{ url_for('cart.add_to_cart') }}">
+                        <input type="hidden" name="book_id" id="cartModalBookId">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Số lượng (Còn <span id="cartModalAvailable"></span> cuốn)</label>
+                            <div class="input-group" style="width: 140px;">
+                                <button class="btn btn-outline-secondary" type="button" onclick="changeQty(-1)">-</button>
+                                <input type="number" class="form-control text-center" name="quantity" id="cartModalQty" value="1" min="1" oninput="updateTotal()">
+                                <button class="btn btn-outline-secondary" type="button" onclick="changeQty(1)">+</button>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <span class="fw-bold fs-5">Tạm tính:</span>
+                            <span class="fw-bold fs-4 text-danger" id="cartModalTotal"></span>
+                        </div>
+                        <button type="submit" class="btn w-100 py-2 fw-semibold text-white" style="background-color: #ED553B;">Xác Nhận Thêm Vào Giỏ <i class="bi bi-cart-plus ms-1"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="cartSuccessToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">Thêm sách vào giỏ hàng thành công!</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+        let currentPrice = 0;
+        let currentLimit = 0;
+
+        function openCartModal(id, title, price, available) {
+            document.getElementById('cartModalTitle').innerText = title;
+            document.getElementById('cartModalBookId').value = id;
+            document.getElementById('cartModalAvailable').innerText = available;
+            currentPrice = parseFloat(price) || 0;
+            currentLimit = parseInt(available) || 1;
+            document.getElementById('cartModalPrice').innerText = new Intl.NumberFormat('vi-VN').format(currentPrice) + 'đ';
+
+            const qtyInput = document.getElementById('cartModalQty');
+            qtyInput.value = 1;
+            qtyInput.max = currentLimit;
+
+            updateTotal();
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('addToCartModal')).show();
+        }
+
+        function changeQty(delta) {
+            const input = document.getElementById('cartModalQty');
+            const newVal = parseInt(input.value || '1', 10) + delta;
+            if (newVal >= 1 && newVal <= currentLimit) {
+                input.value = newVal;
+                updateTotal();
+            }
+        }
+
+        function updateTotal() {
+            let qty = parseInt(document.getElementById('cartModalQty').value || '1', 10) || 1;
+            if (qty > currentLimit) qty = currentLimit;
+            if (qty < 1) qty = 1;
+            document.getElementById('cartModalQty').value = qty;
+
+            const total = currentPrice * qty;
+            document.getElementById('cartModalTotal').innerText = new Intl.NumberFormat('vi-VN').format(total) + 'đ';
+        }
+
+        const addToCartForm = document.getElementById('addToCartForm');
+        if (addToCartForm) {
+            addToCartForm.addEventListener('submit', async function (event) {
+                event.preventDefault();
+
+                const formData = new FormData(addToCartForm);
+                const response = await fetch(addToCartForm.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                let payload = null;
+                try {
+                    payload = await response.json();
+                } catch (error) {
+                    payload = null;
+                }
+
+                if (!response.ok || (payload && payload.status === 'error')) {
+                    alert((payload && payload.message) || 'Không thể thêm sách vào giỏ hàng.');
+                    return;
+                }
+
+                const qty = parseInt(formData.get('quantity') || '1', 10) || 1;
+                const cartLink = document.getElementById('headerCartLink');
+                if (cartLink) {
+                    const nextCount = Number(payload && payload.cart_count);
+                    if (Number.isFinite(nextCount)) {
+                        cartLink.innerHTML = `<i class="bi bi-cart"></i> Giỏ hàng(${nextCount})`;
+                    } else {
+                        const match = cartLink.textContent.match(/\((\d+)\)/);
+                        const currentCount = match ? parseInt(match[1], 10) : 0;
+                        cartLink.innerHTML = `<i class="bi bi-cart"></i> Giỏ hàng(${currentCount + qty})`;
+                    }
+                }
+
+                const modalElement = document.getElementById('addToCartModal');
+                const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                if (modalInstance) {
+                    modalInstance.hide();
+                }
+
+                const toastElement = document.getElementById('cartSuccessToast');
+                if (toastElement) {
+                    bootstrap.Toast.getOrCreateInstance(toastElement).show();
+                }
+            });
+        }
+    </script>
 
     {% block extra_js %}{% endblock %}
 </body>

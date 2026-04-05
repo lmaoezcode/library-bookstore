@@ -4,36 +4,36 @@ from datetime import timedelta
 from flask import request, render_template, session, redirect, url_for, flash, current_app
 import sqlite3
 from . import auth_bp
+from db.db import get_db
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
-    error = None
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
-        name = request.form.get('name')
+        name = request.form.get('fullname')
         confirmation = request.form.get('confirmation')
-        if not confirmation:
-            error = "Please agree with Term and Condition!"
-            return render_template('register.html', error=error)
+        
+        if password != confirmation:
+            flash("Mật khẩu xác nhận không khớp!", "danger")
+            return redirect(url_for('auth.login'))
+            
         db = get_db()
-        result=db.execute('SELECT * FROM users WHERE email = ?', (email,)).fetchone()
+        result = db.execute('SELECT * FROM users WHERE email = ?', (email,)).fetchone()
         if result:
-            error="Email already exists!"
+            flash("Địa chỉ email này đã tồn tại!", "danger")
         else:
             hashed_password = generate_password_hash(password)
-            db.execute('INSERT INTO users (email, password,name) VALUES (?, ?,?)',(email, hashed_password,name))
+            db.execute('INSERT INTO users (email, password, name, role) VALUES (?, ?, ?, ?)', (email, hashed_password, name, 'user'))
             db.commit()
-            return redirect(url_for('admin.login'))
-        return render_template('register.html', error=error)
+            flash("Đăng ký thành công! Vui lòng đăng nhập!", "success")
+            
+        return redirect(url_for('auth.login'))
 
-    return render_template('register.html')
-def get_db():
-    conn = sqlite3.connect('db/library.sqlite')
-    conn.row_factory=sqlite3.Row
-    return conn
+    return redirect(url_for('auth.login'))
+
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -46,11 +46,16 @@ def login():
         password = request.form.get('password')
         remember = request.form.get('remember')
         db = get_db()
-        user= db.execute('SELECT * FROM users WHERE email = ? AND role="user"', (email,)).fetchone()
-        if user and check_password_hash(user["password"], password):
+        user= db.execute('SELECT * FROM users WHERE email = ?', (email,)).fetchone()
+        if user and (check_password_hash(user["password"], password) or user["password"] == password):
             session['logged_in'] = True
             session['user_id']= user["id"]
+            session['role'] = user["role"]
+            session['user_name'] = user["name"]
             flash("Đăng nhập thành công!", "success")
+            
+            if user['role'] == 'admin':
+                return redirect(url_for('admin.admin_dashboard'))
             if remember:
                 # Nếu tích vào Remember: Session tồn tại lâu (ví dụ 30 ngày)
                 session.permanent = True

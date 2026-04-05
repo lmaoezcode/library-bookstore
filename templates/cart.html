@@ -1,89 +1,256 @@
 {% extends "base.html" %}
 
-{% block title %}Giỏ Hàng - Thư Viện Sách{% endblock %}
+{% block title %}Giỏ hàng - Thư Viện Sách{% endblock %}
+
+{% block extra_css %}
+<style>
+  .cart-item-cover {
+    width: 92px;
+    height: 124px;
+    object-fit: cover;
+    background: #f8f9fa;
+  }
+</style>
+{% endblock %}
 
 {% block content %}
 <section class="container py-5">
-    <h4 class="fw-bold mb-4 text-orange">Giỏ Hàng Của Tôi</h4>
-    <div class="row g-4">
-        <div class="col-lg-8">
-            <form id="cartForm">
-                {% for item in cart_items %}
-                <div class="card border-0 shadow-sm mb-3 p-3 d-flex flex-row align-items-center">
-                    <div class="form-check me-3">
-                        <input class="form-check-input book-checkbox" type="checkbox" value="{{ item.id }}"
-                            data-can-buy="{{ 'true' if item.can_buy else 'false' }}">
-                    </div>
-                    <img src="{{ item.image }}" class="rounded me-3" width="80" alt="">
-                    <div class="flex-grow-1">
-                        <h6 class="fw-bold mb-1">{{ item.title }}</h6>
-                        <p class="text-muted small mb-1">{{ item.author }}</p>
-                        <p class="fw-semibold text-danger mb-0">{{ item.price }}</p>
-                        {% if item.can_buy %}
-                        <span class="badge bg-success mt-1">Có thể mua</span>
-                        {% else %}
-                        <span class="badge bg-secondary mt-1">Chỉ có thể mượn</span>
-                        {% endif %}
-                    </div>
-                    <div class="d-flex flex-column align-items-end">
-                        <input type="number" class="form-control form-control-sm mb-2" value="1" min="1"
-                            style="width: 70px;">
-                        <button type="button" class="btn btn-sm btn-outline-danger">Xóa</button>
-                    </div>
-                </div>
-                {% endfor %}
-            </form>
-        </div>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold text-orange mb-0">Giỏ hàng của tôi</h4>
+    <a href="{{ url_for('book.books_ui') }}" class="btn btn-outline-dark">Tiếp tục mua sắm</a>
+  </div>
 
-        <div class="col-lg-4">
-            <div class="card border-0 shadow-sm p-4">
-                <h6 class="fw-bold mb-3">Tóm Tắt Đơn Hàng</h6>
-                <div class="d-flex justify-content-between mb-2">
-                    <span class="text-muted">Tạm tính</span><span class="fw-semibold">300.000đ</span>
+  <div class="row g-4">
+    <div class="col-lg-8">
+      {% if items %}
+      <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+        <div class="form-check me-2">
+          <input class="form-check-input" type="checkbox" id="selectAllCartItems">
+          <label class="form-check-label" for="selectAllCartItems">Chọn tất cả</label>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-danger" onclick="submitSelectedDelete()">Xóa đã chọn</button>
+        <button type="button" class="btn btn-sm btn-outline-danger" onclick="submitClearCart()">Xóa tất cả</button>
+      </div>
+
+      <div class="d-flex flex-column gap-3">
+          {% for item in items %}
+          <div class="card border-0 shadow-sm p-3 cart-item-row" data-book-id="{{ item.id }}" data-price="{{ item.price or 0 }}">
+            <div class="d-flex gap-3 align-items-start">
+              <div class="pt-2">
+                <input class="form-check-input cart-item-checkbox" type="checkbox" name="selected_book_ids" value="{{ item.id }}">
+              </div>
+              <img src="{{ item.image }}" class="rounded cart-item-cover" alt="{{ item.title }}">
+              <div class="flex-grow-1">
+                <div class="d-flex justify-content-between gap-3">
+                  <div>
+                    <h6 class="fw-bold mb-1">{{ item.title }}</h6>
+                    <p class="text-muted small mb-2">{{ item.author }}</p>
+                    <p class="fw-semibold text-danger mb-1">{{ item.price_display }}</p>
+                    <p class="text-muted small mb-0">Còn {{ item.available_for_sale }} cuốn có thể bán</p>
+                  </div>
+                  <form method="POST" action="{{ url_for('cart.remove_from_cart', book_id=item.id) }}" onsubmit="return confirm('Bạn có chắc muốn xóa sách này khỏi giỏ hàng?');">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Xóa</button>
+                  </form>
                 </div>
-                <div class="d-flex justify-content-between mb-2">
-                    <span class="text-muted">Phí vận chuyển</span><span class="fw-semibold">30.000đ</span>
+
+                <div class="d-flex justify-content-between align-items-end mt-3 gap-3">
+                  <form method="POST" action="{{ url_for('cart.update_cart') }}" class="d-flex align-items-center gap-2">
+                    <input type="hidden" name="book_id" value="{{ item.id }}">
+                    <label class="small text-muted" for="qty-{{ item.id }}">Số lượng</label>
+                    <input
+                      id="qty-{{ item.id }}"
+                      type="number"
+                      class="form-control form-control-sm cart-qty-input"
+                      name="quantity"
+                      min="0"
+                      max="{{ item.available_for_sale }}"
+                      value="{{ item.quantity }}"
+                      style="width: 84px;"
+                    >
+                    <button type="submit" class="btn btn-sm btn-outline-secondary">Cập nhật</button>
+                  </form>
+                  <div class="text-end">
+                    <div class="small text-muted">Tạm tính</div>
+                    <div class="fw-bold text-danger line-total-display">{{ item.line_total_display }}</div>
+                  </div>
                 </div>
-                <hr>
-                <div class="d-flex justify-content-between fw-bold mb-4 fs-5">
-                    <span>Tổng cộng</span><span class="text-danger">330.000đ</span>
-                </div>
-                <button class="btn text-white w-100 fw-semibold mb-2" style="background-color:#ED553B;"
-                    onclick="handleCheckout()">Tiến hành Thanh toán</button>
-                <button class="btn btn-outline-dark w-100 fw-semibold" onclick="handleBorrow()">Mượn sách</button>
+              </div>
             </div>
-        </div>
+          </div>
+          {% endfor %}
+      </div>
+
+      <form id="bulkDeleteForm" method="POST" action="{{ url_for('cart.remove_selected') }}"></form>
+      <form id="clearCartForm" method="POST" action="{{ url_for('cart.clear_cart') }}"></form>
+      {% else %}
+      <div class="card border-0 shadow-sm p-5 text-center">
+        <h5 class="fw-bold mb-2">Giỏ hàng đang trống</h5>
+        <p class="text-muted mb-4">Hãy thêm sách vào giỏ để tiếp tục.</p>
+        <a href="{{ url_for('book.books_ui') }}" class="btn text-white fw-semibold align-self-center" style="background-color:#ED553B;">Khám phá sách</a>
+      </div>
+      {% endif %}
     </div>
+
+    <div class="col-lg-4">
+      <div class="card border-0 shadow-sm p-4">
+        <h6 class="fw-bold mb-3">Tóm tắt đơn hàng</h6>
+        <div class="d-flex justify-content-between mb-2">
+          <span class="text-muted">Tạm tính</span>
+          <span class="fw-semibold" id="cartSubtotal">{{ "0đ" if items else subtotal_display }}</span>
+        </div>
+        <div class="d-flex justify-content-between mb-2">
+          <span class="text-muted">Phí vận chuyển</span>
+          <span class="fw-semibold" id="cartShipping">{{ "0đ" if items else shipping_display }}</span>
+        </div>
+        <hr>
+        <div class="d-flex justify-content-between fw-bold mb-4 fs-5">
+          <span>Tổng cộng</span>
+          <span class="text-danger" id="cartTotal">{{ "0đ" if items else total_display }}</span>
+        </div>
+        {% if items %}
+        <button class="btn text-white w-100 fw-semibold mb-2" id="checkoutButton" style="background-color:#ED553B;" type="button" onclick="checkoutSelected()" disabled>Tiến hành thanh toán</button>
+        <button class="btn btn-outline-dark w-100 fw-semibold" id="borrowButton" type="button" onclick="borrowSelected()" disabled>Mượn sách</button>
+        {% else %}
+        <button class="btn text-white w-100 fw-semibold mb-2" style="background-color:#ED553B;" disabled>Tiến hành thanh toán</button>
+        <button class="btn btn-outline-dark w-100 fw-semibold" disabled>Mượn sách</button>
+        {% endif %}
+      </div>
+    </div>
+  </div>
 </section>
+{% endblock %}
 
+{% block extra_js %}
 <script>
-    function getSelectedBooks() {
-        return Array.from(document.querySelectorAll('.book-checkbox:checked'));
+  const selectAllCartItems = document.getElementById("selectAllCartItems");
+  const cartItemCheckboxes = Array.from(document.querySelectorAll(".cart-item-checkbox"));
+  const cartSubtotal = document.getElementById("cartSubtotal");
+  const cartShipping = document.getElementById("cartShipping");
+  const cartTotal = document.getElementById("cartTotal");
+  const checkoutButton = document.getElementById("checkoutButton");
+  const borrowButton = document.getElementById("borrowButton");
+
+  function formatVnd(amount) {
+    return `${Number(amount || 0).toLocaleString("vi-VN")}đ`;
+  }
+
+  function getCartRow(checkbox) {
+    return checkbox.closest(".cart-item-row");
+  }
+
+  function getSelectedCartIds() {
+    return cartItemCheckboxes.filter((checkbox) => checkbox.checked).map((checkbox) => checkbox.value);
+  }
+
+  function updateCartSummary() {
+    let subtotal = 0;
+    let selectedCount = 0;
+
+    cartItemCheckboxes.forEach((checkbox) => {
+      const row = getCartRow(checkbox);
+      const unitPrice = Number(row?.dataset.price || 0);
+      const quantityInput = row?.querySelector(".cart-qty-input");
+      const quantity = Math.max(0, Number(quantityInput?.value || 0));
+      const lineTotalElement = row?.querySelector(".line-total-display");
+      const lineTotal = unitPrice * quantity;
+      if (lineTotalElement) {
+        lineTotalElement.innerText = formatVnd(lineTotal);
+      }
+      if (!checkbox.checked) {
+        return;
+      }
+      if (quantity < 1) {
+        return;
+      }
+      subtotal += lineTotal;
+      selectedCount += 1;
+    });
+
+    const shipping = selectedCount > 0 ? 20000 : 0;
+    const total = subtotal + shipping;
+    const hasSelection = selectedCount > 0;
+
+    if (cartSubtotal) cartSubtotal.innerText = formatVnd(subtotal);
+    if (cartShipping) cartShipping.innerText = formatVnd(shipping);
+    if (cartTotal) cartTotal.innerText = formatVnd(total);
+    if (checkoutButton) checkoutButton.disabled = !hasSelection;
+    if (borrowButton) borrowButton.disabled = !hasSelection;
+  }
+
+  if (selectAllCartItems) {
+    selectAllCartItems.addEventListener("change", () => {
+      cartItemCheckboxes.forEach((checkbox) => {
+        checkbox.checked = selectAllCartItems.checked;
+      });
+      updateCartSummary();
+    });
+
+    cartItemCheckboxes.forEach((checkbox) => {
+      checkbox.addEventListener("change", () => {
+        selectAllCartItems.checked = cartItemCheckboxes.length > 0 && cartItemCheckboxes.every((item) => item.checked);
+        updateCartSummary();
+      });
+    });
+  }
+
+  document.querySelectorAll(".cart-qty-input").forEach((input) => {
+    input.addEventListener("input", updateCartSummary);
+  });
+
+  function confirmDeleteSelected() {
+    const selectedIds = getSelectedCartIds();
+    if (!selectedIds.length) {
+      alert("Vui lòng chọn ít nhất một sách để xóa.");
+      return [];
+    }
+    if (!confirm("Bạn có chắc muốn xóa các sách đã chọn khỏi giỏ hàng?")) {
+      return [];
+    }
+    return selectedIds;
+  }
+
+  function submitSelectedDelete() {
+    const selectedIds = confirmDeleteSelected();
+    if (!selectedIds.length) {
+      return;
     }
 
-    function handleCheckout() {
-        const selected = getSelectedBooks();
-        if (selected.length === 0) {
-            alert('Vui lòng chọn ít nhất một cuốn sách để thanh toán.');
-            return;
-        }
-        const cantBuy = selected.find(cb => cb.dataset.canBuy === 'false');
-        if (cantBuy) {
-            alert('Có sách trong danh sách chọn không thể thanh toán (chỉ được mượn). Vui lòng bỏ chọn sách đó.');
-            return;
-        }
-        const ids = selected.map(cb => cb.value).join(',');
-        window.location.href = "{{ url_for('payments') }}?books=" + ids;
-    }
+    const form = document.getElementById("bulkDeleteForm");
+    form.innerHTML = "";
 
-    function handleBorrow() {
-        const selected = getSelectedBooks();
-        if (selected.length === 0) {
-            alert('Vui lòng chọn ít nhất một cuốn sách để mượn.');
-            return;
-        }
-        const ids = selected.map(cb => cb.value).join(',');
-        window.location.href = "{{ url_for('borrow') }}?books=" + ids;
+    selectedIds.forEach((id) => {
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = "selected_book_ids";
+      input.value = id;
+      form.appendChild(input);
+    });
+
+    form.submit();
+  }
+
+  function submitClearCart() {
+    if (confirm("Bạn có chắc muốn xóa toàn bộ sách trong giỏ hàng?")) {
+      document.getElementById("clearCartForm").submit();
     }
+  }
+
+  function checkoutSelected() {
+    const selectedIds = getSelectedCartIds();
+    if (!selectedIds.length || checkoutButton?.disabled) {
+      return;
+    }
+    window.location.href = "{{ url_for('payments') }}?books=" + selectedIds.join(",");
+  }
+
+  function borrowSelected() {
+    const selectedIds = getSelectedCartIds();
+    if (!selectedIds.length || borrowButton?.disabled) {
+      return;
+    }
+    window.location.href = "{{ url_for('borrow.borrow_ui') }}?books=" + selectedIds.join(",");
+  }
+
+  updateCartSummary();
 </script>
 {% endblock %}
