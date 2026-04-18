@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}{{ book.title }} - Th&#432; Vi&#7879;n S&aacute;ch{% endblock %}
+
+{% block extra_css %}
+<style>
+  .book-detail-cover {
+    aspect-ratio: 3 / 4;
+    width: 100%;
+    object-fit: cover;
+    background: #f8f9fa;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="book-details py-5 bg-light">
+  <div class="container">
+    <div class="mb-4">
+      <a href="{{ back_url }}" class="btn btn-outline-dark">
+        <i class="bi bi-arrow-left me-1"></i>Quay lại trang sách
+      </a>
+    </div>
+    <div class="row align-items-start g-4">
+      <div class="col-lg-5">
+        <div class="card border-0 shadow-sm overflow-hidden">
+          <img src="{{ book.image_url }}" class="book-detail-cover" alt="{{ book.title }}">
+        </div>
+      </div>
+
+      <div class="col-lg-7">
+        <div class="d-flex flex-column gap-2">
+          <div class="d-flex flex-wrap gap-2">
+            {% if book.available_for_sale > 0 %}
+            <span class="badge bg-success fs-6">C&oacute; th&#7875; mua</span>
+            {% endif %}
+            {% if book.available_for_borrow > 0 %}
+            <span class="badge bg-primary fs-6">C&oacute; th&#7875; m&#432;&#7907;n</span>
+            {% endif %}
+          </div>
+
+          <h2 class="fw-bold mb-0" style="color:#ED553B;">{{ book.title }}</h2>
+          <p class="text-muted mb-0">T&aacute;c gi&#7843;: <strong>
+            <a href="{{ url_for('book.author_books_ui', author_name=book.author) }}" class="text-decoration-none text-dark">
+              {{ book.author or "Ch&#432;a r&otilde;" }}
+            </a>
+          </strong></p>
+          <p class="text-muted mb-0">Danh m&#7909;c: <strong>{{ book.category_name }}</strong></p>
+
+          <div class="pt-2">
+            <h4 class="fw-semibold mb-0 text-orange">{{ book.price_display }}</h4>
+          </div>
+
+          <p class="text-muted pt-2 mb-0">
+            {{ book.description or "Ch&#432;a c&oacute; m&ocirc; t&#7843; cho s&aacute;ch n&agrave;y." }}
+          </p>
+
+          <ul class="list-unstyled mb-0 pt-2">
+            <li><strong>B&aacute;n:</strong> {{ book.available_for_sale }} cu&#7889;n c&ograve;n l&#7841;i</li>
+            <li><strong>M&#432;&#7907;n:</strong> {{ book.available_for_borrow }} cu&#7889;n c&ograve;n l&#7841;i</li>
+          </ul>
+
+          {% if book.available_for_sale > 0 %}
+          <button
+            type="button"
+            class="btn text-white px-4 fw-semibold mt-3 align-self-start"
+            style="background-color:#ED553B;"
+            onclick="openCartModal({{ book.id }}, '{{ book.title | replace('\'', '\\\'') }}', {{ book.price }}, {{ book.available_for_sale }})"
+          >
+            Th&ecirc;m v&agrave;o gi&#7887;
+          </button>
+          {% endif %}
+
+          {% if book.available_for_borrow > 0 %}
+          <a href="{{ url_for('borrow.borrow_ui', books=book.id) }}" class="btn btn-primary px-4 fw-semibold mt-3 align-self-start">
+            <i class="bi bi-book me-1"></i>M&#432;&#7907;n s&aacute;ch
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

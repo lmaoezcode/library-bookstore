@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Liên Hệ - Thư Viện Sách{% endblock %}
+
+{% block content %}
+<section class="contact-section py-5" style="background-color:#fff;">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold" style="color:#ED553B;">Liên Hệ Với Chúng Tôi</h2>
+            <p class="text-muted">Chúng tôi rất mong nhận được phản hồi từ bạn! Hãy liên hệ với chúng tôi nếu có bất kỳ thắc mắc, góp ý hoặc cần hỗ trợ nào.</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-5">
+                <div class="card border-0 shadow-sm h-100 p-4">
+                    <h5 class="fw-bold mb-3 text-orange">Thông Tin Liên Hệ</h5>
+                    <p class="text-muted mb-4">Bạn có câu hỏi hoặc cần giúp đỡ? Hãy liên hệ qua các thông tin dưới đây.</p>
+
+                    <div class="mb-3 d-flex align-items-start">
+                        <i class="bi bi-geo-alt-fill fs-5 me-3 text-orange"></i>
+                        <div>
+                            <h6 class="fw-semibold mb-1">Địa chỉ</h6>
+                            <p class="text-muted mb-0">123 Đường Sách, Quận Hoàn Kiếm, Hà Nội</p>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 d-flex align-items-start">
+                        <i class="bi bi-telephone-fill fs-5 me-3 text-orange"></i>
+                        <div>
+                            <h6 class="fw-semibold mb-1">Điện thoại</h6>
+                            <p class="text-muted mb-0">+84 987 654 321</p>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 d-flex align-items-start">
+                        <i class="bi bi-envelope-fill fs-5 me-3 text-orange"></i>
+                        <div>
+                            <h6 class="fw-semibold mb-1">Email</h6>
+                            <p class="text-muted mb-0">hotro@thuvien.com</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3800.518508986247!2d73.3929766078909!3d17.720191593068154!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be9ddcc06150a21%3A0x2f87be344ee1d2f5!2sAGWEBAPP%20SOLUTION!5e0!3m2!1sen!2sin!4v1761209009419!5m2!1sen!2sin"
+                            width="100%" height="200" style="border:0; border-radius:10px;" allowfullscreen=""
+                            loading="lazy"></iframe>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-7">
+                <div class="card border-0 shadow-sm p-4">
+                    <h5 class="fw-bold mb-3 text-orange">Gửi Tin Nhắn</h5>
+                    <form>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" placeholder="Tên của bạn" required>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="email" class="form-control" placeholder="Email của bạn" required>
+                            </div>
+                            <div class="col-12">
+                                <input type="text" class="form-control" placeholder="Chủ đề" required>
+                            </div>
+                            <div class="col-12">
+                                <textarea class="form-control" rows="5" placeholder="Nội dung tin nhắn..."
+                                    required></textarea>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn text-white px-4 py-2 fw-semibold"
+                                    style="background-color:#ED553B;">Gửi Tin Nhắn</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

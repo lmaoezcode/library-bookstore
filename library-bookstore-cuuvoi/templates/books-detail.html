@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}{{ book.title }} - Thư Viện Sách{% endblock %}
+
+{% block content %}
+<section class="book-details py-5 bg-light">
+  <div class="container">
+    <div class="row align-items-start">
+
+      <!-- Ảnh sách -->
+      <div class="col-lg-5 mb-4 mb-lg-0">
+        <div class="card border-0 shadow-sm">
+          <img src="{{ url_for('static', filename='images/' ~ (book.cover_image or 'default.jpg')) }}"
+               class="img-fluid rounded-3"
+               alt="{{ book.title }}">
+        </div>
+      </div>
+
+      <!-- Thông tin sách -->
+      <div class="col-lg-7">
+        <h2 class="fw-bold mb-2" style="color:#ED553B;">{{ book.title }}</h2>
+        <p class="text-muted mb-1">Tác giả: <strong>
+          <a href="{{ url_for('book.author_books_ui', author_name=book.author) }}" class="text-decoration-none text-dark">
+            {{ book.author or "Chưa rõ" }}
+          </a>
+        </strong></p>
+
+        <div class="mb-3">
+          <span class="text-warning">★★★★☆</span>
+          <small class="text-muted">(245 đánh giá)</small>
+        </div>
+
+        <div class="mb-4">
+          <h4 class="text-danger">
+            {{ "{:,.0f}đ".format(book.price) }}
+          </h4>
+        </div>
+
+        <p class="text-muted">
+          {{ book.description or "Chưa có mô tả cho sách này." }}
+        </p>
+
+        <ul class="list-unstyled mb-4">
+          <li><strong>Danh mục:</strong> {{ book.category_name or "Chưa rõ" }}</li>
+          <li><strong>Số trang:</strong> {{ book.pages or "Chưa rõ" }}</li>
+        </ul>
+
+        <!-- FORM THÊM VÀO GIỎ -->
+        <form action="/add_to_cart_form" method="POST">
+          <input type="hidden" name="book_id" value="{{ book.id }}">
+
+          <button type="submit"
+                  class="btn text-white px-4 fw-semibold"
+                  style="background-color:#ED553B;"
+                  onclick="console.log('Nút đã được bấm! ID sách là: {{ book.id }}')"
+          >
+            Thêm vào giỏ
+          </button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

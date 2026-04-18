@@ -1,0 +1,22 @@
+/* Nút mượn sách */
+.btn-borrow {
+    background-color: #28a745;
+    color: white;
+    border: none;
+}
+.btn-borrow:hover {
+    background-color: #218838;
+}
+/* Hiển thị giá và trạng thái cho thuê */
+.book-price {
+    font-weight: bold;
+    color: #ED553B;
+}
+.book-stock {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+.borrow-info {
+    font-size: 0.9rem;
+    margin-top: 5px;
+}

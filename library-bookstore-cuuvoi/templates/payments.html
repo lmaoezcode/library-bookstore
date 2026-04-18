@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}Thanh Toan - Thu Vien Sach{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-light" style="min-height: 80vh;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm p-4 p-md-5">
+                    <div class="text-center mb-5">
+                        <h3 class="fw-bold" style="color:#ED553B;">Thanh Toan Don Hang</h3>
+                        <p class="text-muted mb-2">Trang nay dung dummy API thanh toan de mo phong giao dich.</p>
+                        <p class="text-muted mb-0">Sau khi fake thanh cong, he thong se tao don hang de admin duyet.</p>
+                    </div>
+
+                    <div class="row g-4 align-items-start">
+                        <div class="col-md-6 border-end">
+                            <h5 class="fw-semibold mb-4">Thong tin sach</h5>
+                            <ul class="list-group mb-4">
+                                {% for book in selected_books %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>{{ book.title }}</strong><br>
+                                        <small class="text-muted">{{ "{:,.0f}d".format(book.price or 0).replace(",", ".") }}</small>
+                                    </div>
+                                    <span class="badge bg-danger rounded-pill">1</span>
+                                </li>
+                                {% else %}
+                                <li class="list-group-item text-muted">Chua co cuon sach nao duoc chon.</li>
+                                {% endfor %}
+                            </ul>
+
+                            <div class="d-flex justify-content-between align-items-center border rounded p-3 bg-white">
+                                <span class="fw-semibold">Tong thanh toan</span>
+                                <span class="fw-bold text-danger fs-5">{{ total_amount_display }}</span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="border rounded p-4 bg-white h-100">
+                                <h5 class="fw-semibold mb-3">Dummy payment gateway</h5>
+                                <p class="text-muted small">He thong se goi API gia lap va tra ve ma giao dich thanh cong.</p>
+
+                                <div class="alert alert-warning small mb-4">
+                                    Day la luong thanh toan mo phong, khong ket noi ngan hang that.
+                                </div>
+
+                                <form id="mockPaymentForm" method="POST" action="{{ url_for('create_payment_order') }}">
+                                    {% for book in selected_books %}
+                                    <input type="hidden" name="book_ids" value="{{ book.id }}">
+                                    {% endfor %}
+
+                                    <div id="mockPaymentResult" class="border rounded p-3 bg-light small mb-4 d-none"></div>
+
+                                    <button
+                                        type="submit"
+                                        id="mockPaymentSubmit"
+                                        class="btn text-white w-100 fw-semibold py-2"
+                                        style="background-color:#ED553B;"
+                                        {% if not selected_books %}disabled{% endif %}
+                                    >
+                                        <i class="bi bi-credit-card me-2"></i>Thanh toan bang dummy API
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const mockPaymentForm = document.getElementById("mockPaymentForm");
+    const mockPaymentResult = document.getElementById("mockPaymentResult");
+    const mockPaymentSubmit = document.getElementById("mockPaymentSubmit");
+
+    if (mockPaymentForm) {
+        mockPaymentForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            if (mockPaymentSubmit) {
+                mockPaymentSubmit.disabled = true;
+                mockPaymentSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Dang xu ly';
+            }
+
+            const formData = new FormData(mockPaymentForm);
+
+            try {
+                const response = await fetch("{{ url_for('mock_payment_api') }}", {
+                    method: "POST",
+                    body: formData
+                });
+                const payload = await response.json();
+
+                if (!response.ok || payload.status !== "success") {
+                    throw new Error(payload.message || "Khong the tao giao dich gia lap.");
+                }
+
+                const payment = payload.payment || {};
+                if (mockPaymentResult) {
+                    mockPaymentResult.classList.remove("d-none");
+                    mockPaymentResult.innerHTML = `
+                        <div class="fw-semibold mb-2 text-success">Thanh toan gia lap thanh cong</div>
+                        <div>Gateway: <strong>${payment.gateway || "-"}</strong></div>
+                        <div>Ma giao dich: <strong>${payment.transaction_id || "-"}</strong></div>
+                        <div>So tien: <strong>${new Intl.NumberFormat("vi-VN").format(payment.amount || 0)}d</strong></div>
+                        <div>Thoi gian: <strong>${payment.paid_at || "-"}</strong></div>
+                    `;
+                }
+
+                setTimeout(() => mockPaymentForm.submit(), 500);
+            } catch (error) {
+                if (mockPaymentResult) {
+                    mockPaymentResult.classList.remove("d-none");
+                    mockPaymentResult.innerHTML = `<div class="text-danger fw-semibold">${error.message}</div>`;
+                }
+                if (mockPaymentSubmit) {
+                    mockPaymentSubmit.disabled = false;
+                    mockPaymentSubmit.innerHTML = '<i class="bi bi-credit-card me-2"></i>Thanh toan bang dummy API';
+                }
+            }
+        });
+    }
+</script>
+{% endblock %}

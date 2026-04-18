@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}Trang chủ - Thư Viện Sách{% endblock %}
+
+{% block extra_css %}
+<style>
+    .book-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        overflow: hidden;
+        border-radius: 12px;
+        background: #fff;
+    }
+    .book-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
+    }
+    .book-thumb {
+        height: 280px;
+        object-fit: contain;
+        padding: 10px;
+        background-color: #f8f9fa;
+        width: 100%;
+        transition: transform 0.5s ease;
+    }
+    .book-card:hover .book-thumb {
+        transform: scale(1.05);
+    }
+    .action-btn {
+        transition: all 0.2s;
+    }
+    .action-btn:hover {
+        opacity: 0.9;
+        transform: scale(1.05);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <section class="hero-section text-center py-5 border-bottom" style="background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);">
+        <div class="container py-5">
+            <h1 class="display-4 fw-bold text-dark mb-3">Tri Thức <span style="color:#ED553B;">Nằm Trong</span> Tay Bạn</h1>
+            <p class="lead text-secondary mb-4">Mượn và mua hàng nghìn tựa sách chất lượng cao một cách nhanh chóng.</p>
+            <a href="{{ url_for('book.books_ui') }}" class="btn text-white px-5 py-3 fw-bold rounded-pill shadow-sm action-btn" style="background-color:#ED553B; font-size: 1.1rem;">
+                Duyệt Kho Sách <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </section>
+
+    <section class="latest-books py-5 bg-white">
+        <div class="container py-4">
+            <div class="d-flex justify-content-between align-items-end mb-5">
+                <div>
+                    <h2 class="fw-bold text-dark mb-0">Sách Mới Cập Nhật</h2>
+                    <p class="text-muted mt-2 mb-0">Những tựa sách nổi bật nhất vừa lên kệ thư viện.</p>
+                </div>
+                <a href="{{ url_for('book.books_ui') }}" class="text-decoration-none text-danger fw-semibold">Xem tất cả <i class="bi bi-chevron-right"></i></a>
+            </div>
+            
+            <div class="row g-4">
+                {% for book in latest_books %}
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="card h-100 border-0 shadow-sm book-card">
+                        <a href="{{ url_for('book.books_detail_ui', book_id=book.id) }}">
+                            <img src="{{ book.image_url }}" class="card-img-top book-thumb" alt="{{ book.title }}">
+                        </a>
+                        <div class="card-body d-flex flex-column p-4">
+                            <span class="text-muted small mb-2"><i class="bi bi-person me-1"></i>{{ book.author }}</span>
+                            <h5 class="card-title fw-bold mb-3">
+                                <a href="{{ url_for('book.books_detail_ui', book_id=book.id) }}" class="text-dark text-decoration-none text-truncate d-block" title="{{ book.title }}">
+                                    {{ book.title }}
+                                </a>
+                            </h5>
+                            
+                            <div class="mt-auto d-flex flex-column gap-2">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="fs-5 fw-bold text-danger">{{ book.price_display }}</span>
+                                    <div>
+                                        {% if book.available_for_sale > 0 %}
+                                        <span class="badge bg-success bg-opacity-10 text-success px-2 py-1"><i class="bi bi-check-circle me-1"></i>Có thể Mua</span>
+                                        {% endif %}
+                                        {% if book.available_for_borrow > 0 %}
+                                        <span class="badge bg-primary bg-opacity-10 text-primary px-2 py-1"><i class="bi bi-book-half me-1"></i>Có thể Mượn</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    {% if book.available_for_sale > 0 %}
+                                    <button type="button" class="btn flex-grow-1 fw-semibold action-btn" style="background-color:#ED553B; color:white;" onclick="openCartModal({{ book.id }}, '{{ book.title | replace('\'', '\\\'') }}', {{ book.price }}, {{ book.available_for_sale }})">
+                                        <i class="bi bi-cart-plus"></i> Giỏ hàng
+                                    </button>
+                                    {% else %}
+                                    <button type="button" class="btn w-100 fw-semibold btn-secondary disabled" disabled>Hết hàng bán</button>
+                                    {% endif %}
+                                    
+                                    {% if book.available_for_borrow > 0 %}
+                                    <a href="{{ url_for('borrow.borrow_ui') }}?books={{ book.id }}" class="btn btn-outline-dark action-btn" title="Mượn sách (Miễn phí)">
+                                        <i class="bi bi-book"></i> Mượn
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="col-12 text-center py-5">
+                    <h5 class="text-muted">Chưa có sách nào trong thư viện.</h5>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section class="features-section py-5 bg-light">
+        <div class="container py-4">
+            <div class="row g-4 text-center">
+                <div class="col-md-4">
+                    <div class="p-4 rounded-4 bg-white shadow-sm h-100 book-card">
+                        <div class="d-inline-flex align-items-center justify-content-center bg-danger bg-opacity-10 text-danger rounded-circle mb-3" style="width: 60px; height: 60px;">
+                            <i class="bi bi-truck fs-4"></i>
+                        </div>
+                        <h5 class="fw-bold">Giao Hàng Tốc Độ</h5>
+                        <p class="text-muted small mb-0">Hỗ trợ vận chuyển toàn quốc nhanh chóng và an toàn trong vòng 24H.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-4 rounded-4 bg-white shadow-sm h-100 book-card">
+                        <div class="d-inline-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success rounded-circle mb-3" style="width: 60px; height: 60px;">
+                            <i class="bi bi-book-half fs-4"></i>
+                        </div>
+                        <h5 class="fw-bold">Mượn Sách Miễn Phí</h5>
+                        <p class="text-muted small mb-0">Đặc quyền mượn sách không chi phí với thời hạn lưu giữ tới 14 ngày.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-4 rounded-4 bg-white shadow-sm h-100 book-card">
+                        <div class="d-inline-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-circle mb-3" style="width: 60px; height: 60px;">
+                            <i class="bi bi-shield-check fs-4"></i>
+                        </div>
+                        <h5 class="fw-bold">Cam Kết Bản Quyền</h5>
+                        <p class="text-muted small mb-0">100% sách trên thư viện được nhập từ các nhà phân phối có bản quyền gốc.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

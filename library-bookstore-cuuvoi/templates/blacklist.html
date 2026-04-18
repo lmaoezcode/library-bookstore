@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}Danh sách đen - Admin{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2>Danh sách đen</h2>
+      <a href="{{ url_for('admin.admin_dashboard') }}" class="btn btn-secondary">Quay lại Dashboard</a>
+    </div>
+
+    <!-- Add to blacklist form -->
+    <div class="card mb-4">
+      <div class="card-header">
+        <h5 class="mb-0">Thêm vào danh sách đen</h5>
+      </div>
+      <div class="card-body">
+        <form id="addBlacklistForm">
+          <div class="row">
+            <div class="col-md-4">
+              <label for="userSelect" class="form-label">Chọn người dùng</label>
+              <select class="form-select" id="userSelect" name="user_id" required>
+                <option value="">-- Chọn người dùng --</option>
+                {% for user in available_users %}
+                <option value="{{ user.id }}">{{ user.name }} ({{ user.email }})</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label for="banType" class="form-label">Loại cấm</label>
+              <select class="form-select" id="banType" name="ban_type" required>
+                <option value="temporary">Tạm thời</option>
+                <option value="permanent">Vĩnh viễn</option>
+              </select>
+            </div>
+            <div class="col-md-2" id="banDaysGroup">
+              <label for="banDays" class="form-label">Số ngày</label>
+              <input type="number" class="form-control" id="banDays" name="ban_days" min="1" value="7">
+            </div>
+            <div class="col-md-3">
+              <label for="reason" class="form-label">Lý do</label>
+              <input type="text" class="form-control" id="reason" name="reason" required placeholder="Lý do cấm">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-danger mt-3">Thêm vào danh sách đen</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Blacklist table -->
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0">Danh sách người dùng bị cấm</h5>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Tên</th>
+                <th>Email</th>
+                <th>Lý do</th>
+                <th>Thời hạn</th>
+                <th>Ngày tạo</th>
+                <th>Admin</th>
+                <th>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for entry in blacklist_entries %}
+              <tr>
+                <td>{{ entry.id }}</td>
+                <td>{{ entry.user_name }}</td>
+                <td>{{ entry.user_email }}</td>
+                <td>{{ entry.reason }}</td>
+                <td>
+                  {% if entry.banned_until %}
+                    {{ entry.banned_until }}
+                  {% else %}
+                    <span class="badge bg-danger">Vĩnh viễn</span>
+                  {% endif %}
+                </td>
+                <td>{{ entry.created_at }}</td>
+                <td>{{ entry.admin_name or 'Unknown' }}</td>
+                <td>
+                  <button class="btn btn-sm btn-success" onclick="removeFromBlacklist({{ entry.id }})">Xóa</button>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Toggle ban days input
+  document.getElementById('banType').addEventListener('change', function() {
+    const banDaysGroup = document.getElementById('banDaysGroup');
+    if (this.value === 'temporary') {
+      banDaysGroup.style.display = 'block';
+    } else {
+      banDaysGroup.style.display = 'none';
+    }
+  });
+
+  // Add to blacklist
+  document.getElementById('addBlacklistForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+    const response = await fetch('{{ url_for("admin.add_to_blacklist") }}', {
+      method: 'POST',
+      body: formData
+    });
+
+    const result = await response.json();
+    if (result.status === 'success') {
+      alert('Đã thêm vào danh sách đen');
+      location.reload();
+    } else {
+      alert('Lỗi: ' + result.message);
+    }
+  });
+
+  // Remove from blacklist
+  async function removeFromBlacklist(id) {
+    if (!confirm('Bạn có chắc muốn xóa khỏi danh sách đen?')) return;
+
+    const response = await fetch(`{{ url_for('admin.remove_from_blacklist', blacklist_id=0) }}`.replace('0', id), {
+      method: 'POST'
+    });
+
+    const result = await response.json();
+    if (result.status === 'success') {
+      alert('Đã xóa khỏi danh sách đen');
+      location.reload();
+    } else {
+      alert('Lỗi: ' + result.message);
+    }
+  }
+</script>
+{% endblock %}
