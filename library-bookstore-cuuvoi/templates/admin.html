@@ -106,13 +106,13 @@
                                         <td>{{ "{:,.0f}".format(item.total_price or 0).replace(",", ".") }}d<br><small class="text-warning">{{ item.payment_method }}</small></td>
                                         <td>
                                             {% if item.status == 'pending' %}
-                                            <span class="badge bg-warning text-dark fw-normal status-badge">Cho duyet</span>
+                                            <span class="badge bg-warning text-dark fw-normal status-badge">Chờ duyệt</span>
                                             {% elif item.status == 'shipping' %}
-                                            <span class="badge bg-info text-dark fw-normal status-badge">Dang giao</span>
+                                            <span class="badge bg-info text-dark fw-normal status-badge">Đang giao</span>
                                             {% elif item.status == 'delivered' %}
-                                            <span class="badge bg-success fw-normal status-badge">Da giao</span>
+                                            <span class="badge bg-success fw-normal status-badge">Đã giao</span>
                                             {% else %}
-                                            <span class="badge bg-danger fw-normal status-badge">Da huy</span>
+                                            <span class="badge bg-danger fw-normal status-badge">Đã hủy</span>
                                             {% endif %}
                                         </td>
                                         <td>
@@ -120,7 +120,7 @@
                                             <button class="btn btn-sm btn-success me-1" type="button" onclick="triggerEntityConfirm('approve', this.closest('tr'))"><i class="bi bi-check-lg"></i></button>
                                             <button class="btn btn-sm btn-danger" type="button" onclick="triggerEntityConfirm('reject', this.closest('tr'))"><i class="bi bi-x-lg"></i></button>
                                             {% else %}
-                                            <span class="text-muted small">Khong co thao tac</span>
+                                            <span class="text-muted small">Không có thao tác</span>
                                             {% endif %}
                                         </td>
                                     </tr>
@@ -162,21 +162,21 @@
                                         <td>{{ item.due_date or "-" }}</td>
                                         <td>
                                             {% if item.status == 'pending' %}
-                                            <span class="badge bg-warning text-dark fw-normal status-badge">Dang yeu cau</span>
+                                            <span class="badge bg-warning text-dark fw-normal status-badge">Đang yêu cầu</span>
                                             {% elif item.status == 'approved' %}
-                                            <span class="badge bg-success fw-normal status-badge">Da phe duyet</span>
+                                            <span class="badge bg-success fw-normal status-badge">Đã phê duyệt</span>
                                             {% elif item.status == 'shipping' %}
-                                            <span class="badge bg-info fw-normal status-badge">Da gui sach</span>
+                                            <span class="badge bg-info fw-normal status-badge">Đã gửi sách</span>
                                             {% elif item.status == 'borrowing' %}
-                                            <span class="badge bg-primary fw-normal status-badge">Dang muon sach</span>
+                                            <span class="badge bg-primary fw-normal status-badge">Đang mượn sách</span>
                                             {% elif item.status == 'return_pending' %}
-                                            <span class="badge bg-secondary fw-normal status-badge">Cho xac nhan tra</span>
+                                            <span class="badge bg-secondary fw-normal status-badge">Chờ xác nhận trả</span>
                                             {% elif item.status == 'overdue' %}
                                             <span class="badge bg-danger fw-normal status-badge">Qua han</span>
                                             {% elif item.status == 'returned' %}
-                                            <span class="badge bg-dark fw-normal status-badge">Da tra</span>
+                                            <span class="badge bg-dark fw-normal status-badge">Đã trả</span>
                                             {% else %}
-                                            <span class="badge bg-dark fw-normal status-badge">Da tu choi</span>
+                                            <span class="badge bg-dark fw-normal status-badge">Đã từ chối</span>
                                             {% endif %}
                                         </td>
                                         <td>
@@ -184,11 +184,11 @@
                                             <button class="btn btn-sm btn-primary me-1" type="button" onclick="triggerEntityConfirm('approve', this.closest('tr'))">Duyet</button>
                                             <button class="btn btn-sm btn-outline-dark" type="button" onclick="triggerEntityConfirm('reject', this.closest('tr'))">Tu choi</button>
                                             {% elif item.status == 'approved' %}
-                                            <button class="btn btn-sm btn-info text-white" type="button" onclick="triggerEntityConfirm('send', this.closest('tr'))">Xac nhan gui</button>
+                                            <button class="btn btn-sm btn-info text-white" type="button" onclick="triggerEntityConfirm('send', this.closest('tr'))">Xác nhận gửi</button>
                                             {% elif item.status == 'borrowing' or item.status == 'overdue' or item.status == 'return_pending' %}
-                                            <button class="btn btn-sm btn-success" type="button" onclick="triggerEntityConfirm('return', this.closest('tr'))">Xac nhan nhan sach tra</button>
+                                            <button class="btn btn-sm btn-success" type="button" onclick="triggerEntityConfirm('return', this.closest('tr'))">Xác nhận nhận sách trả</button>
                                             {% else %}
-                                            <span class="text-muted small">Khong co thao tac</span>
+                                            <span class="text-muted small">Không có thao tác</span>
                                             {% endif %}
                                         </td>
                                     </tr>
@@ -292,10 +292,10 @@
         <div class="modal-content border-0 shadow">
             <div class="modal-body text-center p-4">
                 <i class="bi bi-exclamation-circle text-warning display-4 mb-3 d-block"></i>
-                <h5 class="fw-bold mb-3" id="confirmModalText">Xac nhan thao tac?</h5>
+                <h5 class="fw-bold mb-3" id="confirmModalText">Xác nhận thao tác?</h5>
                 <div class="d-flex justify-content-center gap-2">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Huy</button>
-                    <button type="button" class="btn btn-dark" id="confirmModalOkBtn">Xac nhan</button>
+                    <button type="button" class="btn btn-dark" id="confirmModalOkBtn">Xác nhận</button>
                 </div>
             </div>
         </div>
@@ -411,7 +411,7 @@
     function deleteSelectedBooks() {
         const rows = Array.from(document.querySelectorAll("#booksTable tbody tr")).filter((row) => row.querySelector(".book-checkbox")?.checked);
         if (!rows.length) {
-            showAdminToast("Vui long chon it nhat mot sach de xoa.", "warning");
+            showAdminToast("Vui lòng chọn ít nhất một sách để xóa.", "warning");
             return;
         }
 
@@ -438,13 +438,13 @@
     function triggerEntityConfirm(action, row) {
         const idText = row.querySelector(".row-id").innerText;
         const textMap = {
-            approve: `Xac nhan duyet ${idText}?`,
-            reject: `Xac nhan tu choi ${idText}?`,
-            send: `Xac nhan da gui sach cho ${idText}?`,
-            return: `Xac nhan da nhan lai sach tra cua ${idText}?`
+            approve: `Xác nhận duyệt ${idText}?`,
+            reject: `Xác nhận từ chối ${idText}?`,
+            send: `Xác nhận đã gửi sách cho ${idText}?`,
+            return: `Xác nhận đã nhận lại sách trả của ${idText}?`
         };
 
-        triggerConfirm(textMap[action] || "Xac nhan thao tac?", async () => {
+        triggerConfirm(textMap[action] || "Xác nhận thao tác?", async () => {
             const entity = row.dataset.entity;
             const id = row.dataset.id;
             let endpoint = "";
@@ -474,28 +474,28 @@
 
             if (entity === "order" && action === "approve") {
                 badge.className = "badge bg-info text-dark fw-normal status-badge";
-                badge.innerText = "Dang giao";
+                badge.innerText = "Đang giao";
             } else if (entity === "order" && action === "reject") {
                 badge.className = "badge bg-danger fw-normal status-badge";
-                badge.innerText = "Da huy";
+                badge.innerText = "Đã hủy";
             } else if (entity === "borrow" && action === "approve") {
                 badge.className = "badge bg-success fw-normal status-badge";
-                badge.innerText = "Da phe duyet";
-                actionCell.innerHTML = '<button class="btn btn-sm btn-info text-white" type="button" onclick="triggerEntityConfirm(\'send\', this.closest(\'tr\'))">Xac nhan gui</button>';
+                badge.innerText = "Đã phê duyệt";
+                actionCell.innerHTML = '<button class="btn btn-sm btn-info text-white" type="button" onclick="triggerEntityConfirm(\'send\', this.closest(\'tr\'))">Xác nhận gửi</button>';
                 showAdminToast(payload.message || "Da cap nhat trang thai.", "success");
                 return;
             } else if (entity === "borrow" && action === "reject") {
                 badge.className = "badge bg-dark fw-normal status-badge";
-                badge.innerText = "Da tu choi";
+                badge.innerText = "Đã từ chối";
             } else if (entity === "borrow" && action === "send") {
                 badge.className = "badge bg-info fw-normal status-badge";
-                badge.innerText = "Da gui sach";
+                badge.innerText = "Đã gửi sách";
             } else if (entity === "borrow" && action === "return") {
                 badge.className = "badge bg-dark fw-normal status-badge";
-                badge.innerText = "Da tra";
+                badge.innerText = "Đã trả";
             }
 
-            actionCell.innerHTML = '<span class="text-muted small">Khong co thao tac</span>';
+            actionCell.innerHTML = '<span class="text-muted small">Không có thao tác</span>';
             showAdminToast(payload.message || "Da cap nhat trang thai.", "success");
         });
     }

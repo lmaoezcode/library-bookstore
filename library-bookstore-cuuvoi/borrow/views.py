@@ -89,7 +89,7 @@ def create_borrow():
     raw_book_ids = data.get("book_ids", []) if request.is_json else data.getlist("book_ids")
 
     if not raw_book_ids:
-        return jsonify({"status": "failed", "message": "Vui long chon it nhat 1 quyen sach."}), 400
+        return jsonify({"status": "failed", "message": "Vui lòng chọn ít nhất 1 quyển sách."}), 400
 
     try:
         unique_book_ids = []
@@ -383,7 +383,7 @@ def admin_reject():
         db.execute("UPDATE borrows SET status = 'canceled' WHERE id = ?", (borrow_id,))
         db.execute("UPDATE borrow_items SET status = 'rejected' WHERE borrow_id = ?", (borrow_id,))
         db.commit()
-        return jsonify({"status": "success", "message": "Da tu choi phieu muon."}), 200
+        return jsonify({"status": "success", "message": "Đã từ chối phiếu mượn."}), 200
     except Exception as exc:
         db.rollback()
         return jsonify({"status": "failed", "message": str(exc)}), 400
@@ -416,7 +416,7 @@ def admin_confirm_return():
         db.execute("BEGIN TRANSACTION")
         borrow = db.execute("SELECT status FROM borrows WHERE id = ?", (borrow_id,)).fetchone()
         if not borrow:
-            raise ValueError("Khong tim thay phieu muon.")
+            raise ValueError("Không tìm thấy phiếu mượn.")
         if borrow["status"] not in ("borrowing", "overdue", "return_pending"):
             raise ValueError("Chi co the xac nhan tra voi phieu dang muon, qua han hoac da duoc yeu cau tra.")
 

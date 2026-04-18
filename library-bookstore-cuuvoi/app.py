@@ -212,24 +212,24 @@ def normalize_borrow_status(status, due_date=None):
 
 def map_order_status(status):
     return {
-        "pending": "Cho duyet",
-        "shipping": "Dang giao",
-        "delivered": "Da giao",
-        "cancelled": "Da huy",
+        "pending": "Chờ duyệt",
+        "shipping": "Đang giao",
+        "delivered": "Đã giao",
+        "cancelled": "Đã hủy",
     }.get(status, status or "-")
 
 
 def map_borrow_status(status):
     return {
-        "pending": "Dang yeu cau",
-        "approved": "Da phe duyet",
-        "shipping": "Admin da gui sach",
-        "borrowing": "Dang muon sach",
-        "return_pending": "Dang cho admin xac nhan tra",
-        "returned": "Da tra sach",
-        "overdue": "Qua han tra sach",
-        "rejected": "Da tu choi",
-        "canceled": "Da tu choi",
+        "pending": "Đang yêu cầu",
+        "approved": "Đã phê duyệt",
+        "shipping": "Admin đã gửi sách",
+        "borrowing": "Đang mượn sách",
+        "return_pending": "Đang chờ admin xác nhận trả",
+        "returned": "Đã trả sách",
+        "overdue": "Quá hạn trả sách",
+        "rejected": "Đã từ chối",
+        "canceled": "Đã từ chối",
     }.get(status, status or "-")
 
 
@@ -628,7 +628,7 @@ def create_app():
     def confirm_delivery(order_id):
         user_id = session.get("user_id")
         if not user_id:
-            flash("Vui long dang nhap de tiep tuc.", "warning")
+            flash("Vui lòng đăng nhập để tiếp tục.", "warning")
             return redirect(url_for("auth.login"))
 
         db = get_db()
@@ -637,15 +637,15 @@ def create_app():
             (order_id,),
         ).fetchone()
         if not order or int(order["user_id"]) != int(user_id):
-            flash("Khong tim thay don hang hop le.", "danger")
+            flash("Không tìm thấy đơn hàng hợp lệ.", "danger")
             return redirect(url_for("my_account"))
         if order["status"] != "shipping":
-            flash("Don hang nay chua o trang thai dang giao.", "warning")
+            flash("Đơn hàng này chưa ở trạng thái đang giao.", "warning")
             return redirect(url_for("my_account"))
 
         db.execute("UPDATE orders SET status = 'delivered' WHERE id = ?", (order_id,))
         db.commit()
-        flash("Da xac nhan nhan duoc sach mua.", "success")
+        flash("Đã xác nhận nhận được sách mua.", "success")
         return redirect(url_for("my_account"))
 
     @app.context_processor

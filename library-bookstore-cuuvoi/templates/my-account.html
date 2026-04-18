@@ -107,10 +107,10 @@
                                         <td>
                                             {% if item.status == 'shipping' %}
                                             <form method="POST" action="{{ url_for('confirm_delivery', order_id=item.id) }}" onsubmit="return confirm('Ban da nhan duoc sach mua?');">
-                                                <button type="submit" class="btn btn-sm btn-success">Xac nhan da nhan hang</button>
+                                            <button type="submit" class="btn btn-sm btn-success">Xác nhận đã nhận hàng</button>
                                             </form>
                                             {% else %}
-                                            <span class="text-muted small">Khong co thao tac</span>
+                                            <span class="text-muted small">Không có thao tác</span>
                                             {% endif %}
                                         </td>
                                     </tr>
@@ -147,11 +147,11 @@
                                         <td>{{ item.status_label }}</td>
                                         <td>
                                             {% if item.status == 'shipping' %}
-                                            <button class="btn btn-sm btn-success" onclick="confirmPickup({{ item.id }})">Xac nhan da nhan sach</button>
+                                            <button class="btn btn-sm btn-success" onclick="confirmPickup({{ item.id }})">Xác nhận đã nhận sách</button>
                                             {% elif item.status == 'borrowing' or item.status == 'overdue' %}
-                                            <button class="btn btn-sm btn-outline-primary" onclick="requestReturn({{ item.id }})">Gui yeu cau tra sach</button>
+                                            <button class="btn btn-sm btn-outline-primary" onclick="requestReturn({{ item.id }})">Gửi yêu cầu trả sách</button>
                                             {% elif item.status == 'return_pending' %}
-                                            <span class="text-muted small">Dang cho admin xac nhan sach tra</span>
+                                            <span class="text-muted small">Đang chờ admin xác nhận sách trả</span>
                                             {% endif %}
                                         </td>
                                     </tr>
@@ -202,7 +202,7 @@
 {% block extra_js %}
 <script>
     async function confirmPickup(borrowId) {
-        if (!confirm('Ban da nhan duoc sach?')) return;
+        if (!confirm('Bạn đã nhận được sách?')) return;
 
         try {
             const response = await fetch('{{ url_for("borrow.user_confirm_pickup") }}', {
@@ -215,18 +215,18 @@
 
             const result = await response.json();
             if (result.status === 'success') {
-                alert('Da xac nhan nhan sach!');
+                alert('Đã xác nhận nhận sách!');
                 location.reload();
             } else {
-                alert('Loi: ' + result.message);
+                alert('Lỗi: ' + result.message);
             }
         } catch (e) {
-            alert('Co loi xay ra: ' + e.message);
+            alert('Có lỗi xảy ra: ' + e.message);
         }
     }
 
     async function requestReturn(borrowId) {
-        if (!confirm('Ban xac nhan da gui tra sach cho admin?')) return;
+        if (!confirm('Bạn xác nhận đã gửi trả sách cho admin?')) return;
 
         try {
             const response = await fetch('{{ url_for("borrow.user_request_return") }}', {
@@ -239,13 +239,13 @@
 
             const result = await response.json();
             if (result.status === 'success') {
-                alert('Da gui yeu cau tra sach!');
+                alert('Đã gửi yêu cầu trả sách!');
                 location.reload();
             } else {
-                alert('Loi: ' + result.message);
+                alert('Lỗi: ' + result.message);
             }
         } catch (e) {
-            alert('Co loi xay ra: ' + e.message);
+            alert('Có lỗi xảy ra: ' + e.message);
         }
     }
 </script>
