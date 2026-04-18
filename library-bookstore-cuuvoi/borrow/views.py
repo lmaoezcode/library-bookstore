@@ -100,16 +100,16 @@ def create_borrow():
                 seen.add(book_id)
                 unique_book_ids.append(book_id)
     except (TypeError, ValueError):
-        return jsonify({"status": "failed", "message": "Danh sach sach khong hop le."}), 400
+        return jsonify({"status": "failed", "message": "Danh sách sách không hợp lệ."}), 400
 
     user_id = session.get("user_id")
     blacklist_entry = get_blacklist_entry(user_id)
     if blacklist_entry:
         if blacklist_entry["banned_until"]:
             banned_until = str(blacklist_entry["banned_until"])[:10]
-            message = f"Tai khoan cua ban bi cam muon sach den {banned_until}."
+            message = f"Tài khoản của bạn bị cấm mượn sách đến {banned_until}."
         else:
-            message = "Tai khoan cua ban bi cam muon sach vo thoi han."
+            message = "Tài khoản của bạn bị cấm mượn sách vô thời hạn."
         return jsonify({"status": "failed", "message": message}), 403
 
     borrow_date = parse_datetime(data.get("borrow_date")) or datetime.now()
@@ -117,7 +117,7 @@ def create_borrow():
     if not due_date:
         due_date = borrow_date + timedelta(days=14)
     if due_date.date() < borrow_date.date():
-        return jsonify({"status": "failed", "message": "Ngay tra du kien phai sau ngay muon."}), 400
+        return jsonify({"status": "failed", "message": "Ngày trả dự kiến phải sau ngày mượn."}), 400
 
     phone = (data.get("phone") or "").strip()
     db = get_db()
@@ -133,9 +133,9 @@ def create_borrow():
                 (book_id,),
             ).fetchone()
             if not book:
-                raise ValueError(f"Sach ID {book_id} khong ton tai.")
+                raise ValueError(f"Sách ID {book_id} không tồn tại.")
             if int(book["available_for_borrow"] or 0) <= 0:
-                raise ValueError(f"Sach '{book['title']}' da het luot muon.")
+                raise ValueError(f"Sách '{book['title']}' đã hết lượt mượn.")
 
         cursor = db.execute("INSERT INTO borrows (user_id, status) VALUES (?, 'pending')", (user_id,))
         borrow_id = cursor.lastrowid
@@ -262,7 +262,7 @@ def admin_approve():
             (borrow_id,),
         ).fetchone()
         if not borrow or borrow["status"] != "pending":
-            raise ValueError("Phieu muon khong ton tai hoac da duoc xu ly.")
+            raise ValueError("Phiếu mượn không tồn tại hoặc đã được xử lý.")
 
         blacklist_entry = db.execute(
             """
@@ -275,7 +275,7 @@ def admin_approve():
             (borrow["user_id"],),
         ).fetchone()
         if blacklist_entry:
-            raise ValueError("Nguoi dung hien dang trong danh sach den.")
+            raise ValueError("Người dùng hiện đang trong danh sách đen.")
 
         items = db.execute(
             """
@@ -288,11 +288,11 @@ def admin_approve():
             (borrow_id,),
         ).fetchall()
         if not items:
-            raise ValueError("Phieu muon khong co sach.")
+            raise ValueError("Phiếu mượn không có sách.")
 
         for item in items:
             if int(item["available_for_borrow"] or 0) <= 0:
-                raise ValueError(f"Sach '{item['title']}' da het luot muon.")
+                raise ValueError(f"Sách '{item['title']}' đã hết lượt mượn.")
 
         db.execute(
             """
@@ -306,7 +306,7 @@ def admin_approve():
         )
         db.execute("UPDATE borrow_items SET status = 'approved' WHERE borrow_id = ?", (borrow_id,))
         db.commit()
-        return jsonify({"status": "success", "message": "Da duyet phieu muon."}), 200
+        return jsonify({"status": "success", "message": "Đã duyệt phiếu mượn."}), 200
     except Exception as exc:
         db.rollback()
         return jsonify({"status": "failed", "message": str(exc)}), 400
@@ -328,7 +328,7 @@ def admin_send_book():
             (borrow_id,),
         ).fetchone()
         if not borrow or borrow["status"] != "approved":
-            raise ValueError("Chi co the gui sach voi phieu da duyet.")
+            raise ValueError("Chỉ có thể gửi sách với phiếu đã duyệt.")
 
         items = db.execute(
             """
@@ -341,11 +341,11 @@ def admin_send_book():
             (borrow_id,),
         ).fetchall()
         if not items:
-            raise ValueError("Phieu muon khong co sach.")
+            raise ValueError("Phiếu mượn không có sách.")
 
         for item in items:
             if int(item["available_for_borrow"] or 0) <= 0:
-                raise ValueError(f"Sach '{item['title']}' da het luot muon.")
+                raise ValueError(f"Sách '{item['title']}' đã hết lượt mượn.")
 
         for item in items:
             db.execute(
@@ -359,7 +359,7 @@ def admin_send_book():
         )
         db.execute("UPDATE borrow_items SET status = 'shipping' WHERE borrow_id = ?", (borrow_id,))
         db.commit()
-        return jsonify({"status": "success", "message": "Admin da xac nhan gui sach."}), 200
+        return jsonify({"status": "success", "message": "Admin đã xác nhận gửi sách."}), 200
     except Exception as exc:
         db.rollback()
         return jsonify({"status": "failed", "message": str(exc)}), 400
@@ -378,7 +378,7 @@ def admin_reject():
         db.execute("BEGIN TRANSACTION")
         borrow = db.execute("SELECT status FROM borrows WHERE id = ?", (borrow_id,)).fetchone()
         if not borrow or borrow["status"] != "pending":
-            raise ValueError("Phieu muon khong ton tai hoac da duoc xu ly.")
+            raise ValueError("Phiếu mượn không tồn tại hoặc đã được xử lý.")
 
         db.execute("UPDATE borrows SET status = 'canceled' WHERE id = ?", (borrow_id,))
         db.execute("UPDATE borrow_items SET status = 'rejected' WHERE borrow_id = ?", (borrow_id,))
@@ -397,7 +397,7 @@ def admin_check_overdue():
         db.execute("BEGIN TRANSACTION")
         total = sync_overdue_borrows(db)
         db.commit()
-        return jsonify({"status": "success", "message": f"Da cap nhat {total} sach qua han."}), 200
+        return jsonify({"status": "success", "message": f"Đã cập nhật {total} sách quá hạn."}), 200
     except Exception as exc:
         db.rollback()
         return jsonify({"status": "failed", "message": str(exc)}), 400
@@ -430,7 +430,7 @@ def admin_confirm_return():
             (borrow_id,),
         ).fetchall()
         if not items:
-            raise ValueError("Khong con sach nao can tra.")
+            raise ValueError("Không còn sách nào cần trả.")
 
         for item in items:
             db.execute(
@@ -447,7 +447,7 @@ def admin_confirm_return():
             (borrow_id,),
         )
         db.commit()
-        return jsonify({"status": "success", "message": "Da xac nhan tra sach."}), 200
+        return jsonify({"status": "success", "message": "Đã xác nhận trả sách."}), 200
     except Exception as exc:
         db.rollback()
         return jsonify({"status": "failed", "message": str(exc)}), 400
@@ -468,12 +468,12 @@ def user_confirm_pickup():
             (borrow_id,),
         ).fetchone()
         if not borrow or borrow["user_id"] != user_id or borrow["status"] != "shipping":
-            raise ValueError("Phieu muon khong hop le.")
+            raise ValueError("Phiếu mượn không hợp lệ.")
 
         db.execute("UPDATE borrows SET status = 'borrowing', borrowed_at = CURRENT_TIMESTAMP WHERE id = ?", (borrow_id,))
         db.execute("UPDATE borrow_items SET status = 'borrowing' WHERE borrow_id = ?", (borrow_id,))
         db.commit()
-        return jsonify({"status": "success", "message": "Da xac nhan nhan sach."}), 200
+        return jsonify({"status": "success", "message": "Đã xác nhận nhận sách."}), 200
     except Exception as exc:
         db.rollback()
         return jsonify({"status": "failed", "message": str(exc)}), 400
@@ -494,11 +494,11 @@ def user_request_return():
             (borrow_id,),
         ).fetchone()
         if not borrow or borrow["user_id"] != user_id:
-            raise ValueError("Phieu muon khong hop le.")
+            raise ValueError("Phiếu mượn không hợp lệ.")
 
         current_status = borrow["status"]
         if current_status not in ("borrowing", "overdue"):
-            raise ValueError("Chi co the gui yeu cau tra khi sach dang duoc muon.")
+            raise ValueError("Chỉ có thể gửi yêu cầu trả khi sách đang được mượn.")
 
         db.execute(
             "UPDATE borrows SET status = 'return_pending', return_requested_at = CURRENT_TIMESTAMP WHERE id = ?",
@@ -509,7 +509,7 @@ def user_request_return():
             (borrow_id,),
         )
         db.commit()
-        return jsonify({"status": "success", "message": "Da gui yeu cau tra sach cho admin."}), 200
+        return jsonify({"status": "success", "message": "Đã gửi yêu cầu trả sách cho admin."}), 200
     except Exception as exc:
         db.rollback()
         return jsonify({"status": "failed", "message": str(exc)}), 400

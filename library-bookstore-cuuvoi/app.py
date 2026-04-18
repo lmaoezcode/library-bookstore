@@ -310,7 +310,7 @@ def create_app():
                 o.status,
                 o.total_price,
                 o.created_at,
-                GROUP_CONCAT(COALESCE(b.title, 'Sach da xoa') || ' x' || oi.quantity, ', ') AS items
+                GROUP_CONCAT(COALESCE(b.title, 'Sách đã xóa') || ' x' || oi.quantity, ', ') AS items
             FROM orders o
             JOIN order_items oi ON oi.order_id = o.id
             LEFT JOIN books b ON b.id = oi.book_id
@@ -328,7 +328,7 @@ def create_app():
                 br.status,
                 br.created_at,
                 MAX(bi.due_date) AS due_date,
-                GROUP_CONCAT(COALESCE(b.title, 'Sach da xoa'), ', ') AS items
+                GROUP_CONCAT(COALESCE(b.title, 'Sách đã xóa'), ', ') AS items
             FROM borrows br
             JOIN borrow_items bi ON bi.borrow_id = br.id
             LEFT JOIN books b ON b.id = bi.book_id
@@ -393,7 +393,7 @@ def create_app():
 
         user_profile = {
             "id": user_row["id"],
-            "name": user_row["name"] or "Nguoi dung",
+            "name": user_row["name"] or "Người dùng",
             "email": user_row["email"] or "",
             "phone": user_row["phone"] or "",
             "role": user_row["role"] or "user",
@@ -415,14 +415,14 @@ def create_app():
         phone = request.form.get("phone", "").strip()
 
         if not name:
-            flash("Ten nguoi dung khong duoc de trong.", "danger")
+            flash("Tên người dùng không được để trống.", "danger")
             return redirect(url_for("my_account"))
 
         db = get_db()
         db.execute("UPDATE users SET name = ?, phone = ? WHERE id = ?", (name, phone, user_id))
         db.commit()
         session["user_name"] = name
-        flash("Cap nhat thong tin thanh cong.", "success")
+        flash("Cập nhật thông tin thành công.", "success")
         return redirect(url_for("my_account"))
 
     @app.route("/wishlist")
@@ -545,10 +545,10 @@ def create_app():
         try:
             book_ids = [int(book_id) for book_id in raw_book_ids]
         except (TypeError, ValueError):
-            return jsonify({"status": "failed", "message": "Danh sach sach khong hop le."}), 400
+            return jsonify({"status": "failed", "message": "Danh sách sách không hợp lệ."}), 400
 
         if not book_ids:
-            return jsonify({"status": "failed", "message": "Chua co sach de thanh toan."}), 400
+            return jsonify({"status": "failed", "message": "Chưa có sách để thanh toán."}), 400
 
         db = get_db()
         placeholders = ",".join(["?"] * len(book_ids))
@@ -602,7 +602,7 @@ def create_app():
 
             for book in books:
                 if int(book["available_for_sale"] or 0) <= 0:
-                    raise ValueError(f"Sach '{book['title']}' da het hang.")
+                    raise ValueError(f"Sách '{book['title']}' đã hết hàng.")
                 db.execute(
                     "INSERT INTO order_items (order_id, book_id, quantity, price) VALUES (?, ?, ?, ?)",
                     (order_id, book["id"], 1, book["price"]),
@@ -621,7 +621,7 @@ def create_app():
             db.rollback()
             return redirect(url_for("payments", books=",".join(str(book_id) for book_id in book_ids)))
 
-        flash("Thanh toan gia lap thanh cong. Don hang da duoc tao de admin duyet.", "success")
+        flash("Thanh toán giả lập thành công. Đơn hàng đã được tạo để admin duyệt.", "success")
         return redirect(url_for("my_account"))
 
     @app.post("/orders/<int:order_id>/confirm-delivery")

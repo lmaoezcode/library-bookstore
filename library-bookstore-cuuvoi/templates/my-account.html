@@ -1,26 +1,26 @@
 {% extends "base.html" %}
 
-{% block title %}Tai Khoan - Thu Vien Sach{% endblock %}
+{% block title %}Tài Khoản - Thư Viện Sách{% endblock %}
 
 {% block content %}
 <section class="container py-5" style="min-height: 70vh;">
-    <h4 class="fw-bold mb-4 text-orange">Tai Khoan Ca Nhan</h4>
+    <h4 class="fw-bold mb-4 text-orange">Tài Khoản Cá Nhân</h4>
     <div class="row g-4">
         <div class="col-md-4 col-lg-3">
             <div class="card border-0 shadow-sm p-4 text-center">
                 <i class="bi bi-person-circle display-1 text-secondary mb-3"></i>
                 <h5 class="fw-bold mb-1">{{ user.name }}</h5>
-                <p class="text-muted small mb-3">Thanh vien tu {{ user.created_at_label }}</p>
-                <button class="btn btn-outline-dark w-100 fw-semibold" data-bs-toggle="modal" data-bs-target="#editProfileModal">Chinh sua ho so</button>
+                <p class="text-muted small mb-3">Thành viên từ {{ user.created_at_label }}</p>
+                <button class="btn btn-outline-dark w-100 fw-semibold" data-bs-toggle="modal" data-bs-target="#editProfileModal">Chỉnh sửa hồ sơ</button>
             </div>
         </div>
 
         <div class="col-md-8 col-lg-9">
             <div class="card border-0 shadow-sm p-4 mb-4">
-                <h5 class="fw-bold mb-4 text-dark border-bottom pb-3">Thong tin nguoi dung</h5>
+                <h5 class="fw-bold mb-4 text-dark border-bottom pb-3">Thông tin người dùng</h5>
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <div class="small text-muted mb-1">Ho va ten</div>
+                        <div class="small text-muted mb-1">Họ và tên</div>
                         <div class="fw-semibold">{{ user.name }}</div>
                     </div>
                     <div class="col-md-6">
@@ -28,28 +28,28 @@
                         <div class="fw-semibold">{{ user.email }}</div>
                     </div>
                     <div class="col-md-6">
-                        <div class="small text-muted mb-1">So dien thoai</div>
-                        <div class="fw-semibold">{{ user.phone or "Chua cap nhat" }}</div>
+                        <div class="small text-muted mb-1">Số điện thoại</div>
+                        <div class="fw-semibold">{{ user.phone or "Chưa cập nhật" }}</div>
                     </div>
                     <div class="col-md-6">
-                        <div class="small text-muted mb-1">Vai tro</div>
+                        <div class="small text-muted mb-1">Vai trò</div>
                         <div class="fw-semibold text-capitalize">{{ user.role }}</div>
                     </div>
                 </div>
             </div>
 
             <div class="card border-0 shadow-sm p-4">
-                <h5 class="fw-bold mb-4 text-dark border-bottom pb-3">Quan Ly Lich Su</h5>
+                <h5 class="fw-bold mb-4 text-dark border-bottom pb-3">Quản Lý Lịch Sử</h5>
 
                 <ul class="nav nav-tabs mb-4" id="historyTabs" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active text-dark fw-semibold" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button" role="tab" aria-controls="all" aria-selected="true">Tat Ca</button>
+                        <button class="nav-link active text-dark fw-semibold" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button" role="tab" aria-controls="all" aria-selected="true">Tất Cả</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link text-dark fw-semibold" id="buy-tab" data-bs-toggle="tab" data-bs-target="#buy" type="button" role="tab" aria-controls="buy" aria-selected="false">Mua Sach</button>
+                        <button class="nav-link text-dark fw-semibold" id="buy-tab" data-bs-toggle="tab" data-bs-target="#buy" type="button" role="tab" aria-controls="buy" aria-selected="false">Mua Sách</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link text-dark fw-semibold" id="borrow-tab" data-bs-toggle="tab" data-bs-target="#borrow" type="button" role="tab" aria-controls="borrow" aria-selected="false">Muon Sach</button>
+                        <button class="nav-link text-dark fw-semibold" id="borrow-tab" data-bs-toggle="tab" data-bs-target="#borrow" type="button" role="tab" aria-controls="borrow" aria-selected="false">Mượn Sách</button>
                     </li>
                 </ul>
 
@@ -59,10 +59,10 @@
                             <table class="table table-hover align-middle mb-0">
                                 <thead class="bg-light">
                                     <tr>
-                                        <th>Phan loai</th>
-                                        <th>Sach</th>
-                                        <th>Thoi diem</th>
-                                        <th>Trang thai</th>
+                                        <th>Phân loại</th>
+                                        <th>Sách</th>
+                                        <th>Thời điểm</th>
+                                        <th>Trạng thái</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -75,7 +75,7 @@
                                     </tr>
                                     {% else %}
                                     <tr>
-                                        <td colspan="4" class="text-center text-muted py-4">Chua co lich su giao dich.</td>
+                                        <td colspan="4" class="text-center text-muted py-4">Chưa có lịch sử giao dịch.</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
@@ -88,12 +88,12 @@
                             <table class="table table-hover align-middle mb-0">
                                 <thead class="bg-light">
                                     <tr>
-                                        <th>Ma DH</th>
-                                        <th>Ten sach</th>
-                                        <th>Ngay thanh toan</th>
-                                        <th>Tong tien</th>
-                                        <th>Trang thai</th>
-                                        <th>Thao tac</th>
+                                        <th>Mã ĐH</th>
+                                        <th>Tên sách</th>
+                                        <th>Ngày thanh toán</th>
+                                        <th>Tổng tiền</th>
+                                        <th>Trạng thái</th>
+                                        <th>Thao tác</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -106,8 +106,8 @@
                                         <td>{{ item.status_label }}</td>
                                         <td>
                                             {% if item.status == 'shipping' %}
-                                            <form method="POST" action="{{ url_for('confirm_delivery', order_id=item.id) }}" onsubmit="return confirm('Ban da nhan duoc sach mua?');">
-                                            <button type="submit" class="btn btn-sm btn-success">Xác nhận đã nhận hàng</button>
+                                            <form method="POST" action="{{ url_for('confirm_delivery', order_id=item.id) }}" onsubmit="return confirm('Bạn đã nhận được sách mua?');">
+                                                <button type="submit" class="btn btn-sm btn-success">Xác nhận đã nhận hàng</button>
                                             </form>
                                             {% else %}
                                             <span class="text-muted small">Không có thao tác</span>
@@ -116,7 +116,7 @@
                                     </tr>
                                     {% else %}
                                     <tr>
-                                        <td colspan="6" class="text-center text-muted py-4">Chua co don mua nao.</td>
+                                        <td colspan="6" class="text-center text-muted py-4">Chưa có đơn mua nào.</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
@@ -129,12 +129,12 @@
                             <table class="table table-hover align-middle mb-0">
                                 <thead class="bg-light">
                                     <tr>
-                                        <th>Ma phieu</th>
-                                        <th>Ten sach</th>
-                                        <th>Ngay muon</th>
-                                        <th>Ngay du tra</th>
-                                        <th>Trang thai</th>
-                                        <th>Thao tac</th>
+                                        <th>Mã phiếu</th>
+                                        <th>Tên sách</th>
+                                        <th>Ngày mượn</th>
+                                        <th>Ngày dự trả</th>
+                                        <th>Trạng thái</th>
+                                        <th>Thao tác</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -152,12 +152,14 @@
                                             <button class="btn btn-sm btn-outline-primary" onclick="requestReturn({{ item.id }})">Gửi yêu cầu trả sách</button>
                                             {% elif item.status == 'return_pending' %}
                                             <span class="text-muted small">Đang chờ admin xác nhận sách trả</span>
+                                            {% else %}
+                                            <span class="text-muted small">Không có thao tác</span>
                                             {% endif %}
                                         </td>
                                     </tr>
                                     {% else %}
                                     <tr>
-                                        <td colspan="6" class="text-center text-muted py-4">Chua co yeu cau muon sach nao.</td>
+                                        <td colspan="6" class="text-center text-muted py-4">Chưa có yêu cầu mượn sách nào.</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
@@ -174,24 +176,24 @@
     <div class="modal-dialog">
         <div class="modal-content border-0 shadow">
             <div class="modal-header border-bottom-0">
-                <h5 class="modal-title fw-bold">Cap nhat ho so</h5>
+                <h5 class="modal-title fw-bold">Cập nhật hồ sơ</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body pb-4">
                 <form method="POST" action="{{ url_for('update_my_account') }}">
                     <div class="mb-3">
-                        <label class="form-label fw-semibold text-secondary">Ho va ten</label>
+                        <label class="form-label fw-semibold text-secondary">Họ và tên</label>
                         <input type="text" class="form-control bg-light" name="name" value="{{ user.name }}" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold text-secondary">Dia chi Email</label>
+                        <label class="form-label fw-semibold text-secondary">Địa chỉ Email</label>
                         <input type="email" class="form-control bg-light" value="{{ user.email }}" disabled>
                     </div>
                     <div class="mb-4">
-                        <label class="form-label fw-semibold text-secondary">So dien thoai</label>
-                        <input type="tel" class="form-control bg-light" name="phone" value="{{ user.phone }}" placeholder="Nhap so dien thoai">
+                        <label class="form-label fw-semibold text-secondary">Số điện thoại</label>
+                        <input type="tel" class="form-control bg-light" name="phone" value="{{ user.phone }}" placeholder="Nhập số điện thoại">
                     </div>
-                    <button type="submit" class="btn text-white w-100 fw-semibold py-2" style="background-color: #ED553B;">Luu thay doi</button>
+                    <button type="submit" class="btn text-white w-100 fw-semibold py-2" style="background-color: #ED553B;">Lưu thay đổi</button>
                 </form>
             </div>
         </div>

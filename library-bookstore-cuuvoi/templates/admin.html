@@ -1,24 +1,24 @@
 {% extends "base.html" %}
 
-{% block title %}Bang dieu khien - Quan tri vien{% endblock %}
+{% block title %}Bảng điều khiển - Quản trị viên{% endblock %}
 
 {% block content %}
 <section class="container-fluid py-5 px-md-5" style="min-height: 80vh; background-color: #f8f9fa;">
-    <h3 class="fw-bold mb-4 text-primary"><i class="bi bi-speedometer2"></i> Trang Quan Tri He Thong</h3>
+    <h3 class="fw-bold mb-4 text-primary"><i class="bi bi-speedometer2"></i> Trang Quản Trị Hệ Thống</h3>
     <div class="row g-4">
         <div class="col-md-3 col-lg-2">
             <div class="list-group shadow-sm border-0 rounded-3" role="tablist">
                 <a class="list-group-item list-group-item-action active py-3 fw-semibold border-0" data-bs-toggle="list" href="#list-books" role="tab">
-                    <i class="bi bi-book me-2"></i> Quan Ly Sach
+                    <i class="bi bi-book me-2"></i> Quản Lý Sách
                 </a>
                 <a class="list-group-item list-group-item-action py-3 fw-semibold border-0" data-bs-toggle="list" href="#list-orders" role="tab">
-                    <i class="bi bi-cart-check me-2"></i> Duyet Don Mua
+                    <i class="bi bi-cart-check me-2"></i> Duyệt Đơn Mua
                 </a>
                 <a class="list-group-item list-group-item-action py-3 fw-semibold border-0" data-bs-toggle="list" href="#list-borrows" role="tab">
-                    <i class="bi bi-calendar2-check me-2"></i> Duyet Muon Sach
+                    <i class="bi bi-calendar2-check me-2"></i> Duyệt Mượn Sách
                 </a>
                 <a class="list-group-item list-group-item-action py-3 fw-semibold border-0" data-bs-toggle="list" href="#list-blacklist" role="tab">
-                    <i class="bi bi-shield-x me-2"></i> Danh Sach Den
+                    <i class="bi bi-shield-x me-2"></i> Danh Sách Đen
                 </a>
             </div>
         </div>
@@ -28,13 +28,13 @@
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="list-books" role="tabpanel">
                         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
-                            <h5 class="fw-bold mb-0">Danh muc sach he thong</h5>
+                            <h5 class="fw-bold mb-0">Danh mục sách hệ thống</h5>
                             <div class="d-flex gap-2">
                                 <button class="btn btn-primary fw-semibold" type="button" onclick="openBookModal()">
-                                    <i class="bi bi-plus-circle me-1"></i> Them sach
+                                    <i class="bi bi-plus-circle me-1"></i> Thêm sách
                                 </button>
                                 <button class="btn btn-outline-danger fw-semibold" type="button" onclick="deleteSelectedBooks()">
-                                    <i class="bi bi-trash me-1"></i> Xoa da chon
+                                    <i class="bi bi-trash me-1"></i> Xóa đã chọn
                                 </button>
                             </div>
                         </div>
@@ -44,11 +44,11 @@
                                     <tr>
                                         <th style="width: 40px;"><input type="checkbox" class="form-check-input" id="selectAllBooks"></th>
                                         <th>ID</th>
-                                        <th>Tac pham</th>
-                                        <th>Tac gia</th>
-                                        <th>Gia tien</th>
-                                        <th>Phan loai</th>
-                                        <th>Thao tac</th>
+                                        <th>Tác phẩm</th>
+                                        <th>Tác giả</th>
+                                        <th>Giá tiền</th>
+                                        <th>Phân loại</th>
+                                        <th>Thao tác</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -64,7 +64,7 @@
                                         <td class="text-secondary fw-semibold">#{{ item.id }}</td>
                                         <td class="fw-semibold">{{ item.title }}</td>
                                         <td class="text-secondary">{{ item.author }}</td>
-                                        <td class="fw-semibold text-danger">{{ "{:,.0f}".format(item.price or 0).replace(",", ".") }}d</td>
+                                        <td class="fw-semibold text-danger">{{ "{:,.0f}".format(item.price or 0).replace(",", ".") }}đ</td>
                                         <td class="text-secondary">{{ item.category_name }}</td>
                                         <td>
                                             <div class="d-flex gap-2">
@@ -84,17 +84,17 @@
                     </div>
 
                     <div class="tab-pane fade" id="list-orders" role="tabpanel">
-                        <h5 class="fw-bold mb-4">Cho xu ly don mua</h5>
+                        <h5 class="fw-bold mb-4">Chờ xử lý đơn mua</h5>
                         <div class="table-responsive">
                             <table class="table table-hover align-middle border-top" id="ordersTable">
                                 <thead class="bg-light text-muted">
                                     <tr>
-                                        <th>Ma DH</th>
-                                        <th>Tai khoan</th>
-                                        <th>San pham</th>
-                                        <th>Thanh toan</th>
-                                        <th>Trang thai</th>
-                                        <th>Hanh dong</th>
+                                        <th>Mã ĐH</th>
+                                        <th>Tài khoản</th>
+                                        <th>Sản phẩm</th>
+                                        <th>Thanh toán</th>
+                                        <th>Trạng thái</th>
+                                        <th>Hành động</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -103,7 +103,7 @@
                                         <td class="fw-semibold row-id">#{{ item.id }}</td>
                                         <td>{{ item.user_name }}<br><small class="text-muted">{{ item.user_email }}</small></td>
                                         <td class="fw-semibold">{{ item.product_summary }}</td>
-                                        <td>{{ "{:,.0f}".format(item.total_price or 0).replace(",", ".") }}d<br><small class="text-warning">{{ item.payment_method }}</small></td>
+                                        <td>{{ "{:,.0f}".format(item.total_price or 0).replace(",", ".") }}đ<br><small class="text-warning">{{ item.payment_method }}</small></td>
                                         <td>
                                             {% if item.status == 'pending' %}
                                             <span class="badge bg-warning text-dark fw-normal status-badge">Chờ duyệt</span>
@@ -126,7 +126,7 @@
                                     </tr>
                                     {% else %}
                                     <tr>
-                                        <td colspan="6" class="text-center text-muted py-4">Chua co don mua nao.</td>
+                                        <td colspan="6" class="text-center text-muted py-4">Chưa có đơn mua nào.</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
@@ -136,21 +136,21 @@
 
                     <div class="tab-pane fade" id="list-borrows" role="tabpanel">
                         <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h5 class="fw-bold mb-0">Yeu cau muon sach</h5>
+                            <h5 class="fw-bold mb-0">Yêu cầu mượn sách</h5>
                             <button class="btn btn-outline-primary btn-sm" type="button" onclick="checkOverdueBorrows()">
-                                <i class="bi bi-clock-history me-1"></i> Cap nhat qua han
+                                <i class="bi bi-clock-history me-1"></i> Cập nhật quá hạn
                             </button>
                         </div>
                         <div class="table-responsive">
                             <table class="table table-hover align-middle border-top" id="borrowsTable">
                                 <thead class="bg-light text-muted">
                                     <tr>
-                                        <th>Ma Phieu</th>
-                                        <th>Nguoi dang ky muon</th>
-                                        <th>Tac pham</th>
-                                        <th>Ngay du tra</th>
-                                        <th>Trang thai</th>
-                                        <th>Hanh dong</th>
+                                        <th>Mã Phiếu</th>
+                                        <th>Người đăng ký mượn</th>
+                                        <th>Tác phẩm</th>
+                                        <th>Ngày dự trả</th>
+                                        <th>Trạng thái</th>
+                                        <th>Hành động</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -172,7 +172,7 @@
                                             {% elif item.status == 'return_pending' %}
                                             <span class="badge bg-secondary fw-normal status-badge">Chờ xác nhận trả</span>
                                             {% elif item.status == 'overdue' %}
-                                            <span class="badge bg-danger fw-normal status-badge">Qua han</span>
+                                            <span class="badge bg-danger fw-normal status-badge">Quá hạn</span>
                                             {% elif item.status == 'returned' %}
                                             <span class="badge bg-dark fw-normal status-badge">Đã trả</span>
                                             {% else %}
@@ -181,8 +181,8 @@
                                         </td>
                                         <td>
                                             {% if item.status == 'pending' %}
-                                            <button class="btn btn-sm btn-primary me-1" type="button" onclick="triggerEntityConfirm('approve', this.closest('tr'))">Duyet</button>
-                                            <button class="btn btn-sm btn-outline-dark" type="button" onclick="triggerEntityConfirm('reject', this.closest('tr'))">Tu choi</button>
+                                            <button class="btn btn-sm btn-primary me-1" type="button" onclick="triggerEntityConfirm('approve', this.closest('tr'))">Duyệt</button>
+                                            <button class="btn btn-sm btn-outline-dark" type="button" onclick="triggerEntityConfirm('reject', this.closest('tr'))">Từ chối</button>
                                             {% elif item.status == 'approved' %}
                                             <button class="btn btn-sm btn-info text-white" type="button" onclick="triggerEntityConfirm('send', this.closest('tr'))">Xác nhận gửi</button>
                                             {% elif item.status == 'borrowing' or item.status == 'overdue' or item.status == 'return_pending' %}
@@ -194,7 +194,7 @@
                                     </tr>
                                     {% else %}
                                     <tr>
-                                        <td colspan="6" class="text-center text-muted py-4">Chua co yeu cau muon sach nao.</td>
+                                        <td colspan="6" class="text-center text-muted py-4">Chưa có yêu cầu mượn sách nào.</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
@@ -204,9 +204,9 @@
 
                     <div class="tab-pane fade" id="list-blacklist" role="tabpanel">
                         <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h5 class="fw-bold mb-0">Danh sach den</h5>
+                            <h5 class="fw-bold mb-0">Danh sách đen</h5>
                             <a href="{{ url_for('admin.blacklist') }}" class="btn btn-primary fw-semibold">
-                                <i class="bi bi-shield-x me-1"></i> Quan ly chi tiet
+                                <i class="bi bi-shield-x me-1"></i> Quản lý chi tiết
                             </a>
                         </div>
                         <div class="table-responsive">
@@ -214,11 +214,11 @@
                                 <thead class="bg-light text-muted">
                                     <tr>
                                         <th>ID</th>
-                                        <th>Ten</th>
+                                        <th>Tên</th>
                                         <th>Email</th>
-                                        <th>Ly do</th>
-                                        <th>Thoi han</th>
-                                        <th>Ngay tao</th>
+                                        <th>Lý do</th>
+                                        <th>Thời hạn</th>
+                                        <th>Ngày tạo</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -232,14 +232,14 @@
                                             {% if entry.banned_until %}
                                                 {{ entry.banned_until }}
                                             {% else %}
-                                                <span class="badge bg-danger">Vinh vien</span>
+                                                <span class="badge bg-danger">Vĩnh viễn</span>
                                             {% endif %}
                                         </td>
                                         <td>{{ entry.created_at }}</td>
                                     </tr>
                                     {% else %}
                                     <tr>
-                                        <td colspan="6" class="text-center text-muted py-4">Chua co ai trong danh sach den.</td>
+                                        <td colspan="6" class="text-center text-muted py-4">Chưa có ai trong danh sách đen.</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
@@ -256,31 +256,31 @@
     <div class="modal-dialog">
         <div class="modal-content shadow border-0">
             <div class="modal-header">
-                <h5 class="modal-title fw-bold" id="bookModalTitle">Them sach</h5>
+                <h5 class="modal-title fw-bold" id="bookModalTitle">Thêm sách</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="bookForm">
                     <input type="hidden" id="bookIdInput">
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Ten sach</label>
+                        <label class="form-label fw-semibold">Tên sách</label>
                         <input type="text" class="form-control" id="bookTitleInput" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Tac gia</label>
+                        <label class="form-label fw-semibold">Tác giả</label>
                         <input type="text" class="form-control" id="bookAuthorInput" required>
                     </div>
                     <div class="row">
                         <div class="col-6 mb-3">
-                            <label class="form-label fw-semibold">Phan loai</label>
+                            <label class="form-label fw-semibold">Phân loại</label>
                             <input type="number" class="form-control" id="bookCatInput" min="1" required>
                         </div>
                         <div class="col-6 mb-3">
-                            <label class="form-label fw-semibold">Gia (VND)</label>
+                            <label class="form-label fw-semibold">Giá (VND)</label>
                             <input type="number" class="form-control" id="bookPriceInput" min="0" step="1" required>
                         </div>
                     </div>
-                    <button type="submit" class="btn text-white w-100 fw-semibold mt-3" style="background-color:#ED553B;">Luu thong tin</button>
+                    <button type="submit" class="btn text-white w-100 fw-semibold mt-3" style="background-color:#ED553B;">Lưu thông tin</button>
                 </form>
             </div>
         </div>
@@ -294,7 +294,7 @@
                 <i class="bi bi-exclamation-circle text-warning display-4 mb-3 d-block"></i>
                 <h5 class="fw-bold mb-3" id="confirmModalText">Xác nhận thao tác?</h5>
                 <div class="d-flex justify-content-center gap-2">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Huy</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
                     <button type="button" class="btn btn-dark" id="confirmModalOkBtn">Xác nhận</button>
                 </div>
             </div>
@@ -305,7 +305,7 @@
 <div class="toast-container position-fixed top-0 end-0 p-3">
     <div id="adminActionToast" class="toast align-items-center border-0 text-bg-dark" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
-            <div class="toast-body" id="adminActionToastBody">Thao tac da duoc xu ly.</div>
+            <div class="toast-body" id="adminActionToastBody">Thao tác đã được xử lý.</div>
             <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
     </div>
@@ -339,10 +339,10 @@
     function openBookModal(row = null) {
         document.getElementById("bookForm").reset();
         document.getElementById("bookIdInput").value = "";
-        document.getElementById("bookModalTitle").innerText = "Them sach";
+        document.getElementById("bookModalTitle").innerText = "Thêm sách";
 
         if (row) {
-            document.getElementById("bookModalTitle").innerText = "Cap nhat sach";
+            document.getElementById("bookModalTitle").innerText = "Cập nhật sách";
             document.getElementById("bookIdInput").value = row.dataset.bookId;
             document.getElementById("bookTitleInput").value = row.dataset.title;
             document.getElementById("bookAuthorInput").value = row.dataset.author;
@@ -382,28 +382,28 @@
 
                 const payload = await response.json();
                 if (!response.ok || payload.status === "error") {
-                    showAdminToast(payload.message || "Khong the luu sach.", "danger");
+                    showAdminToast(payload.message || "Không thể lưu sách.", "danger");
                     return;
                 }
 
-                showAdminToast(payload.message || "Da luu thong tin sach.", "success");
+                showAdminToast(payload.message || "Đã lưu thông tin sách.", "success");
                 window.location.reload();
             } catch (error) {
-                showAdminToast("Khong the ket noi toi may chu.", "danger");
+                showAdminToast("Không thể kết nối tới máy chủ.", "danger");
             }
         });
     }
 
     function deleteBook(row) {
-        triggerConfirm(`Xoa sach #${row.dataset.bookId}?`, async () => {
+        triggerConfirm(`Xóa sách #${row.dataset.bookId}?`, async () => {
             const response = await fetch(`/book/delete/${row.dataset.bookId}`, { method: "DELETE" });
             const payload = await response.json();
             if (!response.ok || payload.status !== "success") {
-                showAdminToast(payload.message || "Khong the xoa sach.", "danger");
+                showAdminToast(payload.message || "Không thể xóa sách.", "danger");
                 return;
             }
 
-            showAdminToast(payload.message || "Da xoa sach.", "success");
+            showAdminToast(payload.message || "Đã xóa sách.", "success");
             row.remove();
         });
     }
@@ -415,7 +415,7 @@
             return;
         }
 
-        triggerConfirm(`Xoa ${rows.length} sach da chon?`, async () => {
+        triggerConfirm(`Xóa ${rows.length} sách đã chọn?`, async () => {
             const bookIds = rows.map((row) => Number(row.dataset.bookId));
             const response = await fetch("/book/delete-many", {
                 method: "POST",
@@ -425,13 +425,13 @@
             const payload = await response.json();
 
             if (!response.ok || payload.status !== "success") {
-                showAdminToast(payload.message || "Khong the xoa cac sach da chon.", "danger");
+                showAdminToast(payload.message || "Không thể xóa các sách đã chọn.", "danger");
                 return;
             }
 
             rows.forEach((row) => row.remove());
             if (selectAllBooks) selectAllBooks.checked = false;
-            showAdminToast(payload.message || "Da xoa cac sach da chon.", "success");
+            showAdminToast(payload.message || "Đã xóa các sách đã chọn.", "success");
         });
     }
 
@@ -465,7 +465,7 @@
             const response = await fetch(endpoint, options);
             const payload = await response.json();
             if (!response.ok || payload.status !== "success") {
-                showAdminToast(payload.message || "Khong the thuc hien thao tac.", "danger");
+                showAdminToast(payload.message || "Không thể thực hiện thao tác.", "danger");
                 return;
             }
 
@@ -482,7 +482,7 @@
                 badge.className = "badge bg-success fw-normal status-badge";
                 badge.innerText = "Đã phê duyệt";
                 actionCell.innerHTML = '<button class="btn btn-sm btn-info text-white" type="button" onclick="triggerEntityConfirm(\'send\', this.closest(\'tr\'))">Xác nhận gửi</button>';
-                showAdminToast(payload.message || "Da cap nhat trang thai.", "success");
+                showAdminToast(payload.message || "Đã cập nhật trạng thái.", "success");
                 return;
             } else if (entity === "borrow" && action === "reject") {
                 badge.className = "badge bg-dark fw-normal status-badge";
@@ -496,7 +496,7 @@
             }
 
             actionCell.innerHTML = '<span class="text-muted small">Không có thao tác</span>';
-            showAdminToast(payload.message || "Da cap nhat trang thai.", "success");
+            showAdminToast(payload.message || "Đã cập nhật trạng thái.", "success");
         });
     }
 
@@ -505,13 +505,13 @@
             const response = await fetch("/borrow/admin/check_overdue", { method: "POST" });
             const payload = await response.json();
             if (!response.ok || payload.status !== "success") {
-                showAdminToast(payload.message || "Khong the cap nhat qua han.", "danger");
+                showAdminToast(payload.message || "Không thể cập nhật quá hạn.", "danger");
                 return;
             }
-            showAdminToast(payload.message || "Da cap nhat qua han.", "success");
+            showAdminToast(payload.message || "Đã cập nhật quá hạn.", "success");
             window.location.reload();
         } catch (error) {
-            showAdminToast("Khong the ket noi toi may chu.", "danger");
+            showAdminToast("Không thể kết nối tới máy chủ.", "danger");
         }
     }
 
@@ -529,7 +529,7 @@
         try {
             await pendingAction();
         } catch (error) {
-            showAdminToast("Khong the ket noi toi may chu.", "danger");
+            showAdminToast("Không thể kết nối tới máy chủ.", "danger");
         } finally {
             pendingAction = null;
         }
